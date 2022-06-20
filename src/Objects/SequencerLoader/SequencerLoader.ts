@@ -1,18 +1,17 @@
 // import { isIntersectionTypeNode } from "typescript";
 // import { 
 //     NOTE_LETTERS, OCTAVE_MIN, OCTAVE_MAX, INT_NOTE_MIN, INT_NOTE_MAX } from "../config/constants.ts";
-import TriggerWhen from './TriggerWhen';
-import NoteToPlay from './NoteToPlay';
-import VolumeToPlay from './VolumeToPlay';
-import IntervalsToPlay from './IntervalsToPlay';
+import TriggerWhen from './TriggerWhen.ts';
+import NoteToPlay from './NoteToPlay.ts';
+import VolumeToPlay from './VolumeToPlay.ts';
+import IntervalsToPlay from './IntervalsToPlay.ts';
 
-import NoteIntervalCalculator from './NoteIntervalCalculator';
+import NoteIntervalCalculator from './NoteIntervalCalculator.ts';
 
-import IMusicScale from '../../Types/IMusicScale';
-import IMusicKey from '../../Types/IMusicKey';
-import IToneJSDuration from '../../Types/IToneJSDuration';
-import IToneJSNote from '../../Types/IToneJSNote';
-import { debug } from 'console';
+import IMusicScale from '../../Types/IMusicScale.ts';
+import IMusicKey from '../../Types/IMusicKey.ts';
+import IToneJSDuration from '../../Types/IToneJSDuration.ts';
+import IToneJSNote from '../../Types/IToneJSNote.ts';
 
 class SequencerLoaderHolder {
     name: string;
@@ -35,8 +34,6 @@ class SequencerLoaderHolder {
             console.warn("No Interval Found");
             return startNote;
         }
-        console.log(`startNote: ${startNote}`);
-        console.log(`interval: ${interval}`);
         return noteIntervalCalculator.getNote(startNote, interval);
     }
 
@@ -125,7 +122,7 @@ export default class SequencerLoader {
         let functionIn = "";
 
         for (const line of this.lines()) {
-            debug(line)
+            console.debug(line)
             if (inFunction) {
                 if (line === "end") {
                     inFunction = false;

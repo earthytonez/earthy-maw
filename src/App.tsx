@@ -97,14 +97,11 @@ function App() {
   const [musicScale, setScale] = React.useState('Major');
   
   useEffect(() => {
-    console.log("Loading tracks");
     const _trackLS = JSON.parse(localStorage.getItem("tracks")!);
-    console.log(_trackLS);
     if (_trackLS && _trackLS.length > 0) {
       let trackObjects = _trackLS.map(
         (track, i) => new Track(i, audioContext, track)
       );
-      console.log(trackObjects);
       setTracks(trackObjects);
     } else {
       setTracks([
@@ -118,6 +115,7 @@ function App() {
 
   const [intervalRunning, setIntervalRunning] = React.useState(false);
   console.log(`Interval is ${getInterval(tempo)}`);
+  console.log(intervalRunning);
   if (!intervalRunning) {
     let beatNumber: number = 1;
     setInterval(() => {
@@ -125,12 +123,16 @@ function App() {
         return;
       }
       setIntervalRunning(true);
+      console.log("Looping");
       tracks.forEach((track: Track) => {
         try {
-          console.log("Ticking");
-          track.tick(key, scale, beatNumber);
+          console.log("Ticking Track");
+          track.tick(musicKey, musicScale, beatNumber);
           beatNumber++;
-        } catch (err: any) {}
+        } catch (err: any) {
+          console.log("Caught Error");
+          console.error(err);
+        }
       });
     }, getInterval(tempo));
   }
@@ -140,7 +142,6 @@ function App() {
   };
 
   useEffect(() => {
-    console.log("Setting tracks in localStorage");
     saveTracks();
   }, [tracks]);
 
@@ -180,12 +181,8 @@ function App() {
     saveTracks();
   };
 
-  console.log(">>>>>>>>>>>>");
-  console.log(musicKey);
-  console.log(musicScale);
-
   const playPause = (play: boolean) => {
-    if (play == true) {
+    if (play === true) {
       audioContext.resume();
     } else {
       audioContext.suspend();

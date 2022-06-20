@@ -53,12 +53,31 @@ test("find Major Key Interval starting at non-root note.", async () => {
   const noteIntervalCalculator = new NoteIntervalCalculator("C", "major");
 
   let intervalNote = noteIntervalCalculator.getNote("D4", 5);
-  expect(intervalNote).toBe("Ab4");
+  expect(intervalNote).toBe("A4");
 });
 
 test("find Minor Key Interval starting at non-root note.", async () => {
   const noteIntervalCalculator = new NoteIntervalCalculator("C", "minor");
 
   let intervalNote = noteIntervalCalculator.getNote("D4", 5);
-  expect(intervalNote).toBe("A4");
+  expect(intervalNote).toBe("G#4");
+});
+
+test('getOctaveFromNoteNumber', () => {
+  const noteIntervalCalculator = new NoteIntervalCalculator("C", "major");
+  let tmpNoteNumber1 = noteIntervalCalculator.getNoteNumber("C1");
+  expect(noteIntervalCalculator.octaveFromNoteNumber(tmpNoteNumber1)).toEqual(1);
+
+  let tmpNoteNumber2 = noteIntervalCalculator.getNoteNumber("C2");
+  expect(noteIntervalCalculator.octaveFromNoteNumber(tmpNoteNumber2)).toEqual(2);
+
+  let tmpNoteNumber3 = noteIntervalCalculator.getNoteNumber("C3");
+  expect(noteIntervalCalculator.octaveFromNoteNumber(tmpNoteNumber3)).toEqual(3);
+
+  let tmpNoteNumber4 = noteIntervalCalculator.getNoteNumber("C4");
+  expect(noteIntervalCalculator.octaveFromNoteNumber(tmpNoteNumber4)).toEqual(4);
+
+  let tmpNoteNumber0 = noteIntervalCalculator.getNoteNumber("C0");
+  expect(noteIntervalCalculator.octaveFromNoteNumber(tmpNoteNumber0)).toEqual(0);
+
 });

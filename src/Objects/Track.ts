@@ -12,6 +12,7 @@ export default class Track {
     slug: string;
 
     async tick(key, scale, beatNumber) {
+        console.log("Ticking!");
         if (!this.sequencer) return;
         await this.sequencer.play(key, scale, beatNumber);
     }

@@ -30,9 +30,9 @@ export const MINOR_SCALE_INTERVALS = [2, 1, 2, 2, 1, 2, 2];
 
 export const SEQUENCER_TYPES = [
   "FourOTFloor",
+  "OneTwo",
   "HiHat",
   "HouseHiHat",
-  "OneTwo",
   "OneFour",
   "TwoFour",
   "ThreeFour",
