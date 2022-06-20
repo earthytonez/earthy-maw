@@ -1,0 +1,14 @@
+name = "One Two"
+description = "Two note repeating interval"
+length = 2
+outputs = 1
+tags = [ "minimalism" ]
+
+def IntervalsToPlay
+    [1, 5]
+end
+
+def TriggerWhen
+    every step
+end
+
