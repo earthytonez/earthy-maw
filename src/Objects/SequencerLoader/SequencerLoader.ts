@@ -13,8 +13,11 @@ import IMusicKey from '../../Types/IMusicKey.ts';
 import IToneJSDuration from '../../Types/IToneJSDuration.ts';
 import IToneJSNote from '../../Types/IToneJSNote.ts';
 
+import { makeObservable, observable, flow, action, computed } from "mobx"
+
 class SequencerLoaderHolder {
     name: string;
+    type: "drone" | "step" | "arpeggiator"
     description?: string = "";
     length?: number = undefined;
     triggerWhen: TriggerWhen = new TriggerWhen();
@@ -46,8 +49,12 @@ export default class SequencerLoader {
     sequencerCode: string = '';
     sequencerHolder: SequencerLoaderHolder = new SequencerLoaderHolder();
     
-    name() {
+    get name() {
         return this.sequencerHolder.name;   
+    }
+
+    get type() {
+        return this.sequencerHolder.type;   
     }
 
     measureBeat(beatNumber: number) {
@@ -122,7 +129,6 @@ export default class SequencerLoader {
         let functionIn = "";
 
         for (const line of this.lines()) {
-            console.debug(line)
             if (inFunction) {
                 if (line === "end") {
                     inFunction = false;
@@ -144,6 +150,10 @@ export default class SequencerLoader {
                 this.sequencerHolder.length = this.getNumberVariable('length', line);                
             }
 
+            if (line.startsWith('type = ') || line.startsWith('type=')) {
+                this.sequencerHolder.type = this.getVariable('type', line);
+            }
+
             if (line.startsWith('def ')) {
                 inFunction = true;
                 functionIn = this.functionNameFromLine(line);
@@ -153,5 +163,13 @@ export default class SequencerLoader {
 
     constructor(sequencerCode: string) {
         this.sequencerCode = sequencerCode;
+
+        makeObservable(this, {
+            name: computed,
+            type: computed,
+            load: action,
+            // fetch: flow
+          });
+      
     }
 }

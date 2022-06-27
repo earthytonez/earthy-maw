@@ -5,10 +5,8 @@ import * as Tone from 'tone'
 import IPlayParams from '../../Types/IPlayParams';
 
 export default class Bell extends Synthesizer {
-    id: number;
     name: string = "Bell"
     slug: string = "bell";
-    audioContext: any;
 
     play(params: IPlayParams) {
         const plucky = new Tone.PluckSynth().toDestination();
@@ -17,8 +15,7 @@ export default class Bell extends Synthesizer {
 
     }
 
-    constructor(audioContext: any, id: number) {
+    constructor() {
         super();
-        this.audioContext = audioContext;
     }
 }

@@ -1,21 +1,27 @@
-import logfmt from 'logfmt';
-
-export function error(message: string, object?: any) {
-    console.error(logfmt.stringify({...object, message}))   
+export function error(subsystem: string, message: string, object?: any, css?: string) {
+    if (!object) {
+        object = {};
+    }
+    console.error(`ERROR ${subsystem} ${message} / ${Object.keys(object).map((key) => { return `${key}=${object[key]} `})}`, css); 
 }
 
-export function debug(message: string, object?: any) {
-    console.log(logfmt.stringify({...object, message}))   
+export function debug(subsystem: string, message: string, object?: any, css?: string) {
+    if (!object) {
+        object = {};
+    }
+    console.debug(`DEBUG ${subsystem} ${message} / ${Object.keys(object).map((key) => { return `${key}=${object[key]} `})}`, css); 
 }
 
-export function warn(message: string, object?: any) {
-    console.log(logfmt.stringify({...object, message}))   
+export function warn(subsystem: string, message: string, object?: any, css?: string) {
+    if (!object) {
+        object = {};
+    }
+    console.warn(`WARN ${subsystem} ${message} / ${Object.keys(object).map((key) => { return `${key}=${object[key]} `})}`, css); 
 }
 
-export function info(message: string, object?: any) {
-    console.log(logfmt.stringify({...object, message}))   
-}
-
-module.exports = {
-    debug, error, info, warn
+export function info(subsystem: string, message: string, object?: any, css?: string) {
+    if (!object) {
+        object = new Object();
+    }
+    console.log(`INFO ${subsystem} ${message} / ${Object.keys(object).map((key) => { return `${key}=${object[key]} `})}`, css); 
 }

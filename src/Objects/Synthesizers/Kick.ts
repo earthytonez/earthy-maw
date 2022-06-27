@@ -1,60 +1,39 @@
 import Synthesizer from "../Synthesizer.ts";
 
-import * as Tone from 'tone'
-import IPlayParams from '../../Types/IPlayParams';
+import IPlayParams from "../../Types/IPlayParams";
+import { Volume } from "tone";
+
+import { debug } from '../../Util/logger.ts';
+
+import * as Tone from "tone";
 
 export default class Kick extends Synthesizer {
-    id: number;
-    name: string = "Kick"
-    slug: string = "kick";
-    audioContext: any;
+  name: string = "Kick";
+  slug: string = "kick";
+  synth: any;
 
-    playOscillator() {
-
+  attachVolume(vol: Volume) {
+    if (vol) {
+      console.log("AttachVolume");
+      console.log(vol.context === this.synth.context);
+      console.log(vol);
+      console.log(this.synth);
+      this.synth.connect(vol);
     }
-    // playOscillator(shape: "sine" | "triangle" | "square", frequency: number) {
-    //     const now = this.audioContext.currentTime;
+  }
 
-    //     let osc = this.audioContext.createOscillator();
-    //     let gain = this.audioContext.createGain();
-    //     osc.connect(gain);
-    //     gain.connect(this.audioContext.destination);
+  play(params: IPlayParams) {
+    this.synth.triggerAttackRelease("C2", "8n", params.time);
+    debug("Kick Context: ", this.synth);
+  }
 
-    //     osc.type = shape;
-    
-    //     gain.gain.setValueAtTime(1, now);
-    //     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-        
-    //     osc.frequency.setValueAtTime(frequency, now);
-    //     osc.frequency.exponentialRampToValueAtTime(0.001, now + 0.5);
-
-    //     osc.start(now);
-    //     osc.stop(now + 0.5);                
-    // }
-
-    play(params: IPlayParams) {
-        console.log(`Playing synthesizer ${this.name}`);
-
-        const synth = new Tone.MembraneSynth().toDestination();
-        synth.triggerAttackRelease("C2", "8n");
-        
-        // this.playOscillator('triangle', 120);
-        // this.playOscillator('sine', 50);
-        
-        // console.log("Playing Synthesizer");
-        // this.osc.frequency.value = 150;
-        
-        
-        // this.gain.gain.setValueAtTime(1, now);
-        // this.gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-        // this.osc.start(now);
-        // this.osc.stop(now + 0.5);
-              
+  constructor(vol: Volume) {
+    super();
+    this.synth = new Tone.MembraneSynth();
+    if (vol) {
+      this.synth.connect(vol);
+    } else {
+      this.synth.toDestination();
     }
-
-    constructor(audioContext: any, id: number) {
-        super();
-        this.id = id;
-        this.audioContext = audioContext;
-    }
+  }
 }

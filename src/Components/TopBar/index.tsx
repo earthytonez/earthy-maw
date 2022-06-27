@@ -1,20 +1,27 @@
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import FormGroup from "@mui/material/FormGroup";
-import Checkbox from "@mui/material/Checkbox";
-import MenuIcon from "@mui/icons-material/Menu";
-import Drawer from "@mui/material/Drawer";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 
+import { CssVarsProvider, useColorScheme } from "@mui/joy/styles";
+import Box from "@mui/joy/Box";
+import Typography from "@mui/joy/Typography";
+import IconButton from "@mui/joy/IconButton";
+
+// Icons import
+import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
+import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
+import FindInPageRoundedIcon from "@mui/icons-material/FindInPageRounded";
+import MenuIcon from "@mui/icons-material/Menu";
+
+// custom
+import filesTheme from "../../theme.ts";
+import Menu from "./Menu.tsx";
+import Layout from "./Layout.tsx";
+// import Navigation from './components/Navigation';
+
 import MachineDrawer from "./MachineDrawer.tsx";
-import { MUSIC_THEORY_KEYS, MUSIC_THEORY_SCALES } from "../../config/constants.ts";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
@@ -31,7 +38,8 @@ interface SideBarProps {
   setTempo: Function;
   play: boolean;
   playPause: Function;
-  musicKey: "A"
+  musicKey:
+    | "A"
     | "B"
     | "C"
     | "D"
@@ -53,12 +61,17 @@ interface SideBarProps {
   setScale: Function;
 }
 
-export default function Sidebar(props: SideBarProps) {
-  const { tempo, setTempo, musicScale, setScale, musicKey, setKey, play, playPause } =
-    props;
-
-  console.log(musicKey);
-  console.log(musicScale);
+export default function TopBar(props: SideBarProps) {
+  const {
+    tempo,
+    setTempo,
+    musicScale,
+    setScale,
+    musicKey,
+    setKey,
+    play,
+    playPause,
+  } = props;
 
   const [state, setState] = React.useState({
     top: false,
@@ -66,6 +79,73 @@ export default function Sidebar(props: SideBarProps) {
     bottom: false,
     right: false,
   });
+
+  function PlayButtonToggle({
+    play,
+    playPause,
+  }: {
+    play: boolean;
+    playPause: Function;
+  }) {
+    return (
+      <IconButton
+        id="toggle-mode"
+        size="sm"
+        variant="outlined"
+        color="primary"
+        onClick={() => {
+          if (play) {
+            playPause(false);
+          } else {
+            playPause(true);
+          }
+        }}
+      >
+        {play ? <PauseIcon /> : <PlayArrowIcon />}
+      </IconButton>
+    );
+  }
+
+  function ColorSchemeToggle() {
+    const { mode, setMode } = useColorScheme();
+    const [mounted, setMounted] = React.useState(false);
+    React.useEffect(() => {
+      setMounted(true);
+    }, []);
+    if (!mounted) {
+      return <IconButton size="sm" variant="outlined" color="primary" />;
+    }
+    return (
+      <IconButton
+        id="toggle-mode"
+        size="sm"
+        variant="outlined"
+        color="primary"
+        onClick={() => {
+          if (mode === "light") {
+            setMode("dark");
+          } else {
+            setMode("light");
+          }
+        }}
+      >
+        {mode === "light" ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
+      </IconButton>
+    );
+  }
+
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
+  function a11yProps(index: number) {
+    return {
+      id: `simple-tab-${index}`,
+      "aria-controls": `simple-tabpanel-${index}`,
+    };
+  }
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
@@ -80,18 +160,6 @@ export default function Sidebar(props: SideBarProps) {
 
       setState({ ...state, [anchor]: open });
     };
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
-
-  function a11yProps(index: number) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  }
 
   const list = (anchor: Anchor) => (
     <Box
@@ -142,39 +210,82 @@ export default function Sidebar(props: SideBarProps) {
   const checkboxLabel = { inputProps: { "aria-label": "Play Button" } };
 
   return (
-    <React.Fragment>
-      <AppBar position="sticky" color="primary" sx={{ top: 0, bottom: "auto" }}>
-        <Toolbar>
-        <Typography variant="h1" component="div" sx={{ flexGrow: 1 }}>
-            Earthy MAW
-          </Typography>
-
-          <Box sx={{ flexGrow: 1 }}>
-            <FormGroup style={flexContainer}>
-              <Checkbox
-                checked={play}
-                {...checkboxLabel}
-                icon={<PlayArrowIcon />}
-                checkedIcon={<PauseIcon />}
-                onChange={(event) => {
-                  console.log(event.target.checked);
-                  playPause(event.target.checked);
-                }}
-            />
-            </FormGroup>
+    <CssVarsProvider disableTransitionOnChange theme={filesTheme}>
+      <React.Fragment>
+        <Layout.Header>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 1.5,
+            }}
+          >
+            <IconButton
+              variant="outlined"
+              size="sm"
+              onClick={() => setDrawerOpen(true)}
+              sx={{ display: { sm: "none" } }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <IconButton
+              size="sm"
+              variant="solid"
+              sx={{ display: { xs: "none", sm: "inline-flex" } }}
+            >
+              <FindInPageRoundedIcon />
+            </IconButton>
+            <Typography component="h1" fontWeight="xl">
+              Earthy MAW
+            </Typography>
           </Box>
-          <Box sx={{ flexGrow: 1 }} />
-        </Toolbar>
-        <div></div>
-      </AppBar>
-      <Drawer
-        anchor={anchor}
-        variant="persistent"
-        open={state[anchor]}
-        onClose={toggleDrawer(anchor, false)}
-      >
-        {list(anchor)}
-      </Drawer>
-    </React.Fragment>
+          <PlayButtonToggle play={play} playPause={playPause} />
+
+          <Box sx={{ display: "flex", flexDirection: "row", gap: 1.5 }}>
+            <ColorSchemeToggle />
+          </Box>
+        </Layout.Header>
+      </React.Fragment>
+    </CssVarsProvider>
   );
 }
+
+// <AppBar position="sticky" color="primary" sx={{ top: 0, bottom: "auto" }}>
+// <Toolbar>
+//   <Box sx={{ flexGrow: 1 }}>
+//     <FormGroup style={flexContainer}>
+//     </FormGroup>
+//   </Box>
+//   <Box sx={{ flexGrow: 1 }} />
+// </Toolbar>
+// <div></div>
+// </AppBar>
+// <Drawer
+// anchor={anchor}
+// variant="persistent"
+// open={state[anchor]}
+// onClose={toggleDrawer(anchor, false)}
+// >
+// {list(anchor)}
+// </Drawer>
+
+// {/* <TextField
+//   size="sm"
+//   placeholder="Search anything…"
+//   startDecorator={<SearchRoundedIcon color="primary" />}
+//   endDecorator={
+//     <IconButton variant="outlined" size="sm" color="neutral">
+//       <Typography fontWeight="lg" fontSize="sm" textColor="text.tertiary">
+//         /
+//       </Typography>
+//     </IconButton>
+//   }
+//   sx={{
+//     flexBasis: '500px',
+//     display: {
+//       xs: 'none',
+//       sm: 'flex',
+//     },
+//   }}
+// /> */}

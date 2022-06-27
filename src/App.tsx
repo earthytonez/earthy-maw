@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
 import "./App.css";
 
-import Bell from "./Objects/Synthesizers/Bell.ts";
-import Kick from "./Objects/Synthesizers/Kick.ts";
-import HiHat from "./Objects/Synthesizers/HiHat.ts";
+import * as Tone from "tone";
 
 import Arranger from "./Objects/Arranger.ts";
 import Sequencer from "./Objects/Sequencer.ts";
@@ -14,30 +12,20 @@ import BottomBar from "./Components/BottomBar/index.tsx";
 import TopBar from "./Components/TopBar/index.tsx";
 import TrackList from "./Components/TrackComponent/TrackListComponent.tsx";
 
+import { debug, error, info } from "./Util/logger.ts";
+
+import { observer } from "mobx-react-lite";
 import { DragDropContext } from "react-beautiful-dnd";
 
-import { SEQUENCER_TYPES, SYNTH_TYPES } from "./config/constants.ts";
-
-function getInterval(tempo: number): number {
-  return (60 * 1000) / (tempo * 4);
-}
-
-const synthTypeFromString = {
-  bell: Bell,
-  hihat: HiHat,
-  kick: Kick,
-};
-
-const audioContext = new AudioContext({
-  latencyHint: "interactive"
-});
-
-console.log(audioContext.sampleRate);
-console.log(audioContext.destination.channelCount);
+import {
+  SEQUENCER_TYPES,
+  SYNTH_TYPES,
+  SYNTH_TYPE_FROM_STRING,
+} from "./config/constants.ts";
 
 function synthFromSlug(synthSlug: string) {
-  const SynthType = synthTypeFromString[synthSlug];
-  return new SynthType(audioContext);
+  const SynthType = SYNTH_TYPE_FROM_STRING[synthSlug];
+  return new SynthType();
 }
 
 function sequencerFromSlug(sequencerSlug: string) {
@@ -71,6 +59,8 @@ function generateSynthTypes() {
 function generateSequencerTypes() {
   return SEQUENCER_TYPES.map((type, i) => {
     let sequencerType = new Sequencer(type, i);
+    console.log("Loading Sequencer Type");
+    console.log(sequencerType);
     sequencerType.load();
     return sequencerType;
   });
@@ -84,7 +74,7 @@ const ARRANGER_TYPE_INITIAL_STATE = generateArrangerTypes();
 const SYNTH_TYPE_INITIAL_STATE = generateSynthTypes();
 const SEQUENCER_TYPE_INITIAL_STATE = generateSequencerTypes();
 
-function App() {
+const App = observer(() => {
   const [arrangerTypes] = React.useState(ARRANGER_TYPE_INITIAL_STATE);
   const [synthTypes] = React.useState(SYNTH_TYPE_INITIAL_STATE);
   const [sequencerTypes] = React.useState(SEQUENCER_TYPE_INITIAL_STATE);
@@ -93,51 +83,48 @@ function App() {
 
   const [tempo, setTempo] = React.useState(120);
   const [play, setPlay] = React.useState(false);
-  const [musicKey, setKey] = React.useState('C');
-  const [musicScale, setScale] = React.useState('Major');
-  
+
+  const [musicKey, setKey] = React.useState("C");
+  const [musicScale, setScale] = React.useState("Major");
+
+  const [beatNumber, setBeatNumber] = React.useState(0);
+
+  /*
+   * Main track/loop
+   */
+
+  const repeatLoop = (time) => {
+
+    tracks.forEach((track: Track, i: number) => {
+      try {
+        track.tick(musicKey, musicScale, beatNumber, time);
+        setBeatNumber(beatNumber + 1);
+      } catch (err: any) {
+        error("Error caught during track loop", err);
+      }
+    });
+  }
+
   useEffect(() => {
     const _trackLS = JSON.parse(localStorage.getItem("tracks")!);
     if (_trackLS && _trackLS.length > 0) {
-      let trackObjects = _trackLS.map(
-        (track, i) => new Track(i, audioContext, track)
-      );
+      let trackObjects = _trackLS.map((track, i) => new Track(i, track));
       setTracks(trackObjects);
     } else {
-      setTracks([
-        new Track(0, audioContext),
-        new Track(1, audioContext),
-        new Track(2, audioContext),
-      ]);
+      setTracks([new Track(0), new Track(1), new Track(2)]);
     }
   }, []);
 
-
-  const [intervalRunning, setIntervalRunning] = React.useState(false);
-  console.log(`Interval is ${getInterval(tempo)}`);
-  console.log(intervalRunning);
-  if (!intervalRunning) {
-    let beatNumber: number = 1;
-    setInterval(() => {
-      if (!play) {
-        return;
-      }
-      setIntervalRunning(true);
-      console.log("Looping");
-      tracks.forEach((track: Track) => {
-        try {
-          console.log("Ticking Track");
-          track.tick(musicKey, musicScale, beatNumber);
-          beatNumber++;
-        } catch (err: any) {
-          console.log("Caught Error");
-          console.error(err);
-        }
-      });
-    }, getInterval(tempo));
-  }
+  /*
+   * Start Tone repeat loop once.
+   */
+  useEffect(() => {
+    debug("Starting Tone.Transport.scheduleRepeat");
+    Tone.Transport.scheduleRepeat(repeatLoop, "16n");
+  }, [tracks]);
 
   const saveTracks = () => {
+    debug(JSON.stringify(tracks));
     localStorage.setItem("tracks", JSON.stringify(tracks));
   };
 
@@ -181,15 +168,27 @@ function App() {
     saveTracks();
   };
 
+  const setTempoWrapper = (tempo: number) => {
+    Tone.Transport.bpm.value = 60;
+    setTempo(60);
+  };
+
+  console.log(`play: ${play}`);
+
   const playPause = (play: boolean) => {
     if (play === true) {
-      audioContext.resume();
+      info("Stopping Tone.Transport");
+      Tone.Transport.stop();
     } else {
-      audioContext.suspend();
+      info("Starting Tone.Transport");
+      Tone.start();
+      Tone.Transport.start();
+      Tone.context.resume();
     }
+    console.log(`Set Play to ${!play}`);
     setPlay(play);
-
-  }
+    console.log(`play: ${play}`);
+  };
 
   return (
     <DragDropContext
@@ -204,7 +203,7 @@ function App() {
         sequencerTypes={sequencerTypes}
         synthTypes={synthTypes}
         tempo={tempo}
-        setTempo={setTempo}
+        setTempo={setTempoWrapper}
         play={play}
         playPause={playPause}
         musicKey={musicKey}
@@ -213,11 +212,12 @@ function App() {
         setScale={setScale}
       />
       <BottomBar
+        beatNumber={beatNumber}
         arrangerTypes={arrangerTypes}
         sequencerTypes={sequencerTypes}
         synthTypes={synthTypes}
         tempo={tempo}
-        setTempo={setTempo}
+        setTempo={setTempoWrapper}
         play={play}
         playPause={playPause}
         musicKey={musicKey}
@@ -228,7 +228,6 @@ function App() {
       <TrackList tracks={tracks} />
     </DragDropContext>
   );
-}
+});
 
 export default App;
-

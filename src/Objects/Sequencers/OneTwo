@@ -3,6 +3,7 @@ description = "Two note repeating interval"
 length = 4
 outputs = 1
 tags = [ "minimalism" ]
+type = "step"
 
 def IntervalsToPlay
     [1, 0, 5, 0, 1, 0, 8, 0]

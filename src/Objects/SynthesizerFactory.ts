@@ -1,17 +1,18 @@
-import Bell from "./Synthesizers/Bell.ts";
-import HiHat from "./Synthesizers/HiHat.ts";
-import Kick from "./Synthesizers/Kick.ts";
 
-export function getSynthesizer(audioContext: any, type: string) {
+import { SYNTH_TYPE_FROM_STRING } from "../config/constants.ts";
+
+import { Volume } from 'tone';
+
+import { error } from '../Util/logger.ts';
+
+export function getSynthesizer(type: string, vol: Volume) {
     console.log(`Getting Synthesizer of type ${type}`);
-    if (type === 'kick') {
-        return new Kick(audioContext, 1)
-    }
-    if (type === 'hihat') {
-        return new HiHat(audioContext, 1)
-    }
-    if (type === 'bell') {
-        return new Bell(audioContext, 1)
+    try {
+        return new SYNTH_TYPE_FROM_STRING[type](vol);
+    } catch(err) {
+        error("SynthesizerFactory", err)
+        error("SynthesizerFactory", `Error getting synthesizer of type ${type}`, err);
+        return undefined;
     }
 }
 

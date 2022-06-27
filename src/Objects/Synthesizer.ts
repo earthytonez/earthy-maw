@@ -1,12 +1,6 @@
 import Placeable from "./Placeable.ts";
 
 export default class Synthesizer extends Placeable {
-    audioContext: any = undefined;
-    osc: any;
-    osc2: any;
-    gainOsc: any;
-    gainOsc2: any;
-
     isSynth() {
         return true;
     }
@@ -14,9 +8,8 @@ export default class Synthesizer extends Placeable {
     bindSynth(synth: Synthesizer) {
         console.log("Can't bind a Synthesizer to a Synthesizer");
     }
-
-    constructor(audioContext: any) {
+    
+    constructor() {
         super();
-        this.audioContext = audioContext;
     }
 }

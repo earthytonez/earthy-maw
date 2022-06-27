@@ -1,24 +1,19 @@
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import FormGroup from "@mui/material/FormGroup";
-import Checkbox from "@mui/material/Checkbox";
 import MenuIcon from "@mui/icons-material/Menu";
 import Drawer from "@mui/material/Drawer";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import PauseIcon from "@mui/icons-material/Pause";
 
 import IMusicKey from '../../Types/IMusicKey.ts';
 import IMusicScale from '../../Types/IMusicScale.ts';
@@ -36,21 +31,19 @@ const flexContainer = {
   flexDirection: "row",
 };
 
-interface SideBarProps {
+interface BottomBarProps {
   sequencerTypes: Array<string>;
   arrangerTypes: Array<string>;
   synthTypes: Array<string>;
   tempo: Number;
   setTempo: Function;
-  play: boolean;
-  playPause: Function;
   musicKey: IMusicKey;
   setKey: Function;
   musicScale: IMusicScale;
   setScale: Function;
 }
 
-export default function Sidebar(props: SideBarProps) {
+export default function BottomBar(props:BottomBarProps) {
   const {
     tempo,
     setTempo,
@@ -58,12 +51,7 @@ export default function Sidebar(props: SideBarProps) {
     setScale,
     musicKey,
     setKey,
-    play,
-    playPause,
   } = props;
-
-  console.log(musicKey);
-  console.log(musicScale);
 
   const [state, setState] = React.useState({
     top: false,
@@ -85,7 +73,9 @@ export default function Sidebar(props: SideBarProps) {
 
       setState({ ...state, [anchor]: open });
     };
-  const [value, setValue] = React.useState(0);
+
+
+    const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -236,3 +226,25 @@ export default function Sidebar(props: SideBarProps) {
     </React.Fragment>
   );
 }
+
+
+// <AppBar position="sticky" color="primary" sx={{ top: 0, bottom: "auto" }}>
+// <Toolbar>
+//   <Box sx={{ flexGrow: 1 }}>
+//     <FormGroup style={flexContainer}>
+//       <Checkbox
+//         checked={play}
+//         {...checkboxLabel}
+//         icon={<PlayArrowIcon />}
+//         checkedIcon={<PauseIcon />}
+//         onChange={(event) => {
+//           console.log(event.target.checked);
+//           playPause(event.target.checked);
+//         }}
+//     />
+//     </FormGroup>
+//   </Box>
+//   <Box sx={{ flexGrow: 1 }} />
+// </Toolbar>
+// <div></div>
+// </AppBar>

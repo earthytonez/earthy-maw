@@ -14,8 +14,6 @@ interface MusicCanvasProps {
 }
 
 function MusicCanvas({sequencers, synths, setSynths, setSequencers}: MusicCanvasProps) {
-  const audioContext = new AudioContext();
- 
   const [lines, setLines] = React.useState([]);
 
   const handleDragEnd = (e) => {

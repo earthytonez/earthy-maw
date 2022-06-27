@@ -1,11 +1,12 @@
+import { debug, info } from '../../Util/logger.ts';
+
 export default class TriggerWhen {
     type: "everyX" | "stepArray" = "everyX";
     parameters: number = 1; 
 
     parse(line: string) {
         const trimmedLine = line.trimStart().trimEnd();
-        console.log("Parsing TriggerWhen");
-        console.log(trimmedLine);
+        info("TRIGGER_WHEN", "Parsing TriggerWhen", { trimmedLine });
         if (!trimmedLine) {
             return;
         }
@@ -18,16 +19,14 @@ export default class TriggerWhen {
                 break;
             case trimmedLine.match(/every [0-9]{1,2} steps/)!.input:
                 var rx = /every ([0-9]{1,2}) steps/;
-                console.log(trimmedLine);
                 var arr = rx.exec(trimmedLine);
                 this.type = "everyX";
-                console.log(arr);
                 if (arr && arr[1]) {
                     this.parameters = parseInt(arr[1]);
                 }
                 break;                
         }
 
-        console.log(`TriggerWhen Parsed ${this.type} ${this.parameters}`);
+        debug(`TRIGGER_WHEN`, "parsed", { type: this.type, parameters: this.parameters });
     }
 }

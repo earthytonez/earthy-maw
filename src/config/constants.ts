@@ -1,3 +1,9 @@
+import Bell from "../Objects/Synthesizers/Bell.ts";
+import FMDrone from "../Objects/Synthesizers/FMDrone.ts";
+import FMBells from "../Objects/Synthesizers/FMBells.ts";
+import Kick from "../Objects/Synthesizers/Kick.ts";
+import HiHat from "../Objects/Synthesizers/HiHat.ts";
+
 export const NOTE_LETTERS = ["A", "B", "C", "D", "E", "F", "G"];
 export const OCTAVE_MIN = 0;
 export const OCTAVE_MAX = 8;
@@ -32,6 +38,7 @@ export const SEQUENCER_TYPES = [
   "FourOTFloor",
   "OneTwo",
   "HiHat",
+  "SimpleDrone",
   "HouseHiHat",
   "OneFour",
   "TwoFour",
@@ -40,8 +47,19 @@ export const SEQUENCER_TYPES = [
 
 export const SYNTH_TYPES = [
   { id: 0, name: "Bell", slug: "bell" },
-  { id: 0, name: "HiHat", slug: "hihat" },
-  { id: 0, name: "Kick", slug: "kick" },
+  { id: 1, name: "HiHat", slug: "hihat" },
+  { id: 2, name: "Kick", slug: "kick" },
+  { id: 4, name: "FMBells", slug: "fmbells" },
+  { id: 5, name: "FMDrone", slug: "fmdrone" },
+  { id: 6, name: "Sine", slug: "sine" },
 ];
+
+export const SYNTH_TYPE_FROM_STRING = {
+  bell: Bell,
+  hihat: HiHat,
+  kick: Kick,
+  fmdrone: FMDrone,
+  fmbells: FMBells
+}
 
 export const A_ZERO_STARTING_NUMBER = 8;

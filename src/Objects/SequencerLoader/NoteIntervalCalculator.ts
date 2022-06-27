@@ -1,6 +1,4 @@
-
-import { debug } from "../../Util/logger";
-import { A_ZERO_STARTING_NUMBER, MAJOR_SCALE_INTERVALS, MINOR_SCALE_INTERVALS } from "../../config/constants.ts";
+import { MAJOR_SCALE_INTERVALS, MINOR_SCALE_INTERVALS } from "../../config/constants.ts";
 import { IMusicKey, IMusicScale } from "../../Types/index.ts"
 // C4 = 60;
 

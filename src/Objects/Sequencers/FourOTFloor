@@ -3,6 +3,7 @@ description = "Typical kick drum four on the floor beat"
 length = 16
 outputs = 1
 tags = ["house", "trance", "edm"]
+type = "step"
 
 def NoteToPlay
     C4 # This is the note

@@ -1,13 +1,20 @@
 import Placeable from "./Placeable.ts";
 import Synthesizer from "./Synthesizer.ts";
 
+import * as Tone from "tone";
+
+import { makeObservable, observable, flow, action, computed } from "mobx";
+
 import { SequencerLoader, TriggerWhen } from "./SequencerLoader/index.ts";
 
 import IPlayParams from "../Types/IPlayParams";
 
+import { debug, info, warn } from "../Util/logger.ts";
+
 const OneTwo: string = require("./Sequencers/OneTwo");
 const FourOTFloor: string = require("./Sequencers/FourOTFloor");
 const HiHat: string = require("./Sequencers/HiHat");
+const SimpleDrone: string = require("./Sequencers/SimpleDrone");
 
 export default class Sequencer extends Placeable {
   id: number;
@@ -20,16 +27,62 @@ export default class Sequencer extends Placeable {
   x = 0;
   triggerWhen: TriggerWhen;
 
+  awaitBuffers: Promise<any>;
+
   isSynth() {
     return false;
   }
 
   bindSynth(synth: Synthesizer) {
-    console.log(`Binding Synth ${synth}`);
+    console.log(`Sequencer Binding Synth`, synth);
     this.boundSynthesizer = synth;
+    console.log(`Sequencer ${this.sequencerType()}`);
+    this.setAwaitBuffers();
+  }
+
+  setAwaitBuffers() {
+    if (this.awaitBuffers != undefined) {
+      return;
+    }
+    if (this.sequencerType() == "drone") {
+      console.log("Sequencer Setting awaitBuffers");
+      this.awaitBuffers = Promise.all([
+        this.bounceChord(
+          ["A#6", "F7", "A#7", "D#8", "F8"],
+          (params) => this.boundSynthesizer.play(params),
+          3,
+          3
+        ),
+        this.bounceChord(
+          ["D#5", "A#5", "C6", "G6", "A#6", "C9"],
+          (params) => this.boundSynthesizer.play(params),
+          3,
+          3
+        ),
+        this.bounceChord(
+          ["F6", "C6", "D#7", "A#7", "C8"],
+          (params) => this.boundSynthesizer.play(params),
+          3,
+          3
+        ),
+        this.bounceChord(
+          ["A#5", "D#6", "G6", "C7", "D#7", "G8"],
+          (params) => this.boundSynthesizer.play(params),
+          3,
+          3
+        ),
+      ]);
+    }
   }
 
   async load() {
+    info(
+      "SEQUENCER",
+      `# Loading sequencer`,
+      { type: this.type },
+      "font-weight:bold"
+    );
+
     switch (this.type) {
       case "FourOTFloor":
         let seqA = await fetch(FourOTFloor);
@@ -46,20 +99,30 @@ export default class Sequencer extends Placeable {
         let seqCText = await seqC.text();
         this.sequencerLoader = new SequencerLoader(seqCText);
         break;
+      case "SimpleDrone":
+        let seqD = await fetch(SimpleDrone);
+        let seqDText = await seqD.text();
+        this.sequencerLoader = new SequencerLoader(seqDText);
+        break;
       default:
     }
 
     await this.sequencerLoader.load();
     this.triggerWhen = this.sequencerLoader.triggerWhen();
     this.code = this.sequencerLoader.code();
-    this.name = this.sequencerLoader.name();
+    this.name = this.sequencerLoader.name;
+    info("SEQUENCER", `Loaded Sequencer ${this.name}`, this.sequencerLoader);
   }
 
   playEveryX(interval: number): boolean {
     if (this.x >= interval) this.x = 0;
-    console.log(
-      `Sequencer for ${this.boundSynthesizer.name} everyX ${this.x} Interval ${interval}`
-    );
+    if (!this.boundSynthesizer) {
+      warn(`No Synthesizer bound to sequencer ${this.name}`);
+      return true;
+    }
+    // debug(
+    //   `Sequencer for ${this.boundSynthesizer.name} everyX ${this.x} Interval ${interval}`
+    // );
 
     if (this.x === 0) {
       this.x++;
@@ -89,26 +152,112 @@ export default class Sequencer extends Placeable {
     return this.sequencerLoader.note(key, scale, beatNumber);
   }
 
-  playParams(key: string, scale: string, beatNumber: number): IPlayParams {
+  bounceChord(notes, synthFn, playDuration, tailDuration) {
+    let playParams = {
+      lengthSeconds: Tone.Time(playDuration).toSeconds(),
+      tailSeconds: Tone.Time(tailDuration).toSeconds(),
+      notes: notes,
+    };
+
+    debug("SEQUENCER", "ToneOfflineLength", {
+      lengthSeconds: playParams.lengthSeconds,
+      tailSeconds: playParams.tailSeconds,
+    });
+
+    return Tone.Offline(
+      () => synthFn(playParams), /// .bind(this)
+      playParams.lengthSeconds + playParams.tailSeconds
+    );
+  }
+
+  drone(key, scale, beatNumber: number, time: any) {
+    info("DRONE_SEQUENCER", "Starting Drone");
+    // this.setAwaitBuffers();
+
+
+
+    let playParams = this.playParams(key, scale, beatNumber, time);
+    playParams.lengthSeconds = 3;
+    playParams.tailSeconds = 3;
+
+    playParams.notes = [
+      [Tone.Frequency("A#5"), Tone.Frequency("F6"), Tone.Frequency("A#6"), Tone.Frequency("D#7"), Tone.Frequency("F7")],
+      [Tone.Frequency("D#4"), Tone.Frequency("A#4"), Tone.Frequency("C5"), Tone.Frequency("G5"), Tone.Frequency("A#5"), Tone.Frequency("C8")],
+      [Tone.Frequency("F5"), Tone.Frequency("C5"), Tone.Frequency("D#6"), Tone.Frequency("A#6"), Tone.Frequency("C7")],
+      [Tone.Frequency("A#4"), Tone.Frequency("D#5"), Tone.Frequency("G5"), Tone.Frequency("C6"), Tone.Frequency("D#6"),Tone.Frequency("G7")],  
+    ].sort(() => Math.random() - 0.5)[0];
+    console.log(playParams.notes);
+    debug("Playing Drone Sequencer", "Getting Buffers", playParams);
+    this.boundSynthesizer.play(playParams);
+    // this.awaitBuffers.then((buffers) => {
+    //   debug("DRONE_SEQUENCER", "Getting Buffers", buffers);
+    //   let patternCtrl = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+    //   // let patternCtrl = new Tone.Pattern([0, 1, 2, 3], "random");
+    //   // let timeCtrl = new Tone.CtrlRandom(6, 18);
+    //   let timeCtrl = Math.random() * (18 - 6) + 6;
+
+    //   let randomBufferIndex = patternCtrl[beatNumber % patternCtrl.length];
+    //   let selectedBuffer = buffers[randomBufferIndex];
+
+    //   debug("DRONE_SEQUENCER",
+    //     `Playing from buffer source ${selectedBuffer}, at ${randomBufferIndex}, now is ${Tone.now()}, time is ${time}`
+    //   );
+
+    //   // this.boundSynthesizer.play(Object.assign({ notes: ["C4", "E4", "G4"], lengthSeconds: 3,
+    //   //   tailSeconds: 3, time: time})
+    //   // );
+
+    //   const toneBufferSource = new Tone.ToneBufferSource(selectedBuffer, () => {
+    //     debug("DRONE_SEQUENCER", "Loaded Tone Audio Buffer");
+    //   });
+    //   toneBufferSource.toDestination();
+    //   toneBufferSource.start(time);
+    // });
+  }
+
+  playParams(
+    key: string,
+    scale: string,
+    beatNumber: number,
+    time: any
+  ): IPlayParams {
     return {
       volume: this.volume(beatNumber),
       note: this.note(key, scale, beatNumber),
+      time: time,
     };
   }
 
-  async play(key: string, scale: string, beatNumber: number) {
-    console.log("ShouldPlay?");
+  sequencerType(): string {
+    return this.sequencerLoader.type;
+  }
+
+  async play(key: string, scale: string, beatNumber: number, time: any) {
+    if (!this.boundSynthesizer) {
+      return warn("SEQUENCER", "No Bound Synthesizer");
+    }
     if (this.shouldPlay(beatNumber)) {
-      console.log("Is Playing.");
-      this.boundSynthesizer.play(this.playParams(key, scale, beatNumber));
+      if (this.sequencerType() === "drone") {
+        return this.drone(key, scale, beatNumber, time);
+      }
+
+      return this.boundSynthesizer.play(
+        this.playParams(key, scale, beatNumber, time)
+      );
     }
   }
 
   constructor(type: string, id: number, songBeatNumber: number) {
-    console.log(`Creating new Sequencer with type ${type}`);
     super();
+
+    makeObservable(this, {
+      name: observable,
+      slug: observable,
+      play: action,
+      load: action,
+    });
+
     this.id = id;
-    // this.slug = `sequencer-${id}`;
     this.slug = type;
     this.type = type;
   }
