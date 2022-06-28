@@ -40,13 +40,13 @@ export default class Track {
     await this.sequencer.play(key, scale, beatNumber, time);
   }
 
-  assignMachine(machineType: string, machine: any) {
+  async assignMachine(machineType: string, machine: any) {
     this[machineType] = machine;
     if (this.sequencer && this.synthesizer) {
       this.sequencer.bindSynth(this.synthesizer);
     }
     if (machineType === "sequencer") {
-      this.sequencer.load();
+      await this.sequencer.load();
     }
     if (machineType === "synthesizer") {
       this.synthesizer.attachVolume(this.vol);
@@ -81,12 +81,7 @@ export default class Track {
     };
   }
 
-  constructor(id: number, trackData?: any) {
-    this.id = id;
-    this.slug = `track-${id}`;
-    this.vol = new Volume(0).toDestination();
-
-    if (trackData) {
+  async load(trackData: any) {
       debug('TRACK', `Loading track from trackdata`, trackData);
 
       if (trackData.arranger) {
@@ -95,25 +90,35 @@ export default class Track {
       if (trackData.sequencer && trackData.sequencer.type) {
         debug('TRACK', `Sequencer Type: ${trackData.sequencer.type}`);
         this.sequencer = new Sequencer(trackData.sequencer.type);
-        this.sequencer.load();
+        await this.sequencer.load();
       }
       if (trackData.synthesizer && trackData.synthesizer.slug) {
         this.synthesizer = getSynthesizer(trackData.synthesizer.slug, this.vol);
         if (this.sequencer) this.sequencer.bindSynth(this.synthesizer);
         debug('TRACK', 'Loaded Synthesizer', this.synthesizer);
       }
-    }
+  }
+
+  constructor(id: number) {
+    this.id = id;
+    this.slug = `track-${id}`;
+    this.vol = new Volume(0).toDestination();
+
+    this.arranger = undefined;
+    this.sequencer = undefined;
+    this.synthesizer = undefined;
 
     makeObservable(this, {
       id: observable,
       slug: observable,
       sequencer: observable,
       synthesizer: observable,
-      volume: computed,
       arranger: observable,
+      volume: computed,
       raiseVolume: action,
       lowerVolume: action,
       vol: observable,
+      assignMachine: action.bound,
       // fetch: flow
     });
   }

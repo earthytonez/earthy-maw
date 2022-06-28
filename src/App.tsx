@@ -5,6 +5,7 @@ import * as Tone from "tone";
 
 import Arranger from "./Objects/Arranger.ts";
 import Sequencer from "./Objects/Sequencer.ts";
+import SequencerType from "./Objects/SequencerType.ts";
 import Track from "./Objects/Track.ts";
 // import MusicCanvas from "./Components/MusicCanvas/index.tsx";
 
@@ -16,6 +17,8 @@ import { debug, error, info } from "./Util/logger.ts";
 
 import { observer } from "mobx-react-lite";
 import { DragDropContext } from "react-beautiful-dnd";
+
+import pMap from "p-map";
 
 import {
   SEQUENCER_TYPES,
@@ -58,9 +61,7 @@ function generateSynthTypes() {
 
 function generateSequencerTypes() {
   return SEQUENCER_TYPES.map((type, i) => {
-    let sequencerType = new Sequencer(type, i);
-    console.log("Loading Sequencer Type");
-    console.log(sequencerType);
+    let sequencerType = new SequencerType(type, i);
     sequencerType.load();
     return sequencerType;
   });
@@ -79,7 +80,7 @@ const App = observer(() => {
   const [synthTypes] = React.useState(SYNTH_TYPE_INITIAL_STATE);
   const [sequencerTypes] = React.useState(SEQUENCER_TYPE_INITIAL_STATE);
 
-  const [tracks, setTracks] = React.useState([]);
+  const [tracks, setTracks] = React.useState<Track[]>([]);
 
   const [tempo, setTempo] = React.useState(120);
   const [play, setPlay] = React.useState(false);
@@ -94,7 +95,6 @@ const App = observer(() => {
    */
 
   const repeatLoop = (time) => {
-
     tracks.forEach((track: Track, i: number) => {
       try {
         track.tick(musicKey, musicScale, beatNumber, time);
@@ -103,13 +103,23 @@ const App = observer(() => {
         error("Error caught during track loop", err);
       }
     });
-  }
+  };
 
   useEffect(() => {
     const _trackLS = JSON.parse(localStorage.getItem("tracks")!);
     if (_trackLS && _trackLS.length > 0) {
-      let trackObjects = _trackLS.map((track, i) => new Track(i, track));
-      setTracks(trackObjects);
+      const loadTracks = async () => {
+        let trackObjects: Track[] = await pMap(_trackLS, async (trackData, i) => {
+          let t = new Track(i);
+          await t.load(trackData);
+          console.log(t);
+          return t;
+        });
+        setTracks(trackObjects);
+      };
+
+      loadTracks()
+        .catch(console.error);
     } else {
       setTracks([new Track(0), new Track(1), new Track(2)]);
     }
@@ -148,7 +158,7 @@ const App = observer(() => {
     console.log("onDragUpdate");
   };
 
-  const onDragEnd = (props: any) => {
+  const onDragEnd = async (props: any) => {
     if (
       props.destination.droppableId === "track-list" &&
       props.source.droppableId !== "track-list"
@@ -161,7 +171,7 @@ const App = observer(() => {
     const trackID = trackInfo[1];
     const machineType = trackInfo[2];
     const machineToAssign = props.draggableId;
-    tracks[trackID].assignMachine(
+    await tracks[trackID].assignMachine(
       machineType,
       newMachine(machineType, machineToAssign)
     );

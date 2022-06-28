@@ -15,47 +15,52 @@ export default class FMDrone extends Synthesizer {
 
   attachVolume(vol: Tone.Volume) {
     if (vol) {
-      console.log("AttachVolume");
-      
-      console.log(vol.context === this.synth.context);
-      console.log(vol);
-      console.log(this.synth);
-      this.synth.connect(vol);
+      console.log("FMDrone AttachVolume");
+            this.synth.connect(vol);
     }
   }
 
   constructor() {
     super();
-    this.synth = new Tone.PolySynth(Tone.FMSynth)
     this.toneContext = Tone.context;
+    
+    this.synth = new Tone.PolySynth(Tone.FMSynth)
 
-    this.reverb = new Tone.Reverb({ context: this.toneContext, decay: 1, wet: 0.8 });
+    this.reverb = new Tone.Reverb({ decay: 1, wet: 0.8 });
     this.reverb.generate(); // Risky not to wait but ¯\_(ツ)_/¯
+    let chorus = new Tone.Chorus({ frequency: 0.33, depth: 0.7, wet: 0.85 });
+    let delay = new Tone.FeedbackDelay({
+      context: this.toneContext,
+      delayTime: 3 / 16, // lenghtSeconds / 16;
+      feedback: 0.33,
+      wet: 0.66,
+    });
 
     this.synth.chain(
-      new Tone.Chorus({ context: this.toneContext, frequency: 0.33, depth: 0.7, wet: 0.85 }),
-      new Tone.FeedbackDelay({
-        context: this.toneContext,
-        delayTime: 3 / 16, // lenghtSeconds / 16;
-        feedback: 0.33,
-        wet: 0.66,
-      }),
+      chorus,
+      delay,
       this.reverb // Tone.master
     );
-
   }
 
   play(params: IPlayParams) {
+    console.log("FMDrone Playing");
+
     const { lengthSeconds, tailSeconds, notes } = params;
 
     this.reverb.decay = lengthSeconds! / 4;
 
-    console.log("This synth get");
-    console.log(this.synth.get());
+    if (!lengthSeconds) {
+      throw new Error("Must Include Length Seconds");
+    }
+
+    if (!tailSeconds) {
+      throw new Error("Must Include Length Seconds");
+    }
 
     this.synth.set({
-      // harmonicity: 0.5,
-      // modulationIndex: 1,
+      harmonicity: 0.5,
+      modulationIndex: 1,
       oscillator: {
         type: "sine",
       },
@@ -66,23 +71,15 @@ export default class FMDrone extends Synthesizer {
         attackCurve: "linear",
         releaseCurve: "linear",
       },
-      // modulation: { type: "sine" },
-      // modulationEnvelope: {
-      //   attack: lengthSeconds! * 2,
-      //   sustain: 1,
-      //   release: tailSeconds,
-      //   releaseCurve: "linear",
-      // },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: lengthSeconds! * 2,
+        sustain: 1,
+        release: tailSeconds,
+        releaseCurve: "linear",
+      },
       volume: 0,
     }); 
-
-    if (!lengthSeconds) {
-      throw new Error("Must Include Length Seconds");
-    }
-
-    if (!tailSeconds) {
-      throw new Error("Must Include Length Seconds");
-    }
         
     debug("FMDrone", `Starting FMDrone Play Trigger Attack Release of ${notes} with lengthSeconds ${lengthSeconds}`);
     this.synth.triggerAttackRelease(notes as Frequency[], lengthSeconds);

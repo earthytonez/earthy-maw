@@ -3,13 +3,21 @@ import Synthesizer from "./Synthesizer.ts";
 
 import * as Tone from "tone";
 
-import { makeObservable, observable, flow, action, computed } from "mobx";
+import {
+  runInAction,
+  makeObservable,
+  observable,
+  flow,
+  action,
+  computed,
+} from "mobx";
 
 import { SequencerLoader, TriggerWhen } from "./SequencerLoader/index.ts";
 
 import IPlayParams from "../Types/IPlayParams";
 
 import { debug, info, warn } from "../Util/logger.ts";
+import SequencerType from "./SequencerType.ts";
 
 const OneTwo: string = require("./Sequencers/OneTwo");
 const FourOTFloor: string = require("./Sequencers/FourOTFloor");
@@ -17,7 +25,7 @@ const OffBeatFour: string = require("./Sequencers/OffBeatFour");
 const HiHat: string = require("./Sequencers/HiHat");
 const SimpleDrone: string = require("./Sequencers/SimpleDrone");
 
-export default class Sequencer extends Placeable {
+export default class Sequencer extends SequencerType {
   id: number;
   name: string;
   slug: string;
@@ -86,37 +94,55 @@ export default class Sequencer extends Placeable {
       case "FourOTFloor":
         let seqA = await fetch(FourOTFloor);
         let seqAText = await seqA.text();
-        this.sequencerLoader = new SequencerLoader(seqAText);
+        runInAction(() => {
+          this.sequencerLoader = new SequencerLoader(seqAText);
+        });
         break;
       case "HiHat":
         let seqB = await fetch(HiHat);
         let seqBText = await seqB.text();
-        this.sequencerLoader = new SequencerLoader(seqBText);
+        runInAction(() => {
+          this.sequencerLoader = new SequencerLoader(seqBText);
+        });
         break;
       case "OneTwo":
         let seqC = await fetch(OneTwo);
         let seqCText = await seqC.text();
-        this.sequencerLoader = new SequencerLoader(seqCText);
+        runInAction(() => {
+          this.sequencerLoader = new SequencerLoader(seqCText);
+        });
         break;
       case "SimpleDrone":
         let seqD = await fetch(SimpleDrone);
         let seqDText = await seqD.text();
-        this.sequencerLoader = new SequencerLoader(seqDText);
+        runInAction(() => {
+          this.name = "Got This Far...";
+          this.sequencerLoader = new SequencerLoader(seqDText);
+        });
         break;
       case "OffBeatFour":
         let seqE = await fetch(OffBeatFour);
         let seqEText = await seqE.text();
-        this.sequencerLoader = new SequencerLoader(seqEText);
+        runInAction(() => {
+          this.sequencerLoader = new SequencerLoader(seqEText);
+        });
         break;
-  
+
       default:
     }
 
-    await this.sequencerLoader.load();
-    this.triggerWhen = this.sequencerLoader.triggerWhen();
-    this.code = this.sequencerLoader.code();
-    this.name = this.sequencerLoader.name;
-    info("SEQUENCER", `Loaded Sequencer ${this.name}`, this.sequencerLoader);
+    this.sequencerLoader.load();
+    runInAction(() => {
+      this.triggerWhen = this.sequencerLoader.triggerWhen();
+      this.code = this.sequencerLoader.code();
+      this.name = this.sequencerLoader.name;
+
+      info(
+        "SEQUENCER",
+        `Loaded Sequencer ${this.name}`,
+        this.sequencerLoader.sequencerHolder
+      );
+    });
   }
 
   playEveryX(parameters: any): boolean {
@@ -128,7 +154,7 @@ export default class Sequencer extends Placeable {
     //   `Sequencer for ${this.boundSynthesizer.name} everyX ${this.x} Interval ${interval}`
     // );
 
-    if (this.x === (parameters.on - 1)) {
+    if (this.x === parameters.on - 1) {
       this.x++;
       return true;
     }
@@ -142,7 +168,6 @@ export default class Sequencer extends Placeable {
     }
     switch (this.triggerWhen.type) {
       case "everyX":
-        console.log(this.triggerWhen);
         return this.playEveryX(this.triggerWhen.parameters);
       default:
         return true;
@@ -179,24 +204,55 @@ export default class Sequencer extends Placeable {
     info("DRONE_SEQUENCER", "Starting Drone");
     // this.setAwaitBuffers();
 
-
-
     let playParams = this.playParams(key, scale, beatNumber, time);
-    playParams.lengthSeconds = 3;
-    playParams.tailSeconds = 3;
+    playParams.lengthSeconds = 15;
+    playParams.tailSeconds = 15;
+
+    playParams.notes = [
+        [Tone.Frequency("C2")],
+        [Tone.Frequency("D2")],
+        [Tone.Frequency("E2")],
+        [Tone.Frequency("F2")],
+        [Tone.Frequency("G2")],
+        [Tone.Frequency("A3")],
+        [Tone.Frequency("B3")],
+        [Tone.Frequency("C3")],
+        [Tone.Frequency("D3")],
+        [Tone.Frequency("E3")],
+    ].sort(() => Math.random() - 0.5)[0];
 
     // playParams.notes = [
-    //   [Tone.Frequency("A#5"), Tone.Frequency("F6"), Tone.Frequency("A#6"), Tone.Frequency("D#7"), Tone.Frequency("F7")],
-    //   [Tone.Frequency("D#4"), Tone.Frequency("A#4"), Tone.Frequency("C5"), Tone.Frequency("G5"), Tone.Frequency("A#5"), Tone.Frequency("C8")],
-    //   [Tone.Frequency("F5"), Tone.Frequency("C5"), Tone.Frequency("D#6"), Tone.Frequency("A#6"), Tone.Frequency("C7")],
-    //   [Tone.Frequency("A#4"), Tone.Frequency("D#5"), Tone.Frequency("G5"), Tone.Frequency("C6"), Tone.Frequency("D#6"),Tone.Frequency("G7")],  
+    //   [
+    //     Tone.Frequency("C2"),
+    //     Tone.Frequency("E2"),
+    //     Tone.Frequency("G2"),
+    //     Tone.Frequency("B3"),
+    //     Tone.Frequency("D3"),
+    //   ],
+    //   [
+    //     Tone.Frequency("D2"),
+    //     Tone.Frequency("F2"),
+    //     Tone.Frequency("A3"),
+    //     Tone.Frequency("C3"),
+    //     Tone.Frequency("E3"),
+    //     Tone.Frequency("G3"),
+    //   ],
+    //   [
+    //     Tone.Frequency("E2"),
+    //     Tone.Frequency("G2"),
+    //     Tone.Frequency("B3"),
+    //     Tone.Frequency("D3"),
+    //     Tone.Frequency("F3"),
+    //   ],
+    //   [
+    //     Tone.Frequency("F2"),
+    //     Tone.Frequency("A2"),
+    //     Tone.Frequency("C3"),
+    //     Tone.Frequency("E3"),
+    //     Tone.Frequency("G3"),
+    //     Tone.Frequency("B3"),
+    //   ],
     // ].sort(() => Math.random() - 0.5)[0];
-    playParams.notes = [
-      [Tone.Frequency("C3"), Tone.Frequency("E3"), Tone.Frequency("G3"), Tone.Frequency("B4"), Tone.Frequency("D4")],
-      [Tone.Frequency("D3"), Tone.Frequency("F3"), Tone.Frequency("A4"), Tone.Frequency("C4"), Tone.Frequency("E4"), Tone.Frequency("G4")],
-      [Tone.Frequency("E3"), Tone.Frequency("G3"), Tone.Frequency("B4"), Tone.Frequency("D4"), Tone.Frequency("F4")],
-      [Tone.Frequency("F3"), Tone.Frequency("A3"), Tone.Frequency("C4"), Tone.Frequency("E4"), Tone.Frequency("G4"),Tone.Frequency("B4")],  
-    ].sort(() => Math.random() - 0.5)[0];
     debug("Playing Drone Sequencer", "Getting Buffers", playParams);
     this.boundSynthesizer.play(playParams);
     // this.awaitBuffers.then((buffers) => {
@@ -260,15 +316,14 @@ export default class Sequencer extends Placeable {
   constructor(type: string, id: number, songBeatNumber: number) {
     super();
 
-    makeObservable(this, {
-      name: observable,
-      slug: observable,
-      play: action,
-      load: action,
-    });
-
     this.id = id;
     this.slug = type;
     this.type = type;
+    this.name = "";
+
+    makeObservable(this, {
+      play: action,
+      bindSynth: action,
+    });
   }
 }

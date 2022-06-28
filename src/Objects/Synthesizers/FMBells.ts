@@ -3,14 +3,28 @@ import Synthesizer from "../Synthesizer.ts";
 import * as Tone from "tone";
 import IPlayParams from "../../Types/IPlayParams";
 
+import { Frequency } from "tone/build/esm/core/type/Units";
+
+import { debug } from '../../Util/logger.ts';
+
 export default class FMBells extends Synthesizer {
   name: string = "FM Bells";
   slug: string = "fmbells";
+  synth: Tone.PolySynth;
+  toneContext: any;
+  reverb: any;
+  delay: any;
 
-  play(params: IPlayParams) {
-    // fmDrone(notes, lengthSeconds, tailSeconds);
-    const { lengthSeconds, tailSeconds, notes } = params;
-    let delay = new Tone.FeedbackDelay({
+  attachVolume(vol: Tone.Volume) {
+    if (vol) this.synth.connect(vol);
+  }
+
+  constructor() {
+    let lengthSeconds = 3;
+    super();
+    this.toneContext = Tone.context;
+
+    this.delay = new Tone.FeedbackDelay({
       delayTime: lengthSeconds / 8,
       feedback: 0.88,
       wet: 0.66,
@@ -23,16 +37,23 @@ export default class FMBells extends Synthesizer {
     });
     new Tone.LFO(1, 0.003, 0.007).start().connect(flanger.delayTime);
 
-    let reverb = new Tone.Reverb({ decay: lengthSeconds / 4, wet: 0.8 });
-    reverb.generate(); // Risky not to wait but ¯\_(ツ)_/¯
+    this.reverb = new Tone.Reverb({ decay: lengthSeconds / 4, wet: 0.8 });
+    this.reverb.generate(); // Risky not to wait but ¯\_(ツ)_/¯
 
-    let synth = new Tone.PolySynth(5, Tone.FMSynth).chain(
-      delay,
+    this.synth = new Tone.PolySynth(Tone.FMSynth).chain(
+      this.delay,
       flanger,
-      reverb,
-      Tone.Master
+      this.reverb,
     );
-    synth.set({
+  }
+
+  play(params: IPlayParams) {
+    // fmDrone(notes, lengthSeconds, tailSeconds);
+    const { lengthSeconds, tailSeconds, notes } = params;
+
+    // this.delay.delayTime = lengthSeconds! / 8;
+    this.reverb.decay = lengthSeconds! / 4;
+    this.synth.set({
       harmonicity: 1.4,
       modulationIndex: 1,
       oscillator: {
@@ -42,7 +63,7 @@ export default class FMBells extends Synthesizer {
         attack: 0.01,
         decay: 0.3,
         sustain: 0.6,
-        release: tailSeconds - 1,
+        release: tailSeconds! - 1,
       },
       modulation: { type: "triangle" },
       modulationEnvelope: {
@@ -51,8 +72,8 @@ export default class FMBells extends Synthesizer {
         sustain: 0.6,
         release: tailSeconds,
       },
-      volume: -30,
+      volume: 0,
     });
-    synth.triggerAttackRelease(notes, playSeconds);
+    this.synth.triggerAttackRelease(notes as Frequency[], lengthSeconds!);
   }
 }

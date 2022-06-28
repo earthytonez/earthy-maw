@@ -17,3 +17,7 @@ ToDo:
 5. Add retro color hash to devices.   Circle for Arranger, Square for Sequencer, Triangle for Instrument.
 
 6. Create Arpeggiator Sequencer Type
+
+* Inspiration from:
+
+https://github.com/generativefm/generators

@@ -63,6 +63,7 @@ interface DroppableTrackElementProps {
 }
 
 const DroppableTrackElement = observer(({track_id, machine, title, slug, placeholder}: DroppableTrackElementProps) => {
+  console.log(machine);
   return (<Droppable
   index={track_id + 11}
   droppableId={`track-${track_id}-${slug}`}
@@ -91,10 +92,9 @@ const DroppableTrackElement = observer(({track_id, machine, title, slug, placeho
           textColor="success.plainColor"
           mb={0.5}
         >
-          {machine
+          {machine && machine.name != '' && machine.name != undefined
             ? machine.name
-            : placeholder}
-          
+            : 'Loading...'}
         </Typography>
         {provided.placeholder}
       </CardContent>
