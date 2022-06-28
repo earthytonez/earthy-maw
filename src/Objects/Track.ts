@@ -36,8 +36,6 @@ export default class Track {
 
   async tick(key, scale, beatNumber, time) {
     if (!this.sequencer) return;
-    // Very important to pass time to trigger;  
-    debug("TRACK/TICK", "Triggering Attack Release");
 
     await this.sequencer.play(key, scale, beatNumber, time);
   }

@@ -73,8 +73,8 @@ export default class FMDrone extends Synthesizer {
       //   release: tailSeconds,
       //   releaseCurve: "linear",
       // },
-      volume: -10,
-    });
+      volume: 0,
+    }); 
 
     if (!lengthSeconds) {
       throw new Error("Must Include Length Seconds");

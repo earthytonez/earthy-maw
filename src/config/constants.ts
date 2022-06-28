@@ -3,6 +3,7 @@ import FMDrone from "../Objects/Synthesizers/FMDrone.ts";
 import FMBells from "../Objects/Synthesizers/FMBells.ts";
 import Kick from "../Objects/Synthesizers/Kick.ts";
 import HiHat from "../Objects/Synthesizers/HiHat.ts";
+import Bass from "../Objects/Synthesizers/Bass.ts";
 
 export const NOTE_LETTERS = ["A", "B", "C", "D", "E", "F", "G"];
 export const OCTAVE_MIN = 0;
@@ -36,6 +37,7 @@ export const MINOR_SCALE_INTERVALS = [2, 1, 2, 2, 1, 2, 2];
 
 export const SEQUENCER_TYPES = [
   "FourOTFloor",
+  "OffBeatFour",
   "OneTwo",
   "HiHat",
   "SimpleDrone",
@@ -47,6 +49,7 @@ export const SEQUENCER_TYPES = [
 
 export const SYNTH_TYPES = [
   { id: 0, name: "Bell", slug: "bell" },
+  { id: 0, name: "Bass", slug: "bass" },
   { id: 1, name: "HiHat", slug: "hihat" },
   { id: 2, name: "Kick", slug: "kick" },
   { id: 4, name: "FMBells", slug: "fmbells" },
@@ -55,6 +58,7 @@ export const SYNTH_TYPES = [
 ];
 
 export const SYNTH_TYPE_FROM_STRING = {
+  bass: Bass,
   bell: Bell,
   hihat: HiHat,
   kick: Kick,

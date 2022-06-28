@@ -1,0 +1,14 @@
+name = "OffBeatFour"
+description = "Play a beat every 4 notes, but not on the first beat."
+length = 16
+outputs = 1
+tags = ["house", "trance", "edm"]
+type = "step"
+
+def NoteToPlay
+    C4 # This is the note
+end
+
+def TriggerWhen
+    every 4 steps on 2
+end
