@@ -14,14 +14,23 @@ export default class FMDrone extends Synthesizer {
   reverb: any;
 
   attachVolume(vol: Tone.Volume) {
+    console.log("FMDrone attachVolume");
+    console.log(vol.context == this.synth.context);
     if (vol) {
-      this.synth.connect(vol);
+      try {
+        this.synth.connect(vol);
+      } catch (err) {
+        console.error("assignMachine");
+        console.error(err);
+        console.error(err.message);
+        console.error(JSON.stringify(err));
+      }
     }
   }
 
-  constructor() {
+  constructor(vol, audioContext) {
     super();
-    
+    Tone.setContext(audioContext);
     this.synth = new Tone.PolySynth(Tone.FMSynth)
     
     this.toneContext = this.synth.context;

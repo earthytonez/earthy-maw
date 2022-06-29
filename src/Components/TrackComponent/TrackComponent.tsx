@@ -79,8 +79,8 @@ const UniqueColors = observer(
     console.log(digits);
     return (
       <div>
-        {digits.map((digit) => {
-          return <CircleIcon sx={{ color: LOTS_OF_RETRO_COLORS[digit]}} />
+        {digits.map((digit: number, i: number) => {
+          return <CircleIcon key={i} sx={{ color: LOTS_OF_RETRO_COLORS[digit]}} />
         })}
       </div>
     );

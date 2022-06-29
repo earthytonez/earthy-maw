@@ -301,7 +301,7 @@ export default class Sequencer extends SequencerType {
 
   async play(key: string, scale: string, beatNumber: number, time: any) {
     if (!this.boundSynthesizer) {
-      return debug("SEQUENCER", "No Bound Synthesizer");
+      return // debug("SEQUENCER", "No Bound Synthesizer");
     }
     if (this.shouldPlay(beatNumber)) {
       if (this.sequencerType() === "drone") {

@@ -28,7 +28,7 @@ import {
 
 function synthFromSlug(synthSlug: string) {
   const SynthType = SYNTH_TYPE_FROM_STRING[synthSlug];
-  return new SynthType();
+  return new SynthType('', Tone.context);
 }
 
 function sequencerFromSlug(sequencerSlug: string) {
@@ -106,22 +106,28 @@ const App = observer(() => {
   };
 
   useEffect(() => {
+    let audioContext = new AudioContext();
+    console.log(audioContext);
+    Tone.setContext(audioContext);
+
     const _trackLS = JSON.parse(localStorage.getItem("tracks")!);
     if (_trackLS && _trackLS.length > 0) {
       const loadTracks = async () => {
-        let trackObjects: Track[] = await pMap(_trackLS, async (trackData, i) => {
-          let t = new Track(i);
-          await t.load(trackData);
-          console.log(t);
-          return t;
-        });
+        let trackObjects: Track[] = await pMap(
+          _trackLS,
+          async (trackData, i) => {
+            let t = new Track(i, audioContext);
+            await t.load(trackData);
+            console.log(t);
+            return t;
+          }
+        );
         setTracks(trackObjects);
       };
 
-      loadTracks()
-        .catch(console.error);
+      loadTracks().catch(console.error);
     } else {
-      setTracks([new Track(0), new Track(1), new Track(2)]);
+      setTracks([new Track(0, audioContext), new Track(1, audioContext), new Track(2, audioContext)]);
     }
   }, []);
 
@@ -159,22 +165,27 @@ const App = observer(() => {
   };
 
   const onDragEnd = async (props: any) => {
-    if (
-      props.destination.droppableId === "track-list" &&
-      props.source.droppableId !== "track-list"
-    ) {
-      console.warn("Can't drop a module onto the track list");
-      return;
+      if (
+        props.destination.droppableId === "track-list" &&
+        props.source.droppableId !== "track-list"
+      ) {
+        console.warn("Can't drop a module onto the track list");
+        return;
+      }
+
+      const trackInfo = props.destination.droppableId.split("-");
+      const trackID = trackInfo[1];
+      const machineType = trackInfo[2];
+      const machineToAssign = props.draggableId;
+    try {
+      await tracks[trackID].assignMachine(
+        machineType,
+        newMachine(machineType, machineToAssign)
+      );
+    } catch (err) {
+      console.error(err);
     }
 
-    const trackInfo = props.destination.droppableId.split("-");
-    const trackID = trackInfo[1];
-    const machineType = trackInfo[2];
-    const machineToAssign = props.draggableId;
-    await tracks[trackID].assignMachine(
-      machineType,
-      newMachine(machineType, machineToAssign)
-    );
     saveTracks();
   };
 
