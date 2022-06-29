@@ -15,20 +15,19 @@ export default class FMDrone extends Synthesizer {
 
   attachVolume(vol: Tone.Volume) {
     if (vol) {
-      console.log("FMDrone AttachVolume");
-            this.synth.connect(vol);
+      this.synth.connect(vol);
     }
   }
 
   constructor() {
     super();
-    this.toneContext = Tone.context;
     
     this.synth = new Tone.PolySynth(Tone.FMSynth)
-
-    this.reverb = new Tone.Reverb({ decay: 1, wet: 0.8 });
+    
+    this.toneContext = this.synth.context;
+    this.reverb = new Tone.Reverb({ context: this.toneContext, decay: 1, wet: 0.8 });
     this.reverb.generate(); // Risky not to wait but ¯\_(ツ)_/¯
-    let chorus = new Tone.Chorus({ frequency: 0.33, depth: 0.7, wet: 0.85 });
+    let chorus = new Tone.Chorus({ context: this.toneContext, frequency: 0.33, depth: 0.7, wet: 0.85 });
     let delay = new Tone.FeedbackDelay({
       context: this.toneContext,
       delayTime: 3 / 16, // lenghtSeconds / 16;

@@ -31,6 +31,7 @@ export default class Sequencer extends SequencerType {
   slug: string;
   boundSynthesizer: Synthesizer = undefined;
   sequencerLoader: SequencerLoader = new SequencerLoader();
+  machineType: string = "Sequencer";
   type: string = "";
   code: string = "";
   x = 0;

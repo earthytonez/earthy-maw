@@ -7,7 +7,6 @@ import { makeObservable, computed, observable, action } from "mobx";
 import { Volume } from "tone";
 
 import { debug, info } from "../Util/logger.ts";
-import { Tone } from "tone/build/esm/core/Tone";
 
 export default class Track {
   arranger: Arranger;

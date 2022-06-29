@@ -16,7 +16,7 @@ import ListItemDecorator from "@mui/joy/ListItemDecorator";
 
 import { CssVarsProvider, useColorScheme } from "@mui/joy/styles";
 import filesTheme from "../../theme.ts";
-
+import { LOTS_OF_RETRO_COLORS } from '../../config/colors.ts';
 import AspectRatio from "@mui/joy/AspectRatio";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
@@ -25,6 +25,9 @@ import CardOverflow from "@mui/joy/CardOverflow";
 import { observer } from "mobx-react-lite";
 
 import { Droppable } from "react-beautiful-dnd";
+
+import CircleIcon from '@mui/icons-material/Circle';
+var murmur = require("murmurhash-js")
 
 interface TrackComponentProps {
   track: Track;
@@ -54,6 +57,48 @@ const VolumeComponent = observer(
   }
 );
 
+interface UniqueColorsProps {
+  name: string;
+}
+
+const UniqueColors = observer(
+  ({ name }: UniqueColorsProps) => {
+    console.log(name);
+    let murmurHash = murmur(name);
+    let NUM_CIRCLES = 6;
+    let NUM_COLORS = 13;
+    let uniqueVal = murmurHash % (Math.pow(NUM_COLORS, NUM_CIRCLES));
+    console.log(uniqueVal);
+    let digits = []
+    for (let i = 0; i <= 5; i++) {
+      let digit = uniqueVal % 6;
+      uniqueVal = Math.floor(uniqueVal / 13);
+      console.log(uniqueVal);
+      digits.push(digit);
+    }
+    console.log(digits);
+    return (
+      <div>
+        {digits.map((digit) => {
+          return <CircleIcon sx={{ color: LOTS_OF_RETRO_COLORS[digit]}} />
+        })}
+      </div>
+    );
+  }
+);
+
+interface PresetsProps {
+}
+
+const Presets = observer(
+  ({ }: PresetsProps) => {
+    return (
+      <div>
+      </div>
+    );
+  }
+);
+
 interface DroppableTrackElementProps {
   title: string,
   slug: string,
@@ -63,7 +108,6 @@ interface DroppableTrackElementProps {
 }
 
 const DroppableTrackElement = observer(({track_id, machine, title, slug, placeholder}: DroppableTrackElementProps) => {
-  console.log(machine);
   return (<Droppable
   index={track_id + 11}
   droppableId={`track-${track_id}-${slug}`}
@@ -87,6 +131,7 @@ const DroppableTrackElement = observer(({track_id, machine, title, slug, placeho
     >
       <CardOverflow></CardOverflow>
       <CardContent sx={{ pl: 2 }}>
+        <div>
         <Typography
           fontWeight="md"
           textColor="success.plainColor"
@@ -97,6 +142,9 @@ const DroppableTrackElement = observer(({track_id, machine, title, slug, placeho
             : 'Loading...'}
         </Typography>
         {provided.placeholder}
+        </div>
+        {machine && machine.name != '' ? <UniqueColors name={`${machine.machineType}${machine.name}`} /> : ""}
+        <Presets />
       </CardContent>
       <CardOverflow
         variant="soft"
