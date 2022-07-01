@@ -16,6 +16,7 @@ ToDo:
     C. Create a side panel that makes a thing editable.
     D. Make it so that the Key and Scale are modulatable by hour of the day.
     E. Evolve the Drones to be modulatable and more musical/editable.
+    F. Add Different Color Header to Side Panel
 
 2. Generative House Synth
 3. More House Patterns

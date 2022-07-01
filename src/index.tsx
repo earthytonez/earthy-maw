@@ -22,15 +22,13 @@ theme.typography.h1 = {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <div>
-    <StoreProvider>
-      <UIStoreProvider>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
-      </UIStoreProvider>
-    </StoreProvider>
-  </div>
+  <StoreProvider>
+    <UIStoreProvider>
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+    </UIStoreProvider>
+  </StoreProvider>
 );
 
 // Removed <React.StrictMode></React.StrictMode>

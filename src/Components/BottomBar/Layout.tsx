@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Box, { BoxProps } from '@mui/joy/Box';
-import Sheet from '@mui/joy/Sheet';
 
 const Footer = (props: BoxProps) => (
   <Box
@@ -30,6 +29,6 @@ const Footer = (props: BoxProps) => (
   />
 );
 
-export default {
-  Footer,
-};
+const Layout = { Footer };
+
+export default Layout
