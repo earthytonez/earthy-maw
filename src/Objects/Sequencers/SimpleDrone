@@ -10,5 +10,5 @@ def NoteToPlay
 end
 
 def TriggerWhen
-    every 32 steps
+    every 64 steps
 end

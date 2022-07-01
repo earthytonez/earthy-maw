@@ -4,25 +4,30 @@ import "./index.css";
 import App from "./App.tsx";
 import reportWebVitals from "./reportWebVitals";
 
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+import { StoreProvider } from "./stores/useStore.tsx";
 
 const theme = createTheme({
   palette: {
-    mode: 'light',
+    mode: "dark",
   },
 });
 
+
 theme.typography.h1 = {
-  fontFamily: 'Fascinate, cursive',
-  fontSize: '2rem',
+  fontFamily: "Fascinate, cursive",
+  fontSize: "2rem",
 };
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <div>
-    <ThemeProvider theme={theme}>
-      <App />
-    </ThemeProvider>
+    <StoreProvider>
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+    </StoreProvider>
   </div>
 );
 

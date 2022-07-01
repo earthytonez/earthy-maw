@@ -14,9 +14,16 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { CssVarsProvider, useColorScheme } from "@mui/joy/styles";
 
-import IMusicKey from '../../Types/IMusicKey.ts';
-import IMusicScale from '../../Types/IMusicScale.ts';
+import IMusicKey from "../../Types/IMusicKey.ts";
+import IMusicScale from "../../Types/IMusicScale.ts";
+
+import filesTheme from "../../theme.ts";
+import Layout from "./Layout.tsx";
+import { observer } from "mobx-react-lite";
+
+import { useStore } from "../../stores/useStore.tsx";
 
 import MachineDrawer from "./MachineDrawer.tsx";
 import {
@@ -35,23 +42,13 @@ interface BottomBarProps {
   sequencerTypes: Array<string>;
   arrangerTypes: Array<string>;
   synthTypes: Array<string>;
-  tempo: Number;
-  setTempo: Function;
-  musicKey: IMusicKey;
-  setKey: Function;
-  musicScale: IMusicScale;
-  setScale: Function;
 }
 
-export default function BottomBar(props:BottomBarProps) {
-  const {
-    tempo,
-    setTempo,
-    musicScale,
-    setScale,
-    musicKey,
-    setKey,
-  } = props;
+const BottomBar = observer((props: BottomBarProps) => {
+  const store = useStore();
+
+  const { tempo, setTempo, musicScale, setScale, musicKey, setKey } =
+    store.musicFeaturesStore;
 
   const [state, setState] = React.useState({
     top: false,
@@ -74,8 +71,7 @@ export default function BottomBar(props:BottomBarProps) {
       setState({ ...state, [anchor]: open });
     };
 
-
-    const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -134,117 +130,84 @@ export default function BottomBar(props:BottomBarProps) {
   );
 
   let anchor = "bottom";
-  const checkboxLabel = { inputProps: { "aria-label": "Play Button" } };
 
   return (
-    <React.Fragment>
-      <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={toggleDrawer("bottom", true)}
+    <CssVarsProvider disableTransitionOnChange theme={filesTheme}>
+      <React.Fragment>
+        <Layout.Footer>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={toggleDrawer("bottom", true)}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Box sx={{ flexGrow: 1 }}>
+              <FormGroup style={flexContainer}>
+                <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
+                  <InputLabel id="key-label">Key</InputLabel>
+                  <Select
+                    labelId="key-label"
+                    id="key-select"
+                    value={musicKey}
+                    label="Key"
+                    onChange={(event) => {
+                      console.log(event.target.value);
+                      setKey(event.target.value);
+                    }}
+                  >
+                    {MUSIC_THEORY_KEYS.map((keyOption: string, i: number) => {
+                      return (
+                        <MenuItem key={i} value={keyOption}>
+                          {keyOption}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+
+                <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
+                  <InputLabel id="scale-label">Scale</InputLabel>
+                  <Select
+                    labelId="scale-label"
+                    id="scale-select"
+                    value={musicScale}
+                    label="Scale"
+                    onChange={(event) => {
+                      console.log(event.target.value);
+                      setScale(event.target.value);
+                    }}
+                  >
+                    {MUSIC_THEORY_SCALES.map(
+                      (scaleOption: string, i: number) => {
+                        return (
+                          <MenuItem key={i} value={scaleOption}>
+                            {scaleOption}
+                          </MenuItem>
+                        );
+                      }
+                    )}
+                  </Select>
+                </FormControl>
+              </FormGroup>
+            </Box>
+            <Box sx={{ flexGrow: 1 }} />
+          </Toolbar>
+          <div></div>
+          {/* </AppBar> */}
+          <Drawer
+            anchor={anchor}
+            variant="persistent"
+            open={state[anchor]}
+            onClose={toggleDrawer(anchor, false)}
           >
-            <MenuIcon />
-          </IconButton>
-          <Box sx={{ flexGrow: 1 }}>
-            <FormGroup style={flexContainer}>
-              <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-                <OutlinedInput
-                  id="outlined-adornment-weight"
-                  value={tempo}
-                  onChange={(event) => {
-                    console.log(event.target.value);
-                    setTempo(event.target.value);
-                  }}
-                  endAdornment={
-                    <InputAdornment position="end">bpm</InputAdornment>
-                  }
-                  aria-describedby="outlined-weight-helper-text"
-                  inputProps={{
-                    "aria-label": "weight",
-                  }}
-                />
-              </FormControl>
-              <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-                <InputLabel id="key-label">Key</InputLabel>
-                <Select
-                  labelId="key-label"
-                  id="key-select"
-                  value={musicKey}
-                  label="Key"
-                  onChange={(event) => {
-                    console.log(event.target.value);
-                    setKey(event.target.value);
-                  }}
-                >
-                  {MUSIC_THEORY_KEYS.map((keyOption: string, i: number) => {
-                    return (
-                      <MenuItem key={i} value={keyOption}>
-                        {keyOption}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-
-              <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-                <InputLabel id="scale-label">Scale</InputLabel>
-                <Select
-                  labelId="scale-label"
-                  id="scale-select"
-                  value={musicScale}
-                  label="Scale"
-                  onChange={(event) => {
-                    console.log(event.target.value);
-                    setScale(event.target.value);
-                  }}
-                >
-                  {MUSIC_THEORY_SCALES.map((scaleOption: string, i: number) => {
-                    return (
-                      <MenuItem key={i} value={scaleOption}>
-                        {scaleOption}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </FormGroup>
-          </Box>
-          <Box sx={{ flexGrow: 1 }} />
-        </Toolbar>
-        <div></div>
-      </AppBar>
-      <Drawer
-        anchor={anchor}
-        variant="persistent"
-        open={state[anchor]}
-        onClose={toggleDrawer(anchor, false)}
-      >
-        {list(anchor)}
-      </Drawer>
-    </React.Fragment>
+            {list(anchor)}
+          </Drawer>
+        </Layout.Footer>
+      </React.Fragment>
+    </CssVarsProvider>
   );
-}
+});
 
-
-// <AppBar position="sticky" color="primary" sx={{ top: 0, bottom: "auto" }}>
-// <Toolbar>
-//   <Box sx={{ flexGrow: 1 }}>
-//     <FormGroup style={flexContainer}>
-//       <Checkbox
-//         checked={play}
-//         {...checkboxLabel}
-//         icon={<PlayArrowIcon />}
-//         checkedIcon={<PauseIcon />}
-//         onChange={(event) => {
-//           console.log(event.target.checked);
-//           playPause(event.target.checked);
-//         }}
-//     />
-//     </FormGroup>
-//   </Box>
-//   <Box sx={{ flexGrow: 1 }} />
-// </Toolbar>
-// <div></div>
-// </AppBar>
+export default BottomBar;

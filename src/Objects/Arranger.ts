@@ -6,7 +6,11 @@ export default class Arranger extends Placeable {
     type: string;
     slug: string;
     machineType: string = "Arranger";
-
+    loading: boolean = true;
+    
+    setLoading(loading: boolean) {
+        this.loading = loading;
+    }
 
     constructor(type: string, id: number) {
         super();

@@ -1,7 +1,7 @@
-import Placeable from "./Placeable.ts";
 import Synthesizer from "./Synthesizer.ts";
 
 import * as Tone from "tone";
+import { Chord, Interval, Note, Scale } from "@tonaljs/tonal";
 
 import {
   runInAction,
@@ -18,6 +18,7 @@ import IPlayParams from "../Types/IPlayParams";
 
 import { debug, info, warn } from "../Util/logger.ts";
 import SequencerType from "./SequencerType.ts";
+import MusicFeaturesStore from "../stores/MusicFeatures.store";
 
 const OneTwo: string = require("./Sequencers/OneTwo");
 const FourOTFloor: string = require("./Sequencers/FourOTFloor");
@@ -36,8 +37,16 @@ export default class Sequencer extends SequencerType {
   code: string = "";
   x = 0;
   triggerWhen: TriggerWhen;
+  loading: boolean = true;
 
   awaitBuffers: Promise<any>;
+
+  audioContext: any;
+  musicFeaturesStore: MusicFeaturesStore;
+
+  setLoading(loading: boolean) {
+    this.loading = loading;
+  }
 
   isSynth() {
     return false;
@@ -50,10 +59,10 @@ export default class Sequencer extends SequencerType {
   }
 
   setAwaitBuffers() {
-    if (this.awaitBuffers != undefined) {
+    if (this.awaitBuffers !== undefined) {
       return;
     }
-    if (this.sequencerType() == "drone") {
+    if (this.sequencerType() === "drone") {
       this.awaitBuffers = Promise.all([
         this.bounceChord(
           ["A#6", "F7", "A#7", "D#8", "F8"],
@@ -147,6 +156,9 @@ export default class Sequencer extends SequencerType {
   }
 
   playEveryX(parameters: any): boolean {
+    console.log("Playing every");
+    console.log(parameters);
+    console.log(this.x);
     if (this.x >= parameters.steps) this.x = 0;
     if (!this.boundSynthesizer) {
       return true;
@@ -201,27 +213,31 @@ export default class Sequencer extends SequencerType {
     );
   }
 
+  getChord(key: IMusicKey, scale: IMusicScale): string[] {
+    let chord = Chord.getChord(scale.toLowerCase(), key)
+    console.log(scale.toLowerCase);
+    console.log(key);
+    console.log(chord);
+    return chord.notes
+  }
+
   drone(key, scale, beatNumber: number, time: any) {
     info("DRONE_SEQUENCER", "Starting Drone");
     // this.setAwaitBuffers();
 
     let playParams = this.playParams(key, scale, beatNumber, time);
-    playParams.lengthSeconds = 15;
-    playParams.tailSeconds = 15;
+    playParams.lengthSeconds = 12;
+    playParams.tailSeconds = 12;
 
-    playParams.notes = [
-        [Tone.Frequency("C2")],
-        [Tone.Frequency("D2")],
-        [Tone.Frequency("E2")],
-        [Tone.Frequency("F2")],
-        [Tone.Frequency("G2")],
-        [Tone.Frequency("A3")],
-        [Tone.Frequency("B3")],
-        [Tone.Frequency("C3")],
-        [Tone.Frequency("D3")],
-        [Tone.Frequency("E3")],
-    ].sort(() => Math.random() - 0.5)[0];
-
+    console.log(">>>>>>>>>>>>>>");
+    let chord = this.getChord(key, scale);
+    console.log(chord);
+    let toneFrequencyChord = chord.map((note: string) => { return Tone.Frequency(`${note}2`) })
+    console.log(toneFrequencyChord);
+    let _ = toneFrequencyChord.sort(() => Math.random() - 0.5)[0];
+    playParams.notes = toneFrequencyChord;
+    playParams.note = playParams.notes[0];
+    console.log(playParams);
     // playParams.notes = [
     //   [
     //     Tone.Frequency("C2"),
@@ -314,10 +330,11 @@ export default class Sequencer extends SequencerType {
     }
   }
 
-  constructor(type: string, id: number, songBeatNumber: number) {
+  constructor(type: string, audioContext: any, musicFeaturesStore: MusicFeaturesStore) {
     super();
 
-    this.id = id;
+    this.audioContext = audioContext;
+    this.musicFeaturesStore = musicFeaturesStore;
     this.slug = type;
     this.type = type;
     this.name = "";

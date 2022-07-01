@@ -2,7 +2,11 @@ import Placeable from "./Placeable.ts";
 
 export default class Synthesizer extends Placeable {
     machineType: string = "Synthesizer";
-
+    loading: boolean = true;
+    setLoading(loading: boolean) {
+        this.loading = loading;
+      }
+    
     isSynth() {
         return true;
     }

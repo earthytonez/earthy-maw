@@ -1,4 +1,4 @@
-// import Table from "@mui/material/Table";
+import Button from "@mui/joy/Button";
 // import TableBody from "@mui/material/TableBody";
 // import TableRow from "@mui/material/TableRow";
 
@@ -9,6 +9,8 @@ import { observer } from "mobx-react-lite";
 
 import List from '@mui/joy/List';
 
+import { useStore } from '../../stores/useStore.tsx';
+
 const grid = 8;
 
 interface TrackListComponentProps {
@@ -16,13 +18,17 @@ interface TrackListComponentProps {
 }
 
 const TrackListComponent = observer((props: TrackListComponentProps) => {
-  const { tracks } = props;
+  const stores = useStore();
+  let tracks = stores.trackStore.tracks;
   return (
+    <div>
     <List>
       {tracks.map((track: Track, i: number) => (
             <TrackComponent key={i} track={track}></TrackComponent>
         ))}
     </List>
+    <Button variant="solid" onClick={stores.trackStore.addTrack}>Add Track</Button>
+    </div>
   );
 });
 

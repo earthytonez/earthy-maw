@@ -13,12 +13,12 @@ import BottomBar from "./Components/BottomBar/index.tsx";
 import TopBar from "./Components/TopBar/index.tsx";
 import TrackList from "./Components/TrackComponent/TrackListComponent.tsx";
 
-import { debug, error, info } from "./Util/logger.ts";
+import { debug, error } from "./Util/logger.ts";
 
 import { observer } from "mobx-react-lite";
 import { DragDropContext } from "react-beautiful-dnd";
 
-import pMap from "p-map";
+import { useStore } from './stores/useStore.tsx';
 
 import {
   SEQUENCER_TYPES,
@@ -80,15 +80,11 @@ const App = observer(() => {
   const [synthTypes] = React.useState(SYNTH_TYPE_INITIAL_STATE);
   const [sequencerTypes] = React.useState(SEQUENCER_TYPE_INITIAL_STATE);
 
-  const [tracks, setTracks] = React.useState<Track[]>([]);
+  const store = useStore();
+  let tracks = store.trackStore.tracks;
+  Tone.setContext(store.audioContext);
 
-  const [tempo, setTempo] = React.useState(120);
-  const [play, setPlay] = React.useState(false);
-
-  const [musicKey, setKey] = React.useState("C");
-  const [musicScale, setScale] = React.useState("Major");
-
-  const [beatNumber, setBeatNumber] = React.useState(0);
+  let { beatNumber } = store.musicFeaturesStore
 
   /*
    * Main track/loop
@@ -97,39 +93,13 @@ const App = observer(() => {
   const repeatLoop = (time) => {
     tracks.forEach((track: Track, i: number) => {
       try {
-        track.tick(musicKey, musicScale, beatNumber, time);
-        setBeatNumber(beatNumber + 1);
+        track.tick(beatNumber, time);
+        store.musicFeaturesStore.incrementBeatNumber();
       } catch (err: any) {
         error("Error caught during track loop", err);
       }
     });
   };
-
-  useEffect(() => {
-    let audioContext = new AudioContext();
-    console.log(audioContext);
-    Tone.setContext(audioContext);
-
-    const _trackLS = JSON.parse(localStorage.getItem("tracks")!);
-    if (_trackLS && _trackLS.length > 0) {
-      const loadTracks = async () => {
-        let trackObjects: Track[] = await pMap(
-          _trackLS,
-          async (trackData, i) => {
-            let t = new Track(i, audioContext);
-            await t.load(trackData);
-            console.log(t);
-            return t;
-          }
-        );
-        setTracks(trackObjects);
-      };
-
-      loadTracks().catch(console.error);
-    } else {
-      setTracks([new Track(0, audioContext), new Track(1, audioContext), new Track(2, audioContext)]);
-    }
-  }, []);
 
   /*
    * Start Tone repeat loop once.
@@ -189,28 +159,6 @@ const App = observer(() => {
     saveTracks();
   };
 
-  const setTempoWrapper = (tempo: number) => {
-    Tone.Transport.bpm.value = 60;
-    setTempo(60);
-  };
-
-  console.log(`play: ${play}`);
-
-  const playPause = (play: boolean) => {
-    if (play === true) {
-      info("Stopping Tone.Transport");
-      Tone.Transport.stop();
-    } else {
-      info("Starting Tone.Transport");
-      Tone.start();
-      Tone.Transport.start();
-      Tone.context.resume();
-    }
-    console.log(`Set Play to ${!play}`);
-    setPlay(play);
-    console.log(`play: ${play}`);
-  };
-
   return (
     <DragDropContext
       onBeforeCapture={onBeforeCapture}
@@ -219,32 +167,12 @@ const App = observer(() => {
       onDragUpdate={onDragUpdate}
       onDragEnd={onDragEnd}
     >
-      <TopBar
-        arrangerTypes={arrangerTypes}
-        sequencerTypes={sequencerTypes}
-        synthTypes={synthTypes}
-        tempo={tempo}
-        setTempo={setTempoWrapper}
-        play={play}
-        playPause={playPause}
-        musicKey={musicKey}
-        setKey={setKey}
-        musicScale={musicScale}
-        setScale={setScale}
-      />
+      <TopBar />
       <BottomBar
         beatNumber={beatNumber}
         arrangerTypes={arrangerTypes}
         sequencerTypes={sequencerTypes}
         synthTypes={synthTypes}
-        tempo={tempo}
-        setTempo={setTempoWrapper}
-        play={play}
-        playPause={playPause}
-        musicKey={musicKey}
-        setKey={setKey}
-        musicScale={musicScale}
-        setScale={setScale}
       />
       <TrackList tracks={tracks} />
     </DragDropContext>
@@ -252,3 +180,30 @@ const App = observer(() => {
 });
 
 export default App;
+
+// useEffect(() => {
+  // let audioContext = new AudioContext();
+  // console.log(audioContext);
+  // Tone.setContext(audioContext);
+
+  // const _trackLS = JSON.parse(localStorage.getItem("tracks")!);
+  // if (_trackLS && _trackLS.length > 0) {
+  //   const loadTracks = async () => {
+  //     let trackObjects: Track[] = await pMap(
+  //       _trackLS,
+  //       async (trackData, i) => {
+  //         let t = new Track(i, audioContext);
+  //         await t.load(trackData);
+  //         console.log(t);
+  //         return t;
+  //       }
+  //     );
+  //     setTracks(trackObjects);
+  //   };
+
+  //   loadTracks().catch(console.error);
+  // } else {
+  //   setTracks([new Track(0, audioContext), new Track(1, audioContext), new Track(2, audioContext)]);
+  // }
+// }, []);
+// 

@@ -4,10 +4,17 @@ import Tab from "@mui/material/Tab";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 
+import FormControl from "@mui/material/FormControl";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputAdornment from "@mui/material/InputAdornment";
+import TextField from "@mui/joy/TextField";
+
 import { CssVarsProvider, useColorScheme } from "@mui/joy/styles";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 import IconButton from "@mui/joy/IconButton";
+
+import { observer } from "mobx-react-lite";
 
 // Icons import
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
@@ -20,6 +27,8 @@ import filesTheme from "../../theme.ts";
 import Menu from "./Menu.tsx";
 import Layout from "./Layout.tsx";
 // import Navigation from './components/Navigation';
+
+import { useStore } from "../../stores/useStore.tsx";
 
 import MachineDrawer from "./MachineDrawer.tsx";
 
@@ -61,17 +70,9 @@ interface SideBarProps {
   setScale: Function;
 }
 
-export default function TopBar(props: SideBarProps) {
-  const {
-    tempo,
-    setTempo,
-    musicScale,
-    setScale,
-    musicKey,
-    setKey,
-    play,
-    playPause,
-  } = props;
+const TopBar = observer(() => {
+  const store = useStore();
+  const { play, playPause, tempo, setTempo } = store.musicFeaturesStore;
 
   const [state, setState] = React.useState({
     top: false,
@@ -93,13 +94,7 @@ export default function TopBar(props: SideBarProps) {
         size="sm"
         variant="outlined"
         color="primary"
-        onClick={() => {
-          if (play) {
-            playPause(false);
-          } else {
-            playPause(true);
-          }
-        }}
+        onClick={playPause}
       >
         {play ? <PauseIcon /> : <PlayArrowIcon />}
       </IconButton>
@@ -109,6 +104,10 @@ export default function TopBar(props: SideBarProps) {
   function ColorSchemeToggle() {
     const { mode, setMode } = useColorScheme();
     const [mounted, setMounted] = React.useState(false);
+    const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
+
+    const colorMode = React.useContext(ColorModeContext);
+
     React.useEffect(() => {
       setMounted(true);
     }, []);
@@ -123,8 +122,10 @@ export default function TopBar(props: SideBarProps) {
         color="primary"
         onClick={() => {
           if (mode === "light") {
+            colorMode.toggleColorMode();
             setMode("dark");
           } else {
+            colorMode.toggleColorMode();
             setMode("light");
           }
         }}
@@ -161,51 +162,6 @@ export default function TopBar(props: SideBarProps) {
       setState({ ...state, [anchor]: open });
     };
 
-  const list = (anchor: Anchor) => (
-    <Box
-      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
-      role="presentation"
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-        >
-          <Tab label="Synthesizers" {...a11yProps(0)} />
-          <Tab label="Sequencers" {...a11yProps(1)} />
-          <Tab label="Arrangers" {...a11yProps(2)} />
-        </Tabs>
-        <IconButton
-          color="inherit"
-          aria-label="close drawer"
-          onClick={toggleDrawer("bottom", false)}
-        >
-          <MenuIcon />
-        </IconButton>
-      </Box>
-      <MachineDrawer
-        slug="synthesizers"
-        machines={props.synthTypes}
-        index={0}
-        value={value}
-      />
-      <MachineDrawer
-        slug="sequencers"
-        machines={props.sequencerTypes}
-        index={1}
-        value={value}
-      />
-      <MachineDrawer
-        slug="arrangers"
-        machines={props.arrangerTypes}
-        index={2}
-        value={value}
-      />
-    </Box>
-  );
-
   let anchor = "top";
   const checkboxLabel = { inputProps: { "aria-label": "Play Button" } };
 
@@ -241,6 +197,31 @@ export default function TopBar(props: SideBarProps) {
             </Typography>
           </Box>
           <PlayButtonToggle play={play} playPause={playPause} />
+          <Box sx={{ display: "flex", flexDirection: "row", gap: 1.5 }}>
+            <TextField
+              size="sm"
+              value={tempo}
+              onChange={setTempo}
+              endDecorator={
+                <IconButton variant="outlined" size="sm" color="neutral">
+                  <Typography
+                    fontWeight="lg"
+                    fontSize="sm"
+                    textColor="text.tertiary"
+                  >
+                    bpm
+                  </Typography>
+                </IconButton>
+              }
+              sx={{
+                flexBasis: "100px",
+                display: {
+                  xs: "none",
+                  sm: "flex",
+                },
+              }}
+            />
+          </Box>
 
           <Box sx={{ display: "flex", flexDirection: "row", gap: 1.5 }}>
             <ColorSchemeToggle />
@@ -249,6 +230,24 @@ export default function TopBar(props: SideBarProps) {
       </React.Fragment>
     </CssVarsProvider>
   );
+});
+
+{
+  /* <OutlinedInput
+                  id="outlined-adornment-weight"
+                  value={tempo}
+                  onChange={(event) => {
+                    console.log(event.target.value);
+                    setTempo(event.target.value);
+                  }}
+                  endAdornment={
+                    <InputAdornment position="end">bpm</InputAdornment>
+                  }
+                  aria-describedby="outlined-weight-helper-text"
+                  inputProps={{
+                    "aria-label": "weight",
+                  }}
+                /> */
 }
 
 // <AppBar position="sticky" color="primary" sx={{ top: 0, bottom: "auto" }}>
@@ -289,3 +288,49 @@ export default function TopBar(props: SideBarProps) {
 //     },
 //   }}
 // /> */}
+// const list = (anchor: Anchor) => (
+//   <Box
+//     sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
+//     role="presentation"
+//     onKeyDown={toggleDrawer(anchor, false)}
+//   >
+//     <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+//       <Tabs
+//         value={value}
+//         onChange={handleChange}
+//         aria-label="basic tabs example"
+//       >
+//         <Tab label="Synthesizers" {...a11yProps(0)} />
+//         <Tab label="Sequencers" {...a11yProps(1)} />
+//         <Tab label="Arrangers" {...a11yProps(2)} />
+//       </Tabs>
+//       <IconButton
+//         color="inherit"
+//         aria-label="close drawer"
+//         onClick={toggleDrawer("bottom", false)}
+//       >
+//         <MenuIcon />
+//       </IconButton>
+//     </Box>
+//     <MachineDrawer
+//       slug="synthesizers"
+//       machines={props.synthTypes}
+//       index={0}
+//       value={value}
+//     />
+//     <MachineDrawer
+//       slug="sequencers"
+//       machines={props.sequencerTypes}
+//       index={1}
+//       value={value}
+//     />
+//     <MachineDrawer
+//       slug="arrangers"
+//       machines={props.arrangerTypes}
+//       index={2}
+//       value={value}
+//     />
+//   </Box>
+// );
+
+export default TopBar;

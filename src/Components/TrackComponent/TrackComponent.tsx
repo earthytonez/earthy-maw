@@ -16,7 +16,7 @@ import ListItemDecorator from "@mui/joy/ListItemDecorator";
 
 import { CssVarsProvider, useColorScheme } from "@mui/joy/styles";
 import filesTheme from "../../theme.ts";
-import { LOTS_OF_RETRO_COLORS } from '../../config/colors.ts';
+import { LOTS_OF_RETRO_COLORS } from "../../config/colors.ts";
 import AspectRatio from "@mui/joy/AspectRatio";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
@@ -26,8 +26,11 @@ import { observer } from "mobx-react-lite";
 
 import { Droppable } from "react-beautiful-dnd";
 
-import CircleIcon from '@mui/icons-material/Circle';
-var murmur = require("murmurhash-js")
+import CircleIcon from "@mui/icons-material/Circle";
+import OpenInBrowserOutlinedIcon from "@mui/icons-material/OpenInBrowserOutlined";
+
+import { useStore } from "../../stores/useStore.tsx";
+var murmur = require("murmurhash-js");
 
 interface TrackComponentProps {
   track: Track;
@@ -41,13 +44,16 @@ interface VolumeComponentProps {
 
 const VolumeComponent = observer(
   ({ track, raiseVolume, lowerVolume }: VolumeComponentProps) => {
+    const store = useStore();
+    const { volume } = track;
+
     return (
       <ButtonGroup size="small" aria-label="small outlined button group">
         <Button variant="solid" onClick={raiseVolume}>
           +
         </Button>
         <Button variant="outlined" disabled>
-          {Math.round(track.volume)}
+          {Math.round(volume)}
         </Button>
         <Button variant="solid" onClick={lowerVolume}>
           -
@@ -61,111 +67,137 @@ interface UniqueColorsProps {
   name: string;
 }
 
-const UniqueColors = observer(
-  ({ name }: UniqueColorsProps) => {
-    console.log(name);
-    let murmurHash = murmur(name);
-    let NUM_CIRCLES = 6;
-    let NUM_COLORS = 13;
-    let uniqueVal = murmurHash % (Math.pow(NUM_COLORS, NUM_CIRCLES));
-    console.log(uniqueVal);
-    let digits = []
-    for (let i = 0; i <= 5; i++) {
-      let digit = uniqueVal % 6;
-      uniqueVal = Math.floor(uniqueVal / 13);
-      console.log(uniqueVal);
-      digits.push(digit);
-    }
-    console.log(digits);
-    return (
-      <div>
-        {digits.map((digit: number, i: number) => {
-          return <CircleIcon key={i} sx={{ color: LOTS_OF_RETRO_COLORS[digit]}} />
-        })}
-      </div>
-    );
+const UniqueColors = observer(({ name }: UniqueColorsProps) => {
+  console.log(name);
+  let murmurHash = murmur(name);
+  let NUM_CIRCLES = 6;
+  let NUM_COLORS = 13;
+  let uniqueVal = murmurHash % Math.pow(NUM_COLORS, NUM_CIRCLES);
+  let digits = [];
+  for (let i = 0; i <= 5; i++) {
+    let digit = uniqueVal % 6;
+    uniqueVal = Math.floor(uniqueVal / 13);
+    digits.push(digit);
   }
-);
+  return (
+    <Box>
+      {digits.map((digit: number, i: number) => {
+        return (
+          <CircleIcon key={i} sx={{ color: LOTS_OF_RETRO_COLORS[digit] }} />
+        );
+      })}
+    </Box>
+  );
+});
 
-interface PresetsProps {
-}
+interface PresetsProps {}
 
-const Presets = observer(
-  ({ }: PresetsProps) => {
-    return (
-      <div>
-      </div>
-    );
-  }
-);
+const Presets = observer(({}: PresetsProps) => {
+  return <div></div>;
+});
 
 interface DroppableTrackElementProps {
-  title: string,
-  slug: string,
-  placeholder: string,
-  track_id: number,
-  machine: any,
+  title: string;
+  slug: string;
+  placeholder: string;
+  track_id: number;
+  machine: any;
 }
 
-const DroppableTrackElement = observer(({track_id, machine, title, slug, placeholder}: DroppableTrackElementProps) => {
-  return (<Droppable
-  index={track_id + 11}
-  droppableId={`track-${track_id}-${slug}`}
->
-  {(provided, snapshot) => (
-    <Card
-      ref={provided.innerRef}
-      {...provided.draggableProps}
-      {...provided.dragHandleProps}
-      row
-      variant="outlined"
-      sx={{
-        minWidth: "90%",
-        minHeight: "100%",
-        borderRadius: 0,
-        gap: 0,
-        borderTop: 0,
-        borderBottom: 0,
-        bgcolor: "background.body",
-      }}
-    >
-      <CardOverflow></CardOverflow>
-      <CardContent sx={{ pl: 2 }}>
-        <div>
-        <Typography
-          fontWeight="md"
-          textColor="success.plainColor"
-          mb={0.5}
-        >
-          {machine && machine.name != '' && machine.name != undefined
-            ? machine.name
-            : 'Loading...'}
-        </Typography>
-        {provided.placeholder}
-        </div>
-        {machine && machine.name != '' ? <UniqueColors name={`${machine.machineType}${machine.name}`} /> : ""}
-        <Presets />
-      </CardContent>
-      <CardOverflow
-        variant="soft"
-        color="primary"
-        sx={{
-          px: 0.2,
-          borderRadius: 0,
-          writingMode: "vertical-rl",
-          textAlign: "center",
-          fontSize: "xs2",
-          fontWeight: "xl2",
-          letterSpacing: "1px",
-          textTransform: "uppercase",
-        }}
+const MachinePlaceholder = observer(
+  ({ placeholder, title }: { placeholder: string; title: string }) => {
+    return (
+      <Box>
+        <Box>{placeholder}</Box>
+        <Box>
+          <Button variant="outline">
+            <OpenInBrowserOutlinedIcon />
+          </Button>
+        </Box>
+      </Box>
+    );
+  }
+);
+
+const DroppableTrackElement = observer(
+  ({
+    track_id,
+    machine,
+    title,
+    slug,
+    placeholder,
+    type,
+  }: DroppableTrackElementProps) => {
+    return (
+      <Droppable
+        index={track_id + 11}
+        droppableId={`track-${track_id}-${slug}`}
       >
-        {title}
-      </CardOverflow>
-    </Card>
-  )}
-</Droppable>);
-});
+        {(provided, snapshot) => (
+          <Card
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            row
+            variant="outlined"
+            sx={{
+              minWidth: "90%",
+              minHeight: "100%",
+              borderRadius: 0,
+              gap: 0,
+              borderTop: 0,
+              borderBottom: 0,
+              bgcolor: "background.body",
+            }}
+          >
+            <CardOverflow></CardOverflow>
+            <CardContent sx={{ pl: 2 }}>
+              <Box>
+                {machine && machine.name != "" && machine.name != undefined ? (
+                  <Typography
+                    fontWeight="md"
+                    textColor="success.plainColor"
+                    mb={0.5}
+                  >
+                    {machine.name}
+                  </Typography>
+                ) : machine && machine.loading ? (
+                  "Loading..."
+                ) : (
+                  <MachinePlaceholder placeholder={placeholder} title={title} />
+                )}
+
+                {provided.placeholder}
+              </Box>
+              {machine && machine.name != "" ? (
+                <UniqueColors name={`${machine.machineType}${machine.name}`} />
+              ) : (
+                ""
+              )}
+              <Presets />
+            </CardContent>
+            <CardOverflow
+              variant="soft"
+              color="primary"
+              sx={{
+                px: 0.2,
+                borderRadius: 0,
+                writingMode: "vertical-rl",
+                textAlign: "center",
+                fontSize: "xs2",
+                fontWeight: "xl2",
+                letterSpacing: "1px",
+                textTransform: "uppercase",
+              }}
+            >
+              {title}
+            </CardOverflow>
+          </Card>
+        )}
+      </Droppable>
+    );
+  }
+);
 
 const TrackComponent = observer(({ track }: TrackComponentProps) => {
   return (
@@ -213,7 +245,13 @@ const TrackComponent = observer(({ track }: TrackComponentProps) => {
               height: "100%",
             }}
           >
-            <DroppableTrackElement track_id={track.id} machine={track.arranger} slug="arranger" title="Arranger" placeholder="Drop Arranger Here"></DroppableTrackElement>
+            <DroppableTrackElement
+              track_id={track.id}
+              machine={track.arranger}
+              slug="arranger"
+              title="Arranger"
+              placeholder="Drop Arranger Here"
+            ></DroppableTrackElement>
           </ListItem>
           <ListItem
             sx={{
@@ -226,7 +264,13 @@ const TrackComponent = observer(({ track }: TrackComponentProps) => {
               height: "100%",
             }}
           >
-            <DroppableTrackElement track_id={track.id} machine={track.sequencer} slug="sequencer" title="Sequencer" placeholder="Drop Sequencer Here"></DroppableTrackElement>
+            <DroppableTrackElement
+              track_id={track.id}
+              machine={track.sequencer}
+              slug="sequencer"
+              title="Sequencer"
+              placeholder="Drop Sequencer Here"
+            ></DroppableTrackElement>
           </ListItem>
 
           <ListItem
@@ -240,9 +284,14 @@ const TrackComponent = observer(({ track }: TrackComponentProps) => {
               height: "100%",
             }}
           >
-            <DroppableTrackElement track_id={track.id} machine={track.synthesizer} slug="synthesizer" title="Synthesizer" placeholder="Drop Synthesizer Here"></DroppableTrackElement>
+            <DroppableTrackElement
+              track_id={track.id}
+              machine={track.synthesizer}
+              slug="synthesizer"
+              title="Synthesizer"
+              placeholder="Drop Synthesizer Here"
+            ></DroppableTrackElement>
           </ListItem>
-
         </List>
       </ListItem>
       <ListDivider sx={{ m: 0 }} />
