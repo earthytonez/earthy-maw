@@ -11,13 +11,10 @@ import Avatar from "@mui/joy/Avatar";
 import List from "@mui/joy/List";
 import ListDivider from "@mui/joy/ListDivider";
 import ListItem from "@mui/joy/ListItem";
-import ListItemButton from "@mui/joy/ListItemButton";
-import ListItemDecorator from "@mui/joy/ListItemDecorator";
 
-import { CssVarsProvider, useColorScheme } from "@mui/joy/styles";
+import { CssVarsProvider } from "@mui/joy/styles";
 import filesTheme from "../../theme.ts";
 import { LOTS_OF_RETRO_COLORS } from "../../config/colors.ts";
-import AspectRatio from "@mui/joy/AspectRatio";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import CardOverflow from "@mui/joy/CardOverflow";
@@ -26,10 +23,16 @@ import { observer } from "mobx-react-lite";
 
 import { Droppable } from "react-beautiful-dnd";
 
+import EditIcon from '@mui/icons-material/Edit';
 import CircleIcon from "@mui/icons-material/Circle";
+
 import OpenInBrowserOutlinedIcon from "@mui/icons-material/OpenInBrowserOutlined";
 
 import { useStore } from "../../stores/useStore.tsx";
+
+import { useUIStore } from "../../stores/UI/useUIStore.tsx";
+import Edit from "@mui/icons-material/Edit";
+
 var murmur = require("murmurhash-js");
 
 interface TrackComponentProps {
@@ -130,8 +133,9 @@ const DroppableTrackElement = observer(
     title,
     slug,
     placeholder,
-    type,
-  }: DroppableTrackElementProps) => {
+  }: DroppableTrackElementProps) => {    
+    const uiStore = useUIStore();
+    const { toggleObjectEdit } = uiStore;
     return (
       <Droppable
         index={track_id + 11}
@@ -164,6 +168,7 @@ const DroppableTrackElement = observer(
                     mb={0.5}
                   >
                     {machine.name}
+                    <Button onClick={() => toggleObjectEdit(true, track_id, slug, machine.slug)}><EditIcon fontSize="small" /></Button>
                   </Typography>
                 ) : machine && machine.loading ? (
                   "Loading..."

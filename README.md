@@ -11,13 +11,24 @@ Sources/Docs:
 
 ToDo:
 1. Generative Drone Synth
-2. Benerative House Synth
+    ~~A. Create a MobX Store and all data structures within that store.~~
+    ~~B. Make it so that the Track and Sequencer Use the Key and Scale~~
+    C. Create a side panel that makes a thing editable.
+    D. Make it so that the Key and Scale are modulatable by hour of the day.
+    E. Evolve the Drones to be modulatable and more musical/editable.
+
+2. Generative House Synth
 3. More House Patterns
 4. Recreate a song (Fargone Suite?)
 5. Add retro color hash to devices.   Circle for Arranger, Square for Sequencer, Triangle for Instrument.
+6. 80's Music Synth?
 
-6. Create Arpeggiator Sequencer Type
+7. Create Arpeggiator Sequencer Type
 
 * Inspiration from:
 
 https://github.com/generativefm/generators
+
+Sequencers:
+1. Simple Arpeggiator
+2. Complex Arpeggiator

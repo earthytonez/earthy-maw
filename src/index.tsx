@@ -7,13 +7,13 @@ import reportWebVitals from "./reportWebVitals";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import { StoreProvider } from "./stores/useStore.tsx";
+import { UIStoreProvider } from "./stores/UI/useUIStore.tsx";
 
 const theme = createTheme({
   palette: {
     mode: "dark",
   },
 });
-
 
 theme.typography.h1 = {
   fontFamily: "Fascinate, cursive",
@@ -24,9 +24,11 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <div>
     <StoreProvider>
-      <ThemeProvider theme={theme}>
-        <App />
-      </ThemeProvider>
+      <UIStoreProvider>
+        <ThemeProvider theme={theme}>
+          <App />
+        </ThemeProvider>
+      </UIStoreProvider>
     </StoreProvider>
   </div>
 );

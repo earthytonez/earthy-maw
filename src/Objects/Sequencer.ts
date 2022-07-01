@@ -36,6 +36,15 @@ export default class Sequencer extends SequencerType {
   triggerWhen: TriggerWhen;
   loading: boolean = true;
 
+  droneLength: number = 9;
+  droneTail: number = 3;
+
+  octaveRangeHigh: number = 3;
+  octaveRangeLow: number = 2;
+
+  droneSpacingHigh: number = 3;
+  droneSpacingLow: number = 2;
+
   awaitBuffers: Promise<any>;
 
   audioContext: any;
@@ -53,6 +62,70 @@ export default class Sequencer extends SequencerType {
     this.boundSynthesizer = synth;
     this.setAwaitBuffers();
     debug("SEQUENCER", `Bound Synthesizer: ${synth}`, this.boundSynthesizer);
+  }
+
+  changeParameter(parameter: string, value: any) {
+    this[parameter] = value;
+  }
+
+  editParameters() {
+    return [
+      {
+        name: "Drone Length",
+        field: "droneLength",
+        fieldType: "slider",
+        fieldOptions: {
+          options: [3, 4, 5, 6, 7, 8],
+          current: this.droneLength
+        },
+      },
+      {
+        name: "Drone Tail",
+        field: "droneTail",
+        fieldType: "slider",
+        fieldOptions: {
+          options: [3, 4, 5, 6, 7, 8],
+          current: this.droneTail
+        },
+      },
+      {
+        name: "Drone Spacing High",
+        field: "droneSpacingHigh",
+        fieldType: "slider",
+        fieldOptions: {
+          options: [3, 4, 5, 6, 7, 8],
+          current: this.droneTail
+        },
+      },
+      {
+        name: "Drone Spacing Low",
+        field: "droneSpacingLow",
+        fieldType: "slider",
+        fieldOptions: {
+          options: [3, 4, 5, 6, 7, 8],
+          current: this.droneTail
+        },
+      },
+      {
+        name: "Octave Range High",
+        field: "octaveRangeHigh",
+        fieldType: "slider",
+        fieldOptions: {
+          options: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+          current: this.octaveRangeHigh
+        },
+      },
+      {
+        name: "Octave Range Low",
+        field: "octaveRangeLow",
+        fieldType: "slider",
+        fieldOptions: {
+          options: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+          current: this.octaveRangeLow
+        },
+      },
+
+    ];
   }
 
   setAwaitBuffers() {
@@ -222,24 +295,24 @@ export default class Sequencer extends SequencerType {
     // this.setAwaitBuffers();
 
     let playParams = this.playParams(key, chord, beatNumber, time);
-    playParams.lengthSeconds = 9;
-    playParams.tailSeconds = 3;
+    playParams.lengthSeconds = this.droneLength;
+    playParams.tailSeconds = this.droneTail;
 
     console.log(">>>>>>>>>>>>>>");
     let chordNotes = this.getChord(key, chord);
     console.log(chordNotes);
 
-    let octave = 3;
+    let octave = this.octaveRangeHigh;
     let rand = Math.floor(Math.random() * (4 - 1 + 1) + 4);
     if (rand < 4) {
-      octave = 2;
+      octave = this.octaveRangeLow;
     }
 
     let toneFrequencyChord = chordNotes.map((note: string) => { return Tone.Frequency(`${note}${octave}`) });
     console.log(toneFrequencyChord);
     let _ = toneFrequencyChord.sort(() => Math.random() - 0.5)[0];
     playParams.notes = toneFrequencyChord;
-    playParams.note = playParams.notes[0];
+    // playParams.note = playParams.notes[0];
     console.log(playParams);
     // playParams.notes = [
     //   [

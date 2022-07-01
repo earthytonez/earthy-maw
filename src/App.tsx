@@ -25,6 +25,7 @@ import {
   SYNTH_TYPES,
   SYNTH_TYPE_FROM_STRING,
 } from "./config/constants.ts";
+import MachineEditDrawer from "./Components/MachineEditDrawer/index.tsx";
 
 function synthFromSlug(synthSlug: string) {
   const SynthType = SYNTH_TYPE_FROM_STRING[synthSlug];
@@ -175,7 +176,9 @@ const App = observer(() => {
         synthTypes={synthTypes}
       />
       <TrackList tracks={tracks} />
+      <MachineEditDrawer />
     </DragDropContext>
+    
   );
 });
 

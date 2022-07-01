@@ -1,248 +1,85 @@
 import * as React from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import PauseIcon from "@mui/icons-material/Pause";
+import Drawer from "@mui/material/Drawer";
 
-import { CssVarsProvider, useColorScheme } from "@mui/joy/styles";
-import Box from "@mui/joy/Box";
-import Typography from "@mui/joy/Typography";
-import IconButton from "@mui/joy/IconButton";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import CloseIcon from "@mui/icons-material/Close";
+import Typography from "@mui/material/Typography";
 
-// Icons import
-import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
-import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
-import FindInPageRoundedIcon from "@mui/icons-material/FindInPageRounded";
-import MenuIcon from "@mui/icons-material/Menu";
+import { CssVarsProvider } from "@mui/joy/styles";
 
 // custom
 import filesTheme from "../../theme.ts";
-import Menu from "./Menu.tsx";
-import Layout from "./Layout.tsx";
 // import Navigation from './components/Navigation';
 
-import MachineDrawer from "./MachineDrawer.tsx";
+import { useStore } from "../../stores/useStore.tsx";
+import { useUIStore } from "../../stores/UI/useUIStore.tsx";
+import { observer } from "mobx-react-lite";
 
-import { useStore } from "../../stores/useStore";
-
+import RadioGroup from "@mui/joy/RadioGroup";
+import Radio from "@mui/joy/Radio";
 type Anchor = "top" | "left" | "bottom" | "right";
 
-const flexContainer = {
-  display: "flex",
-  flexDirection: "row",
-};
-
-// interface SideBarProps {
-//   sequencerTypes: Array<string>;
-//   arrangerTypes: Array<string>;
-//   synthTypes: Array<string>;
-//   tempo: Number;
-//   setTempo: Function;
-//   play: boolean;
-//   playPause: Function;
-//   musicKey:
-//     | "A"
-//     | "B"
-//     | "C"
-//     | "D"
-//     | "E"
-//     | "F"
-//     | "G"
-//     | "Ab"
-//     | "A#"
-//     | "Bb"
-//     | "Db"
-//     | "C#"
-//     | "Eb"
-//     | "D#"
-//     | "F#"
-//     | "Gb"
-//     | "G#";
-//   setKey: Function;
-//   musicScale: "Major" | "Minor";
-//   setScale: Function;
-// }
-
-function PlayButtonToggle({
-  play,
-  playPause,
-}: {
-  play: boolean;
-  playPause: Function;
-}) {
-  return (
-    <IconButton
-      id="toggle-mode"
-      size="sm"
-      variant="outlined"
-      color="primary"
-      onClick={() => {
-        if (play) {
-          playPause(false);
-        } else {
-          playPause(true);
-        }
-      }}
-    >
-      {play ? <PauseIcon /> : <PlayArrowIcon />}
-    </IconButton>
-  );
-}
-
-function ColorSchemeToggle() {
-  const { mode, setMode } = useColorScheme();
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-  if (!mounted) {
-    return <IconButton size="sm" variant="outlined" color="primary" />;
+const MachineEditDrawerRadioGroup = observer(({edit, name, field, fieldOptions}: {edit: Function, name: string, field: string, fieldOptions: any}) => {
+  if (!fieldOptions) {
+    return (
+      <Box sx={{ mt: 2 }}></Box>);
   }
+
+  const { options, current } = fieldOptions;
+
   return (
-    <IconButton
-      id="toggle-mode"
-      size="sm"
-      variant="outlined"
-      color="primary"
-      onClick={() => {
-        if (mode === "light") {
-          setMode("dark");
-        } else {
-          setMode("light");
-        }
-      }}
-    >
-      {mode === "light" ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
-    </IconButton>
-  );
-}
-
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
-
-export default function TopBar() {
-  const stores = useStore();
-
-  let { play, playPause } = stores.musicFeaturesStore;
-
-  const [state, setState] = React.useState({
-    top: false,
-    left: false,
-    bottom: false,
-    right: false,
-  });
-
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
-
-
-  const toggleDrawer =
-    (anchor: Anchor, open: boolean) =>
-    (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event.type === "keydown" &&
-        ((event as React.KeyboardEvent).key === "Tab" ||
-          (event as React.KeyboardEvent).key === "Shift")
-      ) {
-        return;
-      }
-
-      setState({ ...state, [anchor]: open });
-    };
-
-  const list = (anchor: Anchor) => (
-    <Box
-      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
-      role="presentation"
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-        >
-          <Tab label="Synthesizers" {...a11yProps(0)} />
-          <Tab label="Sequencers" {...a11yProps(1)} />
-          <Tab label="Arrangers" {...a11yProps(2)} />
-        </Tabs>
-        <IconButton
-          color="inherit"
-          aria-label="close drawer"
-          onClick={toggleDrawer("bottom", false)}
-        >
-          <MenuIcon />
-        </IconButton>
-      </Box>
-      <MachineDrawer
-        slug="synthesizers"
-        machines={props.synthTypes}
-        index={0}
-        value={value}
-      />
-      <MachineDrawer
-        slug="sequencers"
-        machines={props.sequencerTypes}
-        index={1}
-        value={value}
-      />
-      <MachineDrawer
-        slug="arrangers"
-        machines={props.arrangerTypes}
-        index={2}
-        value={value}
-      />
+    <Box sx={{ mt: 2 }}>
+      <Typography>{name}</Typography>
+      <RadioGroup name={field} defaultValue={current} onChange={(event) => { console.log((event.target as HTMLInputElement).value); edit(field, (event.target as HTMLInputElement).value)}}>
+        {options.map((option: any, i: number) => {
+          console.log(i);
+          return (<Radio key={i} label={option} value={option} size="sm" />);
+        })}
+      </RadioGroup>
     </Box>
   );
+});
 
-  let anchor = "top";
-  const checkboxLabel = { inputProps: { "aria-label": "Play Button" } };
+const LoadParameter = observer(({edit, name, field, fieldType, fieldOptions}: { edit: Function, name: string, field: string, fieldType: string, fieldOptions: any}) => {
+  console.log("Return fieldType");
+  switch(fieldType) {
+    case 'radio':
+      return (<MachineEditDrawerRadioGroup name={name} field={field} fieldOptions={fieldOptions} edit={edit}></MachineEditDrawerRadioGroup>);
+    default:
+      return <Box></Box>;
+  }
+});
 
+const MachineEditDrawer = observer(() => {
+  const store = useStore();
+  const uiStore = useUIStore();
+
+  const { toggleObjectEdit, objectEditTrack, objectEditType, objectEditIsOpen, objectEditing } = uiStore;
+
+  let anchor = "right";
+  console.log(uiStore);
+  console.log(uiStore.objectEditIsOpen);
+
+  let editParameters = [];
+  let editParameter = () => {};
+  if (objectEditIsOpen) {
+    editParameters = store.trackStore.tracks[objectEditTrack][objectEditType].editParameters();
+    editParameter = store.trackStore.tracks[objectEditTrack][objectEditType].changeParameter;
+  }
   return (
     <CssVarsProvider disableTransitionOnChange theme={filesTheme}>
-      <React.Fragment>
-        <Layout.Header>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 1.5,
-            }}
-          >
-            <IconButton
-              variant="outlined"
-              size="sm"
-              onClick={() => setDrawerOpen(true)}
-              sx={{ display: { sm: "none" } }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <IconButton
-              size="sm"
-              variant="solid"
-              sx={{ display: { xs: "none", sm: "inline-flex" } }}
-            >
-              <FindInPageRoundedIcon />
-            </IconButton>
-            <Typography component="h1" fontWeight="xl">
-              Earthy MAW
-            </Typography>
-          </Box>
-          <PlayButtonToggle play={play} playPause={playPause} />
-
-          <Box sx={{ display: "flex", flexDirection: "row", gap: 1.5 }}>
-            <ColorSchemeToggle />
-          </Box>
-        </Layout.Header>
-      </React.Fragment>
+      <Drawer anchor={anchor} open={uiStore.objectEditIsOpen} sx={{p: 4}}>
+        <Button onClick={() => toggleObjectEdit(false)}>
+          <CloseIcon fontSize="small" />
+        </Button>
+          {editParameters.map((parameter: any, key: number) => {
+            return (<LoadParameter key={key} edit={editParameter} name={parameter.name} field={parameter.field} fieldType={parameter.fieldType} fieldOptions={parameter.fieldOptions}/>);
+          })}
+        
+      </Drawer>
     </CssVarsProvider>
   );
-}
+});
+
+export default MachineEditDrawer;
