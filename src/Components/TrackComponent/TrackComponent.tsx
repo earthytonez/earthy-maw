@@ -6,7 +6,6 @@ import Button from "@mui/joy/Button";
 
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
-import Avatar from "@mui/joy/Avatar";
 
 import List from "@mui/joy/List";
 import ListDivider from "@mui/joy/ListDivider";
@@ -29,9 +28,7 @@ import CircleIcon from "@mui/icons-material/Circle";
 import OpenInBrowserOutlinedIcon from "@mui/icons-material/OpenInBrowserOutlined";
 
 import { useStore } from "../../stores/useStore.tsx";
-
 import { useUIStore } from "../../stores/UI/useUIStore.tsx";
-import Edit from "@mui/icons-material/Edit";
 
 var murmur = require("murmurhash-js");
 
@@ -48,7 +45,7 @@ interface VolumeComponentProps {
 
 const VolumeComponent = observer(
   ({ track, raiseVolume, lowerVolume, toggleMute }: VolumeComponentProps) => {
-    const store = useStore();
+    // const store = useStore();
     const { volume } = track;
 
     return (
@@ -100,7 +97,7 @@ const UniqueColors = observer(({ name }: UniqueColorsProps) => {
 interface PresetsProps {}
 
 const Presets = observer(({}: PresetsProps) => {
-  return <div></div>;
+  return (<div></div>);
 });
 
 interface DroppableTrackElementProps {
@@ -161,7 +158,7 @@ const DroppableTrackElement = observer(
             <CardOverflow></CardOverflow>
             <CardContent sx={{ pl: 2 }}>
               <Box>
-                {machine && machine.name != "" && machine.name != undefined ? (
+                {machine && machine.name !== "" && machine.name !== undefined ? (
                   <Typography
                     fontWeight="md"
                     textColor="success.plainColor"
@@ -178,7 +175,7 @@ const DroppableTrackElement = observer(
 
                 {provided.placeholder}
               </Box>
-              {machine && machine.name != "" ? (
+              {machine && machine.name !== "" ? (
                 <UniqueColors name={`${machine.machineType}${machine.name}`} />
               ) : (
                 ""
@@ -309,227 +306,3 @@ const TrackComponent = observer(({ track }: TrackComponentProps) => {
 });
 
 export default TrackComponent;
-
-{
-  /* <TableCell align="left"> */
-}
-// <b>Track {track.id}</b>
-// <div></div>
-// <VolumeComponent
-//   track={track}
-//   raiseVolume={track.raiseVolume}
-//   lowerVolume={track.lowerVolume}
-// />
-// </TableCell>
-// <Droppable
-// index={track.id + 11}
-// droppableId={`track-${track.id}-arranger`}
-// >
-// {(provided, snapshot) => (
-//   <TableCell
-//     ref={provided.innerRef}
-//     {...provided.draggableProps}
-//     {...provided.dragHandleProps}
-//     align="left"
-//     style={{
-//       backgroundColor: track.arranger ? "lightcoral" : "white",
-//     }}
-//   >
-//     {track.arranger ? track.arranger.name : "Drop Arranger Here"}
-//     {provided.placeholder}
-//   </TableCell>
-// )}
-// </Droppable>
-// <Droppable
-// index={track.id + 12}
-// droppableId={`track-${track.id}-sequencer`}
-// >
-// {(provided, snapshot) => (
-//   <TableCell
-//     align="left"
-//     ref={provided.innerRef}
-//     {...provided.draggableProps}
-//     {...provided.dragHandleProps}
-//     style={{
-//       backgroundColor: track.sequencer ? "lightblue" : "white",
-//     }}
-//   >
-//     {track.sequencer ? track.sequencer.name : "Drop Sequencer Here"}
-//     {provided.placeholder}
-//   </TableCell>
-// )}
-// </Droppable>
-// <Droppable
-// index={track.id + 13}
-// droppableId={`track-${track.id}-synthesizer`}
-// >
-// {(provided, snapshot) => (
-//   <TableCell
-//     ref={provided.innerRef}
-//     {...provided.draggableProps}
-//     {...provided.dragHandleProps}
-//     align="left"
-//     style={{
-//       backgroundColor: track.sequencer ? "lightgreen" : "white",
-//     }}
-//   >
-//     {track.synthesizer
-//       ? track.synthesizer.name
-//       : "Drop Synthesizer Here"}
-//     {provided.placeholder}
-//   </TableCell>
-// )}
-// </Droppable>
-
-{
-  /* <React.Fragment key={index}>
-  <ListItem>
-    <ListItemButton
-      {...(index === 0 && { variant: 'soft', color: 'primary' })}
-      sx={{ p: 2 }}
-    >
-      <ListItemDecorator sx={{ alignSelf: 'flex-start' }}>
-        <Avatar
-          alt=""
-          src={item.avatar}
-          srcSet={item.avatar2x}
-          sx={{ borderRadius: 'sm' }}
-        />
-      </ListItemDecorator>
-      <Box sx={{ pl: 2, width: '100%' }}>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            mb: 0.5,
-          }}
-        >
-          <Typography level="body3">{item.name}</Typography>
-          <Typography level="body3" textColor="text.tertiary">
-            {item.date}
-          </Typography>
-        </Box>
-        <Box>
-          <Typography sx={{ mb: 0.5 }}>{item.title}</Typography>
-          <Typography level="body2">{item.body}</Typography>
-        </Box>
-      </Box>
-    </ListItemButton>
-  </ListItem>
-<ListDivider sx={{ m: 0 }} />
-</React.Fragment> */
-}
-//
-{
-  /* <Box
-ref={provided.innerRef}
-{...provided.draggableProps}
-{...provided.dragHandleProps}
-align="left"
-sx={{ pl: 2, width: "100%", height: "100%" }}
->
-{track.arranger ? track.arranger.name : "Drop Arranger Here"}
-{provided.placeholder}
-</Box> */
-}
-
-// <ListItem sx={{ pl: 2, width: "20%", height: "100%" }}>
-// <Droppable
-//   index={track.id + 12}
-//   droppableId={`track-${track.id}-sequencer`}
-// >
-//   {(provided, snapshot) => (
-//     <Card
-//       ref={provided.innerRef}
-//       {...provided.draggableProps}
-//       {...provided.dragHandleProps}
-//       row
-//       variant="outlined"
-//       sx={{
-//         minWidth: "260px",
-//         gap: 2,
-//         bgcolor: "background.body",
-//       }}
-//     >
-//       <CardOverflow></CardOverflow>
-//       <CardContent>
-//         <Typography
-//           fontWeight="md"
-//           textColor="success.plainColor"
-//           mb={0.5}
-//         >
-//           {track.sequencer
-//             ? track.sequencer.name
-//             : "Drop Sequencer Here"}
-//           {provided.placeholder}
-//         </Typography>
-//       </CardContent>
-//       <CardOverflow
-//         variant="soft"
-//         color="primary"
-//         sx={{
-//           px: 0.2,
-//           writingMode: "vertical-rl",
-//           textAlign: "center",
-//           fontSize: "xs2",
-//           fontWeight: "xl2",
-//           letterSpacing: "1px",
-//           textTransform: "uppercase",
-//         }}
-//       >
-//         Sequence
-//       </CardOverflow>
-//     </Card>
-//   )}
-// </Droppable>
-// </ListItem>
-// <ListItem sx={{ pl: 2, width: "20%", height: "100%" }}>
-// <Droppable
-//   index={track.id + 13}
-//   droppableId={`track-${track.id}-synthesizer`}
-// >
-//   {(provided, snapshot) => (
-//     <Card
-//       ref={provided.innerRef}
-//       {...provided.draggableProps}
-//       {...provided.dragHandleProps}
-//       row
-//       variant="outlined"
-//       sx={{
-//         minWidth: "260px",
-//         gap: 2,
-//         bgcolor: "background.body",
-//       }}
-//     >
-//       <CardOverflow></CardOverflow>
-//       <CardContent>
-//         <Typography
-//           fontWeight="md"
-//           textColor="success.plainColor"
-//           mb={0.5}
-//         >
-//           {track.synthesizer
-//             ? track.synthesizer.name
-//             : "Drop Synthesizer Here"}
-//           {provided.placeholder}
-//         </Typography>
-//       </CardContent>
-//       <CardOverflow
-//         variant="soft"
-//         color="primary"
-//         sx={{
-//           px: 0.2,
-//           writingMode: "vertical-rl",
-//           textAlign: "center",
-//           fontSize: "xs2",
-//           fontWeight: "xl2",
-//           letterSpacing: "1px",
-//           textTransform: "uppercase",
-//         }}
-//       >
-//         Synth
-//       </CardOverflow>
-//     </Card>
-//   )}
-// </Droppable>
-// </ListItem>
