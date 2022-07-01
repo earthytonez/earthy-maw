@@ -32,6 +32,8 @@ export const MUSIC_THEORY_KEYS = [
 ];
 export const MUSIC_THEORY_SCALES = ["Major", "Minor"];
 
+export const MUSIC_THEORY_CHORDS = ["major", "maj7", "maj9", "maj13", "maj7#11", "minor"];
+
 export const MAJOR_SCALE_INTERVALS = [2, 2, 1, 2, 2, 2, 1];
 export const MINOR_SCALE_INTERVALS = [2, 1, 2, 2, 1, 2, 2];
 

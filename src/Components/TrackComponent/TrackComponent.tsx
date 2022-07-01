@@ -40,10 +40,11 @@ interface VolumeComponentProps {
   track: Track;
   raiseVolume: () => null;
   lowerVolume: () => null;
+  toggleMute: () => null;
 }
 
 const VolumeComponent = observer(
-  ({ track, raiseVolume, lowerVolume }: VolumeComponentProps) => {
+  ({ track, raiseVolume, lowerVolume, toggleMute }: VolumeComponentProps) => {
     const store = useStore();
     const { volume } = track;
 
@@ -57,6 +58,9 @@ const VolumeComponent = observer(
         </Button>
         <Button variant="solid" onClick={lowerVolume}>
           -
+        </Button>
+        <Button variant="solid" onClick={track.toggleMute}>
+          Mute
         </Button>
       </ButtonGroup>
     );

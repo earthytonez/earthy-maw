@@ -6,9 +6,9 @@ import { getSynthesizer } from "./SynthesizerFactory.ts";
 import { makeObservable, computed, observable, action } from "mobx";
 import * as Tone from "tone";
 
-import { debug } from "../Util/logger.ts";
+import { debug, error } from "../Util/logger.ts";
 
-import MusicFeaturesStore from '../stores/MusicFeatures.store';
+import MusicFeaturesStore from "../stores/MusicFeatures.store";
 
 export default class Track {
   arranger: Arranger;
@@ -17,7 +17,7 @@ export default class Track {
   vol: Tone.Volume;
   id: number;
   slug: string;
-  
+
   musicFeaturesStore: MusicFeaturesStore;
 
   raiseVolume = () => {
@@ -33,14 +33,26 @@ export default class Track {
     this.vol.volume.value = newValue;
   }
 
+  toggleMute = () => {
+    this.vol.mute = !this.vol.mute;
+  };
+
   get volume() {
     return this.vol.volume.value;
   }
 
   async tick(beatNumber, time) {
     if (!this.sequencer) return;
-
-    await this.sequencer.play(this.musicFeaturesStore.musicKey, this.musicFeaturesStore.musicScale, beatNumber, time);
+    if (!this.musicFeaturesStore) {
+      return error("this.musicFeaturesStore is not set");
+    }
+    await this.sequencer.play(
+      this.musicFeaturesStore.musicKey,
+      this.musicFeaturesStore.musicScale,
+      this.musicFeaturesStore.musicChord,
+      beatNumber,
+      time
+    );
   }
 
   async assignMachine(machineType: string, machine: any) {
@@ -51,9 +63,9 @@ export default class Track {
     if (machineType === "sequencer") {
       await this.sequencer.load();
     }
-      if (machineType === "synthesizer") {
-        this.synthesizer.attachVolume(this.vol);
-      }
+    if (machineType === "synthesizer") {
+      this.synthesizer.attachVolume(this.vol);
+    }
   }
 
   sequencerJSON() {
@@ -91,29 +103,44 @@ export default class Track {
   }
 
   async load(trackData: any) {
+    try {
+      debug("TRACK", `Loading track from trackdata`, trackData);
 
-    debug("TRACK", `Loading track from trackdata`, trackData);
-
-    if (trackData.arranger) {
-      this.arranger = new Arranger(trackData.arranger, Tone.getContext());
+      if (trackData.arranger) {
+        this.arranger = new Arranger(trackData.arranger, Tone.getContext());
+      }
+      if (trackData.sequencer && trackData.sequencer.type) {
+        debug("TRACK", `Sequencer Type: ${trackData.sequencer.type}`);
+        this.sequencer = new Sequencer(
+          trackData.sequencer.type,
+          Tone.getContext(),
+          this.musicFeaturesStore
+        );
+        await this.sequencer.load();
+      }
+      if (trackData.synthesizer && trackData.synthesizer.slug) {
+        this.synthesizer = getSynthesizer(
+          trackData.synthesizer.slug,
+          this.vol,
+          Tone.getContext()
+        );
+        if (this.sequencer) this.sequencer.bindSynth(this.synthesizer);
+        debug("TRACK", "Loaded Synthesizer", this.synthesizer);
+        this.synthesizer.attachVolume(this.vol);
+      }
+      this.setLoading(false);
+    } catch (err) {
+      debug("TRACK_LOAD_ERROR", err);
     }
-    if (trackData.sequencer && trackData.sequencer.type) {
-      debug("TRACK", `Sequencer Type: ${trackData.sequencer.type}`);
-      this.sequencer = new Sequencer(trackData.sequencer.type, Tone.getContext(), this.musicFeaturesStore);
-      await this.sequencer.load();
-    }
-    if (trackData.synthesizer && trackData.synthesizer.slug) {
-      this.synthesizer = getSynthesizer(trackData.synthesizer.slug, this.vol, Tone.getContext());
-      if (this.sequencer) this.sequencer.bindSynth(this.synthesizer);
-      debug("TRACK", "Loaded Synthesizer", this.synthesizer);
-      this.synthesizer.attachVolume(this.vol);
-
-    }
-    this.setLoading(false);
   }
 
-  constructor(id: number, audioContext: any, musicFeaturesStore: MusicFeaturesStore) {
+  constructor(
+    id: number,
+    audioContext: any,
+    musicFeaturesStore: MusicFeaturesStore
+  ) {
     Tone.setContext(audioContext);
+    this.musicFeaturesStore = musicFeaturesStore;
 
     this.id = id;
     this.slug = `track-${id}`;
@@ -123,7 +150,6 @@ export default class Track {
     this.sequencer = undefined;
     this.synthesizer = undefined;
 
-    this.musicFeaturesStore = musicFeaturesStore;
 
     makeObservable(this, {
       id: observable,

@@ -1,5 +1,4 @@
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
@@ -10,14 +9,9 @@ import Drawer from "@mui/material/Drawer";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import FormControl from "@mui/material/FormControl";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputAdornment from "@mui/material/InputAdornment";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { CssVarsProvider, useColorScheme } from "@mui/joy/styles";
-
-import IMusicKey from "../../Types/IMusicKey.ts";
-import IMusicScale from "../../Types/IMusicScale.ts";
 
 import filesTheme from "../../theme.ts";
 import Layout from "./Layout.tsx";
@@ -29,6 +23,7 @@ import MachineDrawer from "./MachineDrawer.tsx";
 import {
   MUSIC_THEORY_KEYS,
   MUSIC_THEORY_SCALES,
+  MUSIC_THEORY_CHORDS,
 } from "../../config/constants.ts";
 
 type Anchor = "top" | "left" | "bottom" | "right";
@@ -47,7 +42,7 @@ interface BottomBarProps {
 const BottomBar = observer((props: BottomBarProps) => {
   const store = useStore();
 
-  const { tempo, setTempo, musicScale, setScale, musicKey, setKey } =
+  const { tempo, setTempo, musicChord, setChord, musicScale, setScale, musicKey, setKey } =
     store.musicFeaturesStore;
 
   const [state, setState] = React.useState({
@@ -184,6 +179,29 @@ const BottomBar = observer((props: BottomBarProps) => {
                         return (
                           <MenuItem key={i} value={scaleOption}>
                             {scaleOption}
+                          </MenuItem>
+                        );
+                      }
+                    )}
+                  </Select>
+                </FormControl>
+                <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
+                  <InputLabel id="scale-label">Chord</InputLabel>
+                  <Select
+                    labelId="scale-label"
+                    id="scale-select"
+                    value={musicChord}
+                    label="Chord"
+                    onChange={(event) => {
+                      console.log(event.target.value);
+                      setChord(event.target.value);
+                    }}
+                  >
+                    {MUSIC_THEORY_CHORDS.map(
+                      (chordOption: string, i: number) => {
+                        return (
+                          <MenuItem key={i} value={chordOption}>
+                            {chordOption}
                           </MenuItem>
                         );
                       }

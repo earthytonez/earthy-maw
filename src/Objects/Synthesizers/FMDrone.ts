@@ -14,16 +14,15 @@ export default class FMDrone extends Synthesizer {
   reverb: any;
 
   attachVolume(vol: Tone.Volume) {
-    console.log("FMDrone attachVolume");
-    console.log(vol.context == this.synth.context);
+    debug("FMDRONE", "attachVolume");
+    debug("FMDRONE", vol.context === this.synth.context);
     if (vol) {
       try {
         this.synth.connect(vol);
       } catch (err) {
-        console.error("assignMachine");
-        console.error(err);
-        console.error(err.message);
-        console.error(JSON.stringify(err));
+        debug("FMDRONE", err);
+        debug("FMDRONE", err.message);
+        debug("FMDRONE", JSON.stringify(err));
       }
     }
   }
@@ -52,7 +51,7 @@ export default class FMDrone extends Synthesizer {
   }
 
   play(params: IPlayParams) {
-    console.log("FMDrone Playing");
+    debug("FMDrone Playing");
 
     const { lengthSeconds, tailSeconds, notes } = params;
 
@@ -146,7 +145,7 @@ export default class FMDrone extends Synthesizer {
   //   });
 
         
-  //   console.log(`Starting FMDrone Play Trigger Attack Release of ${notes} with lengthSeconds ${lengthSeconds}`);
+  //   debug(`Starting FMDrone Play Trigger Attack Release of ${notes} with lengthSeconds ${lengthSeconds}`);
   //   this.synth.triggerAttackRelease(notes as Frequency[], lengthSeconds);
   // }
 

@@ -6,8 +6,9 @@ import { info } from "../Util/logger.ts";
 export default class MusicFeaturesStore {
   audioContext: any;
   rootStore: RootStore;
-  musicKey: IMusicKey = "C";
-  musicScale: IMusicScale = "Major";
+  musicKey: string = "C";
+  musicScale: string = "Major";
+  musicChord: string = "major"
   tempo: number = 120; // in bpm
   play: boolean = false;
   beatNumber: number = 0;
@@ -51,6 +52,9 @@ export default class MusicFeaturesStore {
 
   setKey(key: IMusicKey) {
     this.musicKey = key;
+  }
+  setChord(chord: string) {
+    this.musicChord = chord;
   }
 
   setScale(scale: IMusicScale) {
@@ -97,6 +101,7 @@ export default class MusicFeaturesStore {
       playPause: action.bound,
       setPlay: action.bound,
       setKey: action.bound,
+      setChord: action.bound,
       setScale: action.bound,
     });
     this.audioContext = audioContext;
