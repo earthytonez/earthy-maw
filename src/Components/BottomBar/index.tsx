@@ -11,9 +11,7 @@ import Tab from "@mui/material/Tab";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { CssVarsProvider, useColorScheme } from "@mui/joy/styles";
 
-import filesTheme from "../../theme.ts";
 import Layout from "./Layout.tsx";
 import { observer } from "mobx-react-lite";
 
@@ -127,7 +125,6 @@ const BottomBar = observer((props: BottomBarProps) => {
   let anchor = "bottom";
 
   return (
-    <CssVarsProvider disableTransitionOnChange theme={filesTheme}>
       <React.Fragment>
         <Layout.Footer>
           <Toolbar>
@@ -224,7 +221,6 @@ const BottomBar = observer((props: BottomBarProps) => {
           </Drawer>
         </Layout.Footer>
       </React.Fragment>
-    </CssVarsProvider>
   );
 });
 

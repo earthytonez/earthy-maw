@@ -6,11 +6,6 @@ import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 
-import { CssVarsProvider } from "@mui/joy/styles";
-
-// custom
-import filesTheme from "../../theme.ts";
-// import Navigation from './components/Navigation';
 
 import { useStore } from "../../stores/useStore.tsx";
 import { useUIStore } from "../../stores/UI/useUIStore.tsx";
@@ -68,7 +63,6 @@ const MachineEditDrawer = observer(() => {
     editParameter = store.trackStore.tracks[objectEditTrack][objectEditType].changeParameter;
   }
   return (
-    <CssVarsProvider disableTransitionOnChange theme={filesTheme}>
       <Drawer anchor={anchor} open={uiStore.objectEditIsOpen} sx={{p: 4}}>
         <Button onClick={() => toggleObjectEdit(false)}>
           <CloseIcon fontSize="small" />
@@ -78,7 +72,6 @@ const MachineEditDrawer = observer(() => {
           })}
         
       </Drawer>
-    </CssVarsProvider>
   );
 });
 

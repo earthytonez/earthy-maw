@@ -11,8 +11,6 @@ import List from "@mui/joy/List";
 import ListDivider from "@mui/joy/ListDivider";
 import ListItem from "@mui/joy/ListItem";
 
-import { CssVarsProvider } from "@mui/joy/styles";
-import filesTheme from "../../theme.ts";
 import { LOTS_OF_RETRO_COLORS } from "../../config/colors.ts";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
@@ -22,7 +20,7 @@ import { observer } from "mobx-react-lite";
 
 import { Droppable } from "react-beautiful-dnd";
 
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
 import CircleIcon from "@mui/icons-material/Circle";
 
 import OpenInBrowserOutlinedIcon from "@mui/icons-material/OpenInBrowserOutlined";
@@ -97,7 +95,7 @@ const UniqueColors = observer(({ name }: UniqueColorsProps) => {
 interface PresetsProps {}
 
 const Presets = observer(({}: PresetsProps) => {
-  return (<div></div>);
+  return <div></div>;
 });
 
 interface DroppableTrackElementProps {
@@ -130,7 +128,7 @@ const DroppableTrackElement = observer(
     title,
     slug,
     placeholder,
-  }: DroppableTrackElementProps) => {    
+  }: DroppableTrackElementProps) => {
     const uiStore = useUIStore();
     const { toggleObjectEdit } = uiStore;
     return (
@@ -158,14 +156,22 @@ const DroppableTrackElement = observer(
             <CardOverflow></CardOverflow>
             <CardContent sx={{ pl: 2 }}>
               <Box>
-                {machine && machine.name !== "" && machine.name !== undefined ? (
+                {machine &&
+                machine.name !== "" &&
+                machine.name !== undefined ? (
                   <Typography
                     fontWeight="md"
                     textColor="success.plainColor"
                     mb={0.5}
                   >
                     {machine.name}
-                    <Button onClick={() => toggleObjectEdit(true, track_id, slug, machine.slug)}><EditIcon fontSize="small" /></Button>
+                    <Button
+                      onClick={() =>
+                        toggleObjectEdit(true, track_id, slug, machine.slug)
+                      }
+                    >
+                      <EditIcon fontSize="small" />
+                    </Button>
                   </Typography>
                 ) : machine && machine.loading ? (
                   "Loading..."
@@ -207,7 +213,7 @@ const DroppableTrackElement = observer(
 
 const TrackComponent = observer(({ track }: TrackComponentProps) => {
   return (
-    <CssVarsProvider theme={filesTheme}>
+    <Box>
       <ListItem sx={{ margin: 0, padding: 0 }}>
         <List row>
           <ListItem sx={{ pl: 2, width: "15%", height: "100%" }}>
@@ -301,7 +307,7 @@ const TrackComponent = observer(({ track }: TrackComponentProps) => {
         </List>
       </ListItem>
       <ListDivider sx={{ m: 0 }} />
-    </CssVarsProvider>
+    </Box>
   );
 });
 

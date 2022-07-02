@@ -9,6 +9,10 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { StoreProvider } from "./stores/useStore.tsx";
 import { UIStoreProvider } from "./stores/UI/useUIStore.tsx";
 
+import { CssVarsProvider } from "@mui/joy/styles";
+
+import filesTheme from "./theme.ts";
+
 const theme = createTheme({
   palette: {
     mode: "dark",
@@ -25,7 +29,9 @@ root.render(
   <StoreProvider>
     <UIStoreProvider>
       <ThemeProvider theme={theme}>
-        <App />
+        <CssVarsProvider disableTransitionOnChange theme={filesTheme}>
+          <App />
+        </CssVarsProvider>
       </ThemeProvider>
     </UIStoreProvider>
   </StoreProvider>

@@ -1,15 +1,10 @@
 import * as React from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 
-import FormControl from "@mui/material/FormControl";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/joy/TextField";
 
-import { CssVarsProvider, useColorScheme } from "@mui/joy/styles";
+import { useColorScheme } from "@mui/joy/styles";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 import IconButton from "@mui/joy/IconButton";
@@ -24,13 +19,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 
 // custom
 import filesTheme from "../../theme.ts";
-import Menu from "./Menu.tsx";
 import Layout from "./Layout.tsx";
 // import Navigation from './components/Navigation';
 
 import { useStore } from "../../stores/useStore.tsx";
-
-import MachineDrawer from "./MachineDrawer.tsx";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
@@ -166,7 +158,6 @@ const TopBar = observer(() => {
   const checkboxLabel = { inputProps: { "aria-label": "Play Button" } };
 
   return (
-    <CssVarsProvider disableTransitionOnChange theme={filesTheme}>
       <React.Fragment>
         <Layout.Header>
           <Box
@@ -227,110 +218,7 @@ const TopBar = observer(() => {
             <ColorSchemeToggle />
           </Box>
         </Layout.Header>
-      </React.Fragment>
-    </CssVarsProvider>
-  );
+      </React.Fragment>  );
 });
-
-{
-  /* <OutlinedInput
-                  id="outlined-adornment-weight"
-                  value={tempo}
-                  onChange={(event) => {
-                    console.log(event.target.value);
-                    setTempo(event.target.value);
-                  }}
-                  endAdornment={
-                    <InputAdornment position="end">bpm</InputAdornment>
-                  }
-                  aria-describedby="outlined-weight-helper-text"
-                  inputProps={{
-                    "aria-label": "weight",
-                  }}
-                /> */
-}
-
-// <AppBar position="sticky" color="primary" sx={{ top: 0, bottom: "auto" }}>
-// <Toolbar>
-//   <Box sx={{ flexGrow: 1 }}>
-//     <FormGroup style={flexContainer}>
-//     </FormGroup>
-//   </Box>
-//   <Box sx={{ flexGrow: 1 }} />
-// </Toolbar>
-// <div></div>
-// </AppBar>
-// <Drawer
-// anchor={anchor}
-// variant="persistent"
-// open={state[anchor]}
-// onClose={toggleDrawer(anchor, false)}
-// >
-// {list(anchor)}
-// </Drawer>
-
-// {/* <TextField
-//   size="sm"
-//   placeholder="Search anything…"
-//   startDecorator={<SearchRoundedIcon color="primary" />}
-//   endDecorator={
-//     <IconButton variant="outlined" size="sm" color="neutral">
-//       <Typography fontWeight="lg" fontSize="sm" textColor="text.tertiary">
-//         /
-//       </Typography>
-//     </IconButton>
-//   }
-//   sx={{
-//     flexBasis: '500px',
-//     display: {
-//       xs: 'none',
-//       sm: 'flex',
-//     },
-//   }}
-// /> */}
-// const list = (anchor: Anchor) => (
-//   <Box
-//     sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
-//     role="presentation"
-//     onKeyDown={toggleDrawer(anchor, false)}
-//   >
-//     <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-//       <Tabs
-//         value={value}
-//         onChange={handleChange}
-//         aria-label="basic tabs example"
-//       >
-//         <Tab label="Synthesizers" {...a11yProps(0)} />
-//         <Tab label="Sequencers" {...a11yProps(1)} />
-//         <Tab label="Arrangers" {...a11yProps(2)} />
-//       </Tabs>
-//       <IconButton
-//         color="inherit"
-//         aria-label="close drawer"
-//         onClick={toggleDrawer("bottom", false)}
-//       >
-//         <MenuIcon />
-//       </IconButton>
-//     </Box>
-//     <MachineDrawer
-//       slug="synthesizers"
-//       machines={props.synthTypes}
-//       index={0}
-//       value={value}
-//     />
-//     <MachineDrawer
-//       slug="sequencers"
-//       machines={props.sequencerTypes}
-//       index={1}
-//       value={value}
-//     />
-//     <MachineDrawer
-//       slug="arrangers"
-//       machines={props.arrangerTypes}
-//       index={2}
-//       value={value}
-//     />
-//   </Box>
-// );
 
 export default TopBar;

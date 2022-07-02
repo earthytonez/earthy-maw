@@ -3,7 +3,6 @@ import Track from "../Objects/Track.ts";
 import RootStore from "./Root.store";
 
 import pMap from "p-map";
-import { debug } from "../Util/logger.ts";
 
 export default class TrackStore {
   audioContext: any;

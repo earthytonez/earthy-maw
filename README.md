@@ -8,6 +8,18 @@ Sources/Docs:
 5. https://mynoise.net/
 6. https://cables.gl/p/bmG4rF
 
+MMF (Minimum Marketable Features)
+1. Basic House Track -- Kick, Hi Hat, Bass
+    1. Tech Debt -- Remove .tx/tsx requirement.
+    2. Finish Kick with fill.
+    3. Finish Hi Hat with adjustements
+    4. Finish Bass with multiple versions.
+        Video can load the page that shows these alternates.
+2. The 3/4 from Misanthropic Glee. -- Can it also be the 3/4 from loop build 2?
+3. Simple Arpeggiator
+4. Complex Arpeggiator
+
+
 
 ToDo:
 1. Generative Drone Synth
