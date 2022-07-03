@@ -12,10 +12,5 @@ export default class Bell extends Synthesizer {
         const plucky = new Tone.PluckSynth().toDestination();
         console.log(`Bell is playing note ${params.note}`);
         plucky.triggerAttack(params.note, "+0.5");
-
-    }
-
-    constructor() {
-        super();
     }
 }

@@ -1,4 +1,4 @@
-import Button from "@mui/joy/Button";
+import Button from "@mui/material/Button";
 // import TableBody from "@mui/material/TableBody";
 // import TableRow from "@mui/material/TableRow";
 
@@ -27,7 +27,7 @@ const TrackListComponent = observer((props: TrackListComponentProps) => {
             <TrackComponent key={i} track={track}></TrackComponent>
         ))}
     </List>
-    <Button variant="solid" onClick={stores.trackStore.addTrack}>Add Track</Button>
+    <Button variant="outlined" onClick={stores.trackStore.addTrack}>Add Track</Button>
     </div>
   );
 });

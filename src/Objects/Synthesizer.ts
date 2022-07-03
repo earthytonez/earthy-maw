@@ -14,8 +14,4 @@ export default class Synthesizer extends Placeable {
     bindSynth(synth: Synthesizer) {
         console.log("Can't bind a Synthesizer to a Synthesizer");
     }
-    
-    constructor() {
-        super();
-    }
 }

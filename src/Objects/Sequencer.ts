@@ -1,4 +1,3 @@
-import Synthesizer from "./Synthesizer.ts";
 
 import * as Tone from "tone";
 import { Chord } from "@tonaljs/tonal";
@@ -9,15 +8,19 @@ import {
   action,
 } from "mobx";
 
-import { SequencerLoader, TriggerWhen } from "./SequencerLoader/index.ts";
+import { SequencerLoader, TriggerWhen } from "./SequencerLoader/index";
 
 import IPlayParams from "../Types/IPlayParams";
-
-import { debug, info } from "../Util/logger.ts";
-import SequencerType from "./SequencerType.ts";
+import ISequencerParameters from "./SequencerRunner/ISequencerParameters";
+import { debug, info } from "../Util/logger";
+import SequencerType from "./SequencerType";
+import PlayEveryX from "./SequencerRunner/PlayEveryX";
 import MusicFeaturesStore from "../stores/MusicFeatures.store";
 
+import Synthesizer from "./Synthesizer";
+
 const OneTwo: string = require("./Sequencers/OneTwo");
+const ThreeFour: string = require("./Sequencers/ThreeFour");
 const FourOTFloor: string = require("./Sequencers/FourOTFloor");
 const OffBeatFour: string = require("./Sequencers/OffBeatFour");
 const HiHat: string = require("./Sequencers/HiHat");
@@ -27,6 +30,15 @@ export default class Sequencer extends SequencerType {
   id: number;
   name: string;
   slug: string;
+
+  /*
+   * A parameter set determines when a sequence is triggered.
+   * There can be multiple parameter sets for a given sequencer, in order to have 
+   * selectable variation.  For example, the 3 four can play the second beat
+   * on the 2 or the three (1-2-4, 1-3-4).
+   */
+  chosenTriggerParameterSet: number = 0;
+
   boundSynthesizer: Synthesizer = undefined;
   sequencerLoader: SequencerLoader = new SequencerLoader();
   machineType: string = "Sequencer";
@@ -54,6 +66,18 @@ export default class Sequencer extends SequencerType {
     this.loading = loading;
   }
 
+toJSON() {
+  let excludedKeys = ["musicFeaturesStore", "trackStore", "boundSynthesizer"]
+
+  let filteredObject = Object.keys(this)
+  .filter(key => !excludedKeys.includes(key))
+  .reduce((obj, key) => {
+    obj[key] = this[key];
+    return obj;
+  }, {});
+  return JSON.stringify(filteredObject);
+}
+
   isSynth() {
     return false;
   }
@@ -68,7 +92,7 @@ export default class Sequencer extends SequencerType {
     this[parameter] = value;
   }
 
-  editParameters() {
+  editParameters(): ISequencerParameters {
     return [
       {
         name: "Drone Length",
@@ -207,7 +231,13 @@ export default class Sequencer extends SequencerType {
           this.sequencerLoader = new SequencerLoader(seqEText);
         });
         break;
-
+      case "ThreeFour":
+        let seqF = await fetch(ThreeFour);
+        let seqFText = await seqF.text();
+        runInAction(() => {
+          this.sequencerLoader = new SequencerLoader(seqFText);
+        });
+        break;  
       default:
     }
 
@@ -225,22 +255,13 @@ export default class Sequencer extends SequencerType {
     });
   }
 
-  playEveryX(parameters: any): boolean {
-    debug(`Playing steps: ${parameters.steps} on ${parameters.on} x: ${this.x}`);
-    if (this.x >= parameters.steps) this.x = 0;
+  playEveryX(beatNumber: number, parameters: PlayParameters): boolean {
     if (!this.boundSynthesizer) {
-      return true;
+      return false;
     }
-    // debug(
-    //   `Sequencer for ${this.boundSynthesizer.name} everyX ${this.x} Interval ${interval}`
-    // );
 
-    if (this.x === parameters.on - 1) {
-      this.x++;
-      return true;
-    }
-    this.x++;
-    return false;
+    let playEveryX = new PlayEveryX(this.sequencerLoader);
+    return playEveryX.run(beatNumber, parameters);    
   }
 
   shouldPlay(beatNumber: number): boolean {
@@ -249,7 +270,7 @@ export default class Sequencer extends SequencerType {
     }
     switch (this.triggerWhen.type) {
       case "everyX":
-        return this.playEveryX(this.triggerWhen.parameters);
+        return this.playEveryX(beatNumber, this.triggerWhen.parameterSets[this.chosenTriggerParameterSet], );
       default:
         return true;
     }
@@ -283,9 +304,6 @@ export default class Sequencer extends SequencerType {
 
   getChord(key: IMusicKey, chord: string): string[] {
     let chordDef = Chord.getChord(chord.toLowerCase(), key)
-    console.log(chord);
-    console.log(key);
-    console.log(chordDef);
     
     return chordDef.notes
   }
@@ -398,7 +416,7 @@ export default class Sequencer extends SequencerType {
     if (this.shouldPlay(beatNumber)) {
       if (this.sequencerType() === "drone") {
         return this.drone(key, chord, beatNumber, time);
-      }
+      } 
 
       return this.boundSynthesizer.play(
         this.playParams(key, scale, beatNumber, time)
@@ -418,6 +436,7 @@ export default class Sequencer extends SequencerType {
     makeObservable(this, {
       play: action,
       bindSynth: action,
+      toJSON: action.bound
     });
   }
 }

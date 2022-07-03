@@ -1,14 +1,15 @@
+import { makeObservable, computed, observable, action } from "mobx";
+import * as Tone from "tone";
+
 import Arranger from "./Arranger.ts";
 import Sequencer from "./Sequencer.ts";
 import Synthesizer from "./Synthesizer.ts";
 import { getSynthesizer } from "./SynthesizerFactory.ts";
 
-import { makeObservable, computed, observable, action } from "mobx";
-import * as Tone from "tone";
+import MusicFeaturesStore from "../stores/MusicFeatures.store";
+import TrackStore from "../stores/Track.store";
 
 import { debug, error } from "../Util/logger.ts";
-
-import MusicFeaturesStore from "../stores/MusicFeatures.store";
 
 export default class Track {
   arranger: Arranger;
@@ -19,6 +20,12 @@ export default class Track {
   slug: string;
 
   musicFeaturesStore: MusicFeaturesStore;
+  trackStore: TrackStore;
+
+  remove = () => {
+    console.log("Clicked Remove Track");
+    this.trackStore.removeTrack(this.id);
+  };
 
   raiseVolume = () => {
     this.vol.volume.value = this.vol.volume.value + 1;
@@ -117,6 +124,7 @@ export default class Track {
           this.musicFeaturesStore
         );
         await this.sequencer.load();
+        debug("TRACK", "LOADED SEQUENCER", this.sequencer);
       }
       if (trackData.synthesizer && trackData.synthesizer.slug) {
         this.synthesizer = getSynthesizer(
@@ -125,22 +133,28 @@ export default class Track {
           Tone.getContext()
         );
         if (this.sequencer) this.sequencer.bindSynth(this.synthesizer);
-        debug("TRACK", "Loaded Synthesizer", this.synthesizer);
+        debug("TRACK_LOADED_SEQUENCER", this.sequencer.toJSON());
         this.synthesizer.attachVolume(this.vol);
       }
       this.setLoading(false);
     } catch (err) {
-      debug("TRACK_LOAD_ERROR", err);
+      error("TRACK_LOAD_ERROR", err);
     }
   }
 
   constructor(
     id: number,
     audioContext: any,
-    musicFeaturesStore: MusicFeaturesStore
+    musicFeaturesStore: MusicFeaturesStore,
+    trackStore: TrackStore
   ) {
     Tone.setContext(audioContext);
+    if (!musicFeaturesStore) {
+      throw("musicFeaturesStore must be set");
+    }
+    
     this.musicFeaturesStore = musicFeaturesStore;
+    this.trackStore = trackStore;
 
     this.id = id;
     this.slug = `track-${id}`;

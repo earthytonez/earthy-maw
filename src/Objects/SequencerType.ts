@@ -23,6 +23,7 @@ const FourOTFloor: string = require("./Sequencers/FourOTFloor");
 const OffBeatFour: string = require("./Sequencers/OffBeatFour");
 const HiHat: string = require("./Sequencers/HiHat");
 const SimpleDrone: string = require("./Sequencers/SimpleDrone");
+const ThreeFour: string = require("./Sequencers/ThreeFour");
 
 export default class Sequencer extends Placeable {
   id: number;
@@ -75,7 +76,11 @@ export default class Sequencer extends Placeable {
         let seqEText = await seqE.text();
         this.sequencerLoader = new SequencerLoader(seqEText);
         break;
-
+      case "ThreeFour":
+        let seqF = await fetch(ThreeFour);
+        let seqFText = await seqF.text();
+        this.sequencerLoader = new SequencerLoader(seqFText);
+        break;  
       default:
     }
 

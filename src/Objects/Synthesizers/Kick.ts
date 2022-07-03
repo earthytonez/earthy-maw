@@ -1,6 +1,7 @@
 import Synthesizer from "../Synthesizer.ts";
 
 import IPlayParams from "../../Types/IPlayParams";
+import ISynthParams from "../../Types/ISynthParams";
 import { Volume } from "tone";
 
 import { debug } from '../../Util/logger.ts';
@@ -11,6 +12,10 @@ export default class Kick extends Synthesizer {
   name: string = "Kick";
   slug: string = "kick";
   synth: any;
+
+  editParameters(): ISynthParams {
+
+  }
 
   attachVolume(vol: Volume) {
     if (vol) {

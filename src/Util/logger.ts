@@ -21,7 +21,7 @@ export function warn(subsystem: string, message: string, object?: any, css?: str
 
 export function info(subsystem: string, message: string, object?: any, css?: string) {
     if (!object) {
-        object = new Object();
+        object = {};
     }
     console.log(`INFO ${subsystem} ${message} / ${Object.keys(object).map((key) => { return `${key}=${object[key]} `})}`, css); 
 }

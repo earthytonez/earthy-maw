@@ -1,0 +1,42 @@
+name = "Three Four"
+description = "Three note repeating interval"
+total_length = 64
+rhythm_length = 8
+outputs = 1
+tags = [ "minimalism" ]
+type = "step"
+
+def IntervalsToPlay
+    interval_length = 8
+    [0, 4, 3, 2, 2.5, 2.5, 2, 2]
+end
+
+# Not sure about this
+def lengthOfInterval
+    [1, 1, 1, 1]
+    [1, 1, 2, 0]
+    [1, 2, 1, 0]
+    [1, 2, 0, 1]
+    [2, 1, 1, 0]
+    [2, 1, 0, 1]
+    [2, 0, 1, 1]
+    [2, 0, 1, 1]
+    [0, 1, 1, 2]
+    [0, 1, 2, 1]
+    [0, 2, 1, 1]
+    # [3, 0, 0, 0]
+    # [0, 3, 0, 0]
+    # [0, 0, 3, 0]
+    # [0, 0, 0, 3]
+end
+
+def TriggerWhenList
+    [1, 4, 7]
+    [1, 3, 7]
+    [1, 5, 7]
+    [1, 2, 6]
+    [1, 3, 6]
+    [1, 4, 6]
+    [1, 5, 6]
+end
+

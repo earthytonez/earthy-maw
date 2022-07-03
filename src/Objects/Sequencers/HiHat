@@ -9,6 +9,6 @@ def NoteToPlay
 end
 
 def TriggerWhen
-    every step
+    every 4 steps on 2
 end
 

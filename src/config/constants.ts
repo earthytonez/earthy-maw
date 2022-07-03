@@ -4,6 +4,7 @@ import FMBells from "../Objects/Synthesizers/FMBells.ts";
 import Kick from "../Objects/Synthesizers/Kick.ts";
 import HiHat from "../Objects/Synthesizers/HiHat.ts";
 import Bass from "../Objects/Synthesizers/Bass.ts";
+import Waveform from "../Objects/Synthesizers/Waveform.ts";
 
 export const NOTE_LETTERS = ["A", "B", "C", "D", "E", "F", "G"];
 export const OCTAVE_MIN = 0;
@@ -56,7 +57,7 @@ export const SYNTH_TYPES = [
   { id: 2, name: "Kick", slug: "kick" },
   { id: 4, name: "FMBells", slug: "fmbells" },
   { id: 5, name: "FMDrone", slug: "fmdrone" },
-  { id: 6, name: "Sine", slug: "sine" },
+  { id: 6, name: "Waveform", slug: "waveform" },
 ];
 
 export const SYNTH_TYPE_FROM_STRING = {
@@ -65,7 +66,8 @@ export const SYNTH_TYPE_FROM_STRING = {
   hihat: HiHat,
   kick: Kick,
   fmdrone: FMDrone,
-  fmbells: FMBells
+  fmbells: FMBells,
+  waveform: Waveform
 }
 
 export const A_ZERO_STARTING_NUMBER = 8;

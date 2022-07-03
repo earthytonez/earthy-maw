@@ -13,6 +13,10 @@ export default class Bass extends Synthesizer {
   synth: any;
   filter: any;
 
+  editParameters(): ISynthParams {
+
+  }
+
   attachVolume(vol: Volume) {
     if (vol) {
       this.filter.connect(vol);
@@ -29,8 +33,8 @@ export default class Bass extends Synthesizer {
     this.synth = new Tone.Synth().toDestination()
     this.synth.oscillator.type = "square"
     this.filter = new Tone.Filter(400, "lowpass").toDestination();
-
     this.synth.connect(this.filter);
+
     if (vol) {
       this.filter.connect(vol);
     } else {

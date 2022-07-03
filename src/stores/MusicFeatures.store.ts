@@ -1,17 +1,27 @@
 import { action, autorun, observable, makeObservable } from "mobx";
 import * as Tone from "tone";
 
-import { info } from "../Util/logger.ts";
+import { debug, info } from "../Util/logger.ts";
 
 export default class MusicFeaturesStore {
   audioContext: any;
   rootStore: RootStore;
   musicKey: string = "C";
   musicScale: string = "Major";
-  musicChord: string = "major"
+  musicChord: string = "major";
+  musicChordProgression: string = "1";
+
+  musicKeyOnDeck: string | undefined = undefined;
+  musicScaleOnDeck: string | undefined = undefined;
+  musicChordOnDeck: string | undefined = undefined;
+  musicChordProgressionOnDeck: string | undefined = undefined;
+
+  musicSectionLength: number = 64;
+  musicSectionLengthOnDeck: number | undefined = undefined;
+
   tempo: number = 120; // in bpm
   play: boolean = false;
-  beatNumber: number = 0;
+  beatNumber: number = 1;
 
   incrementBeatNumber() {
     this.beatNumber++;
@@ -51,14 +61,18 @@ export default class MusicFeaturesStore {
   }
 
   setKey(key: IMusicKey) {
-    this.musicKey = key;
+    this.musicKeyOnDeck = key;
   }
   setChord(chord: string) {
-    this.musicChord = chord;
+    this.musicChordOnDeck = chord;
   }
 
   setScale(scale: IMusicScale) {
-    this.musicScale = scale;
+    this.musicScaleOnDeck = scale;
+  }
+
+  setSectionLength(sectionLength: number) {
+    this.musicSectionLengthOnDeck = sectionLength;
   }
 
   load(_musicFeatures: any) {
@@ -97,12 +111,14 @@ export default class MusicFeaturesStore {
       musicKey: observable,
       musicScale: observable,
       play: observable,
+      beatNumber: observable,
       rootStore: false,
       playPause: action.bound,
       setPlay: action.bound,
       setKey: action.bound,
       setChord: action.bound,
       setScale: action.bound,
+      incrementBeatNumber: action.bound
     });
     this.audioContext = audioContext;
     this.rootStore = rootStore;

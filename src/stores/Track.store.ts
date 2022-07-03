@@ -2,6 +2,7 @@ import { makeObservable, action, observable, autorun } from "mobx";
 import Track from "../Objects/Track.ts";
 import RootStore from "./Root.store";
 
+import { debug, info } from '../Util/logger';
 import pMap from "p-map";
 
 export default class TrackStore {
@@ -14,24 +15,42 @@ export default class TrackStore {
       new Track(
         this.tracks.length,
         this.audioContext,
-        this.rootStore.musicFeaturesStore
+        this.rootStore.musicFeaturesStore,
+        this
       )
     );
-    localStorage.setItem("tracks", JSON.stringify(this.tracks));
-    console.log(localStorage.getItem("tracks"));
+    this.saveTracks();
     this.tracks[this.tracks.length - 1].setLoading(false);
   }
 
-  removeTrack(trackIndex: number) {}
+  removeTrack(trackID: number) {
+    this.tracks = this.tracks.filter((track) => track.id !== trackID);
+    this.saveTracks();
+  }
 
   setTracks(tracks: Track[]) {
     this.tracks = tracks;
   }
+  
+  emptyTracks() {
+    return (this.tracks === [] || this.tracks.length === 0 || JSON.stringify(this.tracks) === '[{"id":0,"slug":"track-0"},{"id":1,"slug":"track-1"}]')
+  }
+
+  saveTracks() {
+    if (this.emptyTracks()) {
+      debug("LOADSAVETRACKS", "Tried to save empty 'tracks'");
+      return;
+    }
+
+    info("LOADSAVETRACKS", `Saving tracks: ${JSON.stringify(this.tracks)}`)
+    localStorage.setItem("tracks", JSON.stringify(this.tracks));
+    debug("LOADSAVETRACKS", localStorage.getItem("tracks"));
+  }
 
   initialize() {
     this.tracks = [
-      new Track(0, this.audioContext, this.rootStore.musicFeaturesStore),
-      new Track(1, this.audioContext, this.rootStore.musicFeaturesStore),
+      new Track(0, this.audioContext, this.rootStore.musicFeaturesStore, this),
+      new Track(1, this.audioContext, this.rootStore.musicFeaturesStore, this),
     ];
     this.tracks[0].setLoading(false);
     this.tracks[1].setLoading(false);
@@ -46,7 +65,8 @@ export default class TrackStore {
             let t = new Track(
               i,
               this.audioContext,
-              this.rootStore.musicFeaturesStore
+              this.rootStore.musicFeaturesStore,
+              this
             );
             await t.load(trackData);
             console.log(t);
@@ -62,21 +82,29 @@ export default class TrackStore {
     loadTracks();
   }
 
-  constructor(rootStore, audioContext) {
+  checkLocalStorage() {
+    info("LOADSAVETRACKS", "Loading Tracks from Local Storage");
     let _tracks = localStorage.getItem("tracks");
+    let tracks = JSON.parse(_tracks!);
+    debug("LOADSAVETRACKS", `Tracks = ${JSON.stringify(tracks)}`)
+    this.load(tracks);
+  }
+
+  constructor(rootStore, audioContext) {
     this.audioContext = audioContext;
     this.rootStore = rootStore;
 
-    autorun(() => {
-      localStorage.setItem("tracks", JSON.stringify(this.tracks));
-    });
+    this.checkLocalStorage();
 
-    let tracks = JSON.parse(_tracks);
-    this.load(tracks);
+    autorun(() => {
+      this.saveTracks();
+    });
 
     makeObservable(this, {
       tracks: observable,
+      checkLocalStorage: action.bound,
       addTrack: action.bound,
+      saveTracks: action.bound
     });
   }
 }

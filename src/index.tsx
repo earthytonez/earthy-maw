@@ -16,6 +16,9 @@ import filesTheme from "./theme.ts";
 const theme = createTheme({
   palette: {
     mode: "dark",
+    primary: {
+      main: '#148C94',
+    },
   },
 });
 

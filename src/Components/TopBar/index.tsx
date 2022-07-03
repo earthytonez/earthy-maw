@@ -18,7 +18,6 @@ import FindInPageRoundedIcon from "@mui/icons-material/FindInPageRounded";
 import MenuIcon from "@mui/icons-material/Menu";
 
 // custom
-import filesTheme from "../../theme.ts";
 import Layout from "./Layout.tsx";
 // import Navigation from './components/Navigation';
 
@@ -26,45 +25,9 @@ import { useStore } from "../../stores/useStore.tsx";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
-const flexContainer = {
-  display: "flex",
-  flexDirection: "row",
-};
-
-interface SideBarProps {
-  sequencerTypes: Array<string>;
-  arrangerTypes: Array<string>;
-  synthTypes: Array<string>;
-  tempo: Number;
-  setTempo: Function;
-  play: boolean;
-  playPause: Function;
-  musicKey:
-    | "A"
-    | "B"
-    | "C"
-    | "D"
-    | "E"
-    | "F"
-    | "G"
-    | "Ab"
-    | "A#"
-    | "Bb"
-    | "Db"
-    | "C#"
-    | "Eb"
-    | "D#"
-    | "F#"
-    | "Gb"
-    | "G#";
-  setKey: Function;
-  musicScale: "Major" | "Minor";
-  setScale: Function;
-}
-
 const TopBar = observer(() => {
   const store = useStore();
-  const { play, playPause, tempo, setTempo } = store.musicFeaturesStore;
+  const { play, playPause, tempo, setTempo, musicSectionLength, setSectionLength } = store.musicFeaturesStore;
 
   const [state, setState] = React.useState({
     top: false,
@@ -127,36 +90,6 @@ const TopBar = observer(() => {
     );
   }
 
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
-
-  function a11yProps(index: number) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  }
-
-  const toggleDrawer =
-    (anchor: Anchor, open: boolean) =>
-    (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event.type === "keydown" &&
-        ((event as React.KeyboardEvent).key === "Tab" ||
-          (event as React.KeyboardEvent).key === "Shift")
-      ) {
-        return;
-      }
-
-      setState({ ...state, [anchor]: open });
-    };
-
-  let anchor = "top";
-  const checkboxLabel = { inputProps: { "aria-label": "Play Button" } };
-
   return (
       <React.Fragment>
         <Layout.Header>
@@ -194,7 +127,6 @@ const TopBar = observer(() => {
               value={tempo}
               onChange={setTempo}
               endDecorator={
-                <IconButton variant="outlined" size="sm" color="neutral">
                   <Typography
                     fontWeight="lg"
                     fontSize="sm"
@@ -202,7 +134,27 @@ const TopBar = observer(() => {
                   >
                     bpm
                   </Typography>
-                </IconButton>
+              }
+              sx={{
+                flexBasis: "100px",
+                display: {
+                  xs: "none",
+                  sm: "flex",
+                },
+              }}
+            />
+            <TextField
+              size="sm"
+              value={musicSectionLength}
+              onChange={setSectionLength}
+              endDecorator={
+                  <Typography
+                    fontWeight="lg"
+                    fontSize="sm"
+                    textColor="text.tertiary"
+                  >
+                    Section Length
+                  </Typography>
               }
               sx={{
                 flexBasis: "100px",

@@ -40,7 +40,7 @@ interface BottomBarProps {
 const BottomBar = observer((props: BottomBarProps) => {
   const store = useStore();
 
-  const { tempo, setTempo, musicChord, setChord, musicScale, setScale, musicKey, setKey } =
+  const { musicChord, setChord, musicScale, setScale, musicKey, setKey } =
     store.musicFeaturesStore;
 
   const [state, setState] = React.useState({

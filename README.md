@@ -19,6 +19,10 @@ MMF (Minimum Marketable Features)
 3. Simple Arpeggiator
 4. Complex Arpeggiator
 
+Productionalization:
+1. Undo delete track
+2. Rock solid save track.
+3. Export track to json.    
 
 
 ToDo:

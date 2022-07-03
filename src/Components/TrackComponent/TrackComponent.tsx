@@ -1,69 +1,36 @@
 import * as React from "react";
-import Track from "../../Objects/Track.ts";
 
-import ButtonGroup from "@mui/material/ButtonGroup";
-import Button from "@mui/joy/Button";
+import { observer } from "mobx-react-lite";
+import { Droppable } from "react-beautiful-dnd";
 
+import Button from "@mui/material/Button";
+
+import CircleIcon from "@mui/icons-material/Circle";
+import LaunchIcon from "@mui/icons-material/Launch";
+import OpenInBrowserOutlinedIcon from "@mui/icons-material/OpenInBrowserOutlined";
+
+import Card from "@mui/joy/Card";
+import CardContent from "@mui/joy/CardContent";
+import CardOverflow from "@mui/joy/CardOverflow";
+import IconButton from "@mui/joy/IconButton";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
-
 import List from "@mui/joy/List";
 import ListDivider from "@mui/joy/ListDivider";
 import ListItem from "@mui/joy/ListItem";
 
-import { LOTS_OF_RETRO_COLORS } from "../../config/colors.ts";
-import Card from "@mui/joy/Card";
-import CardContent from "@mui/joy/CardContent";
-import CardOverflow from "@mui/joy/CardOverflow";
+import { LOTS_OF_RETRO_COLORS } from "../../config/colors";
 
-import { observer } from "mobx-react-lite";
+import Track from "../../Objects/Track";
 
-import { Droppable } from "react-beautiful-dnd";
-
-import EditIcon from "@mui/icons-material/Edit";
-import CircleIcon from "@mui/icons-material/Circle";
-
-import OpenInBrowserOutlinedIcon from "@mui/icons-material/OpenInBrowserOutlined";
-
-import { useStore } from "../../stores/useStore.tsx";
-import { useUIStore } from "../../stores/UI/useUIStore.tsx";
+import TrackSettingsComponent from './TrackSettingsComponent';
+import { useUIStore } from "../../stores/UI/useUIStore";
 
 var murmur = require("murmurhash-js");
 
 interface TrackComponentProps {
   track: Track;
 }
-
-interface VolumeComponentProps {
-  track: Track;
-  raiseVolume: () => null;
-  lowerVolume: () => null;
-  toggleMute: () => null;
-}
-
-const VolumeComponent = observer(
-  ({ track, raiseVolume, lowerVolume, toggleMute }: VolumeComponentProps) => {
-    // const store = useStore();
-    const { volume } = track;
-
-    return (
-      <ButtonGroup size="small" aria-label="small outlined button group">
-        <Button variant="solid" onClick={raiseVolume}>
-          +
-        </Button>
-        <Button variant="outlined" disabled>
-          {Math.round(volume)}
-        </Button>
-        <Button variant="solid" onClick={lowerVolume}>
-          -
-        </Button>
-        <Button variant="solid" onClick={track.toggleMute}>
-          Mute
-        </Button>
-      </ButtonGroup>
-    );
-  }
-);
 
 interface UniqueColorsProps {
   name: string;
@@ -85,7 +52,7 @@ const UniqueColors = observer(({ name }: UniqueColorsProps) => {
     <Box>
       {digits.map((digit: number, i: number) => {
         return (
-          <CircleIcon key={i} sx={{ color: LOTS_OF_RETRO_COLORS[digit] }} />
+          <CircleIcon key={i} sx={{ color: LOTS_OF_RETRO_COLORS[digit], ml: i == 0 ? 0 : -2 }} />
         );
       })}
     </Box>
@@ -159,20 +126,34 @@ const DroppableTrackElement = observer(
                 {machine &&
                 machine.name !== "" &&
                 machine.name !== undefined ? (
-                  <Typography
-                    fontWeight="md"
-                    textColor="success.plainColor"
-                    mb={0.5}
-                  >
-                    {machine.name}
-                    <Button
-                      onClick={() =>
-                        toggleObjectEdit(true, track_id, slug, machine.slug)
-                      }
-                    >
-                      <EditIcon fontSize="small" />
-                    </Button>
-                  </Typography>
+                  <Box>
+                    <Box>
+                      <Typography
+                        fontWeight="md"
+                        textColor="success.plainColor"
+                        mb={0.5}
+                      >
+                        {machine.name}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <IconButton
+                        aria-label={`edit ${machine.name}`}
+                        variant="plain"
+                        size="sm"
+                        sx={{
+                          position: "absolute",
+                          top: "1rem",
+                          right: "2rem",
+                        }}
+                        onClick={() =>
+                          toggleObjectEdit(true, track_id, slug, machine.slug)
+                        }
+                      >
+                        <LaunchIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  </Box>
                 ) : machine && machine.loading ? (
                   "Loading..."
                 ) : (
@@ -217,34 +198,7 @@ const TrackComponent = observer(({ track }: TrackComponentProps) => {
       <ListItem sx={{ margin: 0, padding: 0 }}>
         <List row>
           <ListItem sx={{ pl: 2, width: "15%", height: "100%" }}>
-            <Box sx={{ height: "100%" }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  mb: 0.5,
-                }}
-              >
-                <Typography
-                  textColor="neutral.500"
-                  fontWeight={700}
-                  sx={{
-                    fontSize: "10px",
-                    textTransform: "uppercase",
-                    letterSpacing: ".1rem",
-                  }}
-                >
-                  Track {track.id}
-                </Typography>
-              </Box>
-              <Box>
-                <VolumeComponent
-                  track={track}
-                  raiseVolume={track.raiseVolume}
-                  lowerVolume={track.lowerVolume}
-                />
-              </Box>
-            </Box>
+            <TrackSettingsComponent track={track} />
           </ListItem>
           <ListItem
             sx={{

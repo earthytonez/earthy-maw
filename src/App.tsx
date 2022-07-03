@@ -1,31 +1,27 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "./App.css";
 
 import * as Tone from "tone";
 
-import Arranger from "./Objects/Arranger.ts";
-import Sequencer from "./Objects/Sequencer.ts";
-import SequencerType from "./Objects/SequencerType.ts";
-import Track from "./Objects/Track.ts";
-// import MusicCanvas from "./Components/MusicCanvas/index.tsx";
+import Arranger from "./Objects/Arranger";
+import Sequencer from "./Objects/Sequencer";
+import SequencerType from "./Objects/SequencerType";
 
-import BottomBar from "./Components/BottomBar/index.tsx";
-import TopBar from "./Components/TopBar/index.tsx";
-import TrackList from "./Components/TrackComponent/TrackListComponent.tsx";
-
-import { debug, error } from "./Util/logger.ts";
+import BottomBar from "./Components/BottomBar/index";
+import TopBar from "./Components/TopBar/index";
+import TrackList from "./Components/TrackComponent/TrackListComponent";
 
 import { observer } from "mobx-react-lite";
 import { DragDropContext } from "react-beautiful-dnd";
 
-import { useStore } from './stores/useStore.tsx';
+import { useStore } from './stores/useStore';
 
 import {
   SEQUENCER_TYPES,
   SYNTH_TYPES,
   SYNTH_TYPE_FROM_STRING,
-} from "./config/constants.ts";
-import MachineEditDrawer from "./Components/MachineEditDrawer/index.tsx";
+} from "./config/constants";
+import MachineEditDrawer from "./Components/MachineEditDrawer/index";
 
 function synthFromSlug(synthSlug: string) {
   const SynthType = SYNTH_TYPE_FROM_STRING[synthSlug];
@@ -85,40 +81,9 @@ const App = observer(() => {
   let tracks = store.trackStore.tracks;
   Tone.setContext(store.audioContext);
 
-  let { beatNumber } = store.musicFeaturesStore
-
   /*
    * Main track/loop
    */
-
-  const repeatLoop = (time) => {
-    tracks.forEach((track: Track, i: number) => {
-      try {
-        track.tick(beatNumber, time);
-        store.musicFeaturesStore.incrementBeatNumber();
-      } catch (err: any) {
-        error("Error caught during track loop", err);
-      }
-    });
-  };
-
-  /*
-   * Start Tone repeat loop once.
-   */
-  useEffect(() => {
-    debug("Starting Tone.Transport.scheduleRepeat");
-    Tone.Transport.scheduleRepeat(repeatLoop, "16n");
-  }, [tracks]);
-
-  const saveTracks = () => {
-    debug(JSON.stringify(tracks));
-    localStorage.setItem("tracks", JSON.stringify(tracks));
-  };
-
-  useEffect(() => {
-    saveTracks();
-  }, [tracks]);
-
   const onBeforeCapture = (props: any) => {
     console.log("onBeforeCapture");
   };
@@ -157,7 +122,7 @@ const App = observer(() => {
       console.error(err);
     }
 
-    saveTracks();
+    store.trackStore.saveTracks();
   };
 
   return (
@@ -170,7 +135,7 @@ const App = observer(() => {
     >
       <TopBar />
       <BottomBar
-        beatNumber={beatNumber}
+        beatNumber={store.musicFeaturesStore.beatNumber}
         arrangerTypes={arrangerTypes}
         sequencerTypes={sequencerTypes}
         synthTypes={synthTypes}
@@ -183,30 +148,3 @@ const App = observer(() => {
 });
 
 export default App;
-
-// useEffect(() => {
-  // let audioContext = new AudioContext();
-  // console.log(audioContext);
-  // Tone.setContext(audioContext);
-
-  // const _trackLS = JSON.parse(localStorage.getItem("tracks")!);
-  // if (_trackLS && _trackLS.length > 0) {
-  //   const loadTracks = async () => {
-  //     let trackObjects: Track[] = await pMap(
-  //       _trackLS,
-  //       async (trackData, i) => {
-  //         let t = new Track(i, audioContext);
-  //         await t.load(trackData);
-  //         console.log(t);
-  //         return t;
-  //       }
-  //     );
-  //     setTracks(trackObjects);
-  //   };
-
-  //   loadTracks().catch(console.error);
-  // } else {
-  //   setTracks([new Track(0, audioContext), new Track(1, audioContext), new Track(2, audioContext)]);
-  // }
-// }, []);
-// 

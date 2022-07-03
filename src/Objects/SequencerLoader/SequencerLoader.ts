@@ -1,17 +1,17 @@
 // import { isIntersectionTypeNode } from "typescript";
 // import { 
 //     NOTE_LETTERS, OCTAVE_MIN, OCTAVE_MAX, INT_NOTE_MIN, INT_NOTE_MAX } from "../config/constants.ts";
-import TriggerWhen from './TriggerWhen.ts';
-import NoteToPlay from './NoteToPlay.ts';
-import VolumeToPlay from './VolumeToPlay.ts';
-import IntervalsToPlay from './IntervalsToPlay.ts';
+import TriggerWhen from './TriggerWhen';
+import NoteToPlay from './NoteToPlay';
+import VolumeToPlay from './VolumeToPlay';
+import IntervalsToPlay from './IntervalsToPlay';
 
-import NoteIntervalCalculator from './NoteIntervalCalculator.ts';
+import NoteIntervalCalculator from './NoteIntervalCalculator';
 
-import IMusicScale from '../../Types/IMusicScale.ts';
-import IMusicKey from '../../Types/IMusicKey.ts';
-import IToneJSDuration from '../../Types/IToneJSDuration.ts';
-import IToneJSNote from '../../Types/IToneJSNote.ts';
+import IMusicScale from '../../Types/IMusicScale';
+import IMusicKey from '../../Types/IMusicKey';
+import IToneJSDuration from '../../Types/IToneJSDuration';
+import IToneJSNote from '../../Types/IToneJSNote';
 
 import { makeObservable, observable, flow, action, computed } from "mobx"
 
@@ -19,7 +19,8 @@ class SequencerLoaderHolder {
     name: string;
     type: "drone" | "step" | "arpeggiator"
     description?: string = "";
-    length?: number = undefined;
+    rhythm_length?: number = undefined;
+    total_length?: number = undefined;
     triggerWhen: TriggerWhen = new TriggerWhen();
     noteNotInterval: boolean = false;
     intervalToPlay: IntervalsToPlay = new IntervalsToPlay();
@@ -58,7 +59,7 @@ export default class SequencerLoader {
     }
 
     measureBeat(beatNumber: number) {
-        return (beatNumber - 1) % this.length();
+        return (beatNumber - 1) % this.total_length;
     }
 
     duration(beatNumber: number): IToneJSDuration {
@@ -73,8 +74,12 @@ export default class SequencerLoader {
         return this.sequencerHolder.note(key, scale, this.measureBeat(beatNumber));
     }
 
-    length(): number {
-        return this.sequencerHolder.length;
+    get rhythm_length(): number {
+        return this.sequencerHolder.rhythm_length!;
+    }
+
+    get total_length(): number {
+        return this.sequencerHolder.total_length!;
     }
 
     code() {
@@ -119,7 +124,10 @@ export default class SequencerLoader {
             case "TriggerWhen":
                 this.sequencerHolder.triggerWhen.parse(line);
                 break;
-            default:
+            case "TriggerWhenList":
+                this.sequencerHolder.triggerWhen.parseList(line);
+                break;
+                default:
                 break;
         }
     }
@@ -147,7 +155,13 @@ export default class SequencerLoader {
             }
 
             if (line.startsWith('length = ')) {
-                this.sequencerHolder.length = this.getNumberVariable('length', line);                
+                this.sequencerHolder.total_length = this.getNumberVariable('length', line);                
+            }
+            if (line.startsWith('total_length = ')) {
+                this.sequencerHolder.total_length = this.getNumberVariable('total_length', line);                
+            }
+            if (line.startsWith('rhythm_length = ')) {
+                this.sequencerHolder.rhythm_length = this.getNumberVariable('rhythm_length', line);                
             }
 
             if (line.startsWith('type = ') || line.startsWith('type=')) {
