@@ -1,0 +1,14 @@
+name = "One Two"
+description = "Two note repeating interval"
+length = 16
+outputs = 1
+type = "step"
+
+def NoteToPlay
+    C4 # This is the note
+end
+
+def TriggerWhen
+    every 4 steps
+end
+

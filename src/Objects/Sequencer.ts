@@ -6,6 +6,7 @@ import {
   runInAction,
   makeObservable,
   action,
+  computed,
 } from "mobx";
 
 import { SequencerLoader, TriggerWhen } from "./SequencerLoader/index";
@@ -89,6 +90,14 @@ toJSON() {
     debug("SEQUENCER", `Bound Synthesizer: ${synth}`, this.boundSynthesizer);
   }
 
+  incrementParameter(parameter: string) {
+    this[parameter] = value;
+  }
+  decrementParameter(parameter: string) {
+    this[parameter] = value;
+  }
+
+
   changeParameter(parameter: string, value: any) {
     this[parameter] = value;
   }
@@ -100,8 +109,8 @@ toJSON() {
         field: "chosenTriggerParameterSet",
         fieldType: "arraySelector",
         fieldOptions: {
-          options: [3, 4, 5, 6, 7, 8],
-          current: this.droneLength
+          options: [0, 1, 2, 3, 4],
+          current: this.chosenTriggerParameterSet
         },
       },
       {
@@ -497,6 +506,10 @@ toJSON() {
     this.name = "";
 
     makeObservable(this, {
+      changeParameter: action.bound,
+      editParameters: computed,
+      incrementParameter: action.bound,
+      decrementParameter: action.bound,
       play: action,
       bindSynth: action,
       toJSON: action.bound

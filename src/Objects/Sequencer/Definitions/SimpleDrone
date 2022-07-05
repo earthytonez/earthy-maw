@@ -1,0 +1,14 @@
+name = "Simple Drone"
+description = "Simple Droning"
+length = 3
+outputs = 1
+tags = [ "minimalism", "drone" ]
+type = "drone"
+
+def NoteToPlay
+    C4 # This is the note
+end
+
+def TriggerWhen
+    every 64 steps
+end

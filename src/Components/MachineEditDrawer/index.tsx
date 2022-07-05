@@ -123,10 +123,9 @@ const LoadParameter = observer(
                 aria-label={name}
                 selectableValues={fieldOptions.options}
                 currentValue={fieldOptions.current}
-                
-                setValue={edit}
-                incrementValue={increment}
-                decrementValue={decrement}
+                setValue={(value) => edit(field, value)}
+                incrementValue={() => increment(field)}
+                decrementValue={() => decrement(field)}
                 
               />
             </Box>

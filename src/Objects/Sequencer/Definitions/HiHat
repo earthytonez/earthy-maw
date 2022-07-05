@@ -1,0 +1,14 @@
+name = "HiHat"
+description = "For Sequencing a Closed Hi Hat on every 1/16th."
+length = 16
+outputs = 1
+type = "step"
+
+def NoteToPlay
+    C4 # This is the note
+end
+
+def TriggerWhen
+    every 4 steps on 2
+end
+
