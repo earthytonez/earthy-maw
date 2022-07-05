@@ -63,6 +63,14 @@ test("find Minor Key Interval starting at non-root note.", async () => {
   expect(intervalNote).toBe("G#4");
 });
 
+test("find Note out of scale with half step.", async () => {
+  const noteIntervalCalculator = new NoteIntervalCalculator("C", "major");
+
+  let intervalNote = noteIntervalCalculator.getNote("C4", 2.5);
+  expect(intervalNote).toBe("Eb4");
+});
+
+
 test('getOctaveFromNoteNumber', () => {
   const noteIntervalCalculator = new NoteIntervalCalculator("C", "major");
   let tmpNoteNumber1 = noteIntervalCalculator.getNoteNumber("C1");

@@ -8,9 +8,13 @@ export default class NoteIntervalCalculator {
     key: IMusicKey
     scale: IMusicScale
 
-    getNoteName(noteNumber: number): string {
+    getNoteName(noteNumber: number, halfStep: boolean): string {
+        let mod = 0;
+        if (halfStep) {
+            mod = 1;
+        }
         let octave: string = (Math.floor((noteNumber / 12)) - 1).toString();
-        let name: string = SINGLE_OCTAVE_NOTES[(noteNumber - 9) % 12];
+        let name: string = SINGLE_OCTAVE_NOTES[(noteNumber - 9) % 12 + mod];
         return `${name}${octave}`;
     }
 
@@ -99,12 +103,18 @@ export default class NoteIntervalCalculator {
     }
 
     getNote(startNote: string, interval: number) {
-        if (interval == 1) {
+        let halfStep = false;
+        if (interval === 1) {
             return startNote;
         }
+        if (interval % 1 === .5) {
+            halfStep = true;
+        }
+        console.log(`interval: ${interval}, halfStep: ${halfStep}`);
+        
         let noteNumber = this.getNoteNumber(startNote);
         let addedInterval = this.addIntervalToNote(noteNumber, interval);
-        return this.getNoteName(addedInterval);
+        return this.getNoteName(addedInterval, halfStep);
     }
 
     constructor(key: IMusicKey, scale: IMusicScale) {

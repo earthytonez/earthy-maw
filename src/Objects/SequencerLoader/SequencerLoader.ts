@@ -13,7 +13,7 @@ import IMusicKey from '../../Types/IMusicKey';
 import IToneJSDuration from '../../Types/IToneJSDuration';
 import IToneJSNote from '../../Types/IToneJSNote';
 
-import { makeObservable, observable, flow, action, computed } from "mobx"
+import { makeObservable, action, computed } from "mobx"
 
 class SequencerLoaderHolder {
     name: string;
@@ -27,22 +27,24 @@ class SequencerLoaderHolder {
     noteToPlay: NoteToPlay = new NoteToPlay();
     volumeToPlay: VolumeToPlay = new VolumeToPlay();
 
-    note(key: IMusicKey, scale: IMusicScale, beatNumber: number): IToneJSNote {
+    note(key: IMusicKey, scale: IMusicScale, chord: IMusicChord, beatNumber: number): IToneJSNote {
         let startNote = `${key}4`;
         let noteIntervalCalculator = new NoteIntervalCalculator(key, scale);
+
         if (this.noteNotInterval) {
             return this.noteToPlay.get();
         }
-        let interval = this.intervalToPlay.get(beatNumber);
+
+        let interval = this.intervalToPlay.get(beatNumber, chord);
         if (!interval) {
-            console.warn("No Interval Found");
             return startNote;
         }
+
         return noteIntervalCalculator.getNote(startNote, interval);
     }
 
-    volume(): number {
-        return 0;
+    volume(beatNumber: number): number {
+        return 0 * beatNumber;
     }
 }
 
@@ -59,7 +61,7 @@ export default class SequencerLoader {
     }
 
     measureBeat(beatNumber: number) {
-        return (beatNumber - 1) % this.total_length;
+        return (beatNumber) % this.total_length;
     }
 
     duration(beatNumber: number): IToneJSDuration {
@@ -70,8 +72,8 @@ export default class SequencerLoader {
         return this.sequencerHolder.volume(this.measureBeat(beatNumber));
     }
 
-    note(key: IMusicKey, scale: IMusicScale, beatNumber: number): IToneJSNote {
-        return this.sequencerHolder.note(key, scale, this.measureBeat(beatNumber));
+    note(key: IMusicKey, scale: IMusicScale, chord: IMusicChord, beatNumber: number): IToneJSNote {
+        return this.sequencerHolder.note(key, scale, chord, this.measureBeat(beatNumber));
     }
 
     get rhythm_length(): number {

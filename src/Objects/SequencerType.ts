@@ -1,29 +1,22 @@
 import Placeable from "./Placeable.ts";
 import Synthesizer from "./Synthesizer.ts";
 
-import * as Tone from "tone";
-
 import {
   runInAction,
   makeObservable,
   observable,
-  flow,
-  action,
-  computed,
 } from "mobx";
 
-import { SequencerLoader, TriggerWhen } from "./SequencerLoader/index.ts";
+import { SequencerLoader, TriggerWhen } from "./SequencerLoader/index";
 
-import IPlayParams from "../Types/IPlayParams";
+import { info } from "../Util/logger";
 
-import { debug, info, warn } from "../Util/logger.ts";
-
-const OneTwo: string = require("./Sequencers/OneTwo");
-const FourOTFloor: string = require("./Sequencers/FourOTFloor");
-const OffBeatFour: string = require("./Sequencers/OffBeatFour");
-const HiHat: string = require("./Sequencers/HiHat");
-const SimpleDrone: string = require("./Sequencers/SimpleDrone");
-const ThreeFour: string = require("./Sequencers/ThreeFour");
+const OneTwo: string = require("./Sequencer/Definitions/OneTwo");
+const FourOTFloor: string = require("./Sequencer/Definitions/FourOTFloor");
+const OffBeatFour: string = require("./Sequencer/Definitions/OffBeatFour");
+const HiHat: string = require("./Sequencer/Definitions/HiHat");
+const SimpleDrone: string = require("./Sequencer/Definitions/SimpleDrone");
+const ThreeFour: string = require("./Sequencer/Definitions/ThreeFour");
 
 export default class Sequencer extends Placeable {
   id: number;
@@ -110,7 +103,7 @@ export default class Sequencer extends Placeable {
     return this.sequencerLoader.type;
   }
 
-  constructor(type: string, id: number, songBeatNumber: number) {
+  constructor(type: string, id: number) {
     super();
 
     this.id = id;

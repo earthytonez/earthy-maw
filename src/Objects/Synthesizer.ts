@@ -1,8 +1,11 @@
 import Placeable from "./Placeable.ts";
 
-export default class Synthesizer extends Placeable {
+export default abstract class Synthesizer extends Placeable {
     machineType: string = "Synthesizer";
     loading: boolean = true;
+
+    abstract play();
+
     setLoading(loading: boolean) {
         this.loading = loading;
       }

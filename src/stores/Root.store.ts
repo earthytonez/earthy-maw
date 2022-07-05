@@ -23,6 +23,7 @@ export default class RootStore {
   }
 
   repeatLoop(time) {
+    this.musicFeaturesStore.changeFeatures();
     const tracks = this.trackStore.tracks;
 
       if (tracks.length <= 0) return;

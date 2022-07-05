@@ -13,11 +13,13 @@ export default class UIStateStore {
       this.objectEditIsOpen = false;
       return;
     }
+
     this.objectEditTrack = machineTrack;
     this.objectEditing = machineSlug;
     this.objectEditType = machineType;
-    console.log(`Edit Panel for ${this.objectEditing} ${this.objectEditType} is ${this.objectEditIsOpen}`);
+
     this.objectEditIsOpen = !this.objectEditIsOpen;
+    console.log(`Edit Panel for ${this.objectEditing} ${this.objectEditType} is ${this.objectEditIsOpen}`);
   }
     
   constructor() {

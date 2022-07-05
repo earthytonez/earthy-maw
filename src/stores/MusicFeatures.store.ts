@@ -1,7 +1,9 @@
-import { action, autorun, observable, makeObservable } from "mobx";
 import * as Tone from "tone";
+import { action, autorun, observable, makeObservable } from "mobx";
 
-import { debug, info } from "../Util/logger.ts";
+import RootStore from '../stores/Root.store';
+
+import { info } from "../Util/logger";
 
 export default class MusicFeaturesStore {
   audioContext: any;
@@ -23,22 +25,40 @@ export default class MusicFeaturesStore {
   play: boolean = false;
   beatNumber: number = 1;
 
+  greaterMusicSectionLength(): number {
+    if (!this.musicSectionLengthOnDeck) return this.musicSectionLength;
+    if (this.musicSectionLength > this.musicSectionLengthOnDeck) {
+      return this.musicSectionLength;
+    }
+    return this.musicSectionLengthOnDeck;
+  }
+
+  changeFeatures() {
+    if (this.beatNumber % this.greaterMusicSectionLength() === 0) {
+      info("MUSIC_FEATURES", "Changing Features!")
+      if (this.musicKeyOnDeck) this.musicKey = this.musicKeyOnDeck;
+      if (this.musicScaleOnDeck) this.musicScale = this.musicScaleOnDeck;
+      if (this.musicChordOnDeck) this.musicChord = this.musicChordOnDeck;
+      if (this.musicChordProgressionOnDeck) this.musicChordProgression = this.musicChordProgressionOnDeck;
+      if (this.musicSectionLengthOnDeck) this.musicSectionLength = this.musicSectionLengthOnDeck;
+    } 
+  }
+
   incrementBeatNumber() {
     this.beatNumber++;
   }
 
   setPlay(newValue: boolean) {
     if (newValue === true) {
-      info("Stopping Tone.Transport");
+      info("MUSIC_FEATUERS", "Stopping Tone.Transport");
       Tone.start();
       Tone.Transport.start();
       Tone.context.resume();
     } else {
-      info("Starting Tone.Transport");
+      info("MUSIC_FEATUERS", "Starting Tone.Transport");
       Tone.Transport.stop();
     }
     this.play = newValue;
-    console.log(this.play);
   }
 
   playPause() {
@@ -118,7 +138,8 @@ export default class MusicFeaturesStore {
       setKey: action.bound,
       setChord: action.bound,
       setScale: action.bound,
-      incrementBeatNumber: action.bound
+      incrementBeatNumber: action.bound,
+      changeFeatures: action.bound
     });
     this.audioContext = audioContext;
     this.rootStore = rootStore;

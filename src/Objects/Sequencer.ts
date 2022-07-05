@@ -19,12 +19,13 @@ import MusicFeaturesStore from "../stores/MusicFeatures.store";
 
 import Synthesizer from "./Synthesizer";
 
-const OneTwo: string = require("./Sequencers/OneTwo");
-const ThreeFour: string = require("./Sequencers/ThreeFour");
-const FourOTFloor: string = require("./Sequencers/FourOTFloor");
-const OffBeatFour: string = require("./Sequencers/OffBeatFour");
-const HiHat: string = require("./Sequencers/HiHat");
-const SimpleDrone: string = require("./Sequencers/SimpleDrone");
+const OneTwo: string = require("./Sequencer/Definitions/OneTwo");
+const SimpleArpeggiator: string = require("./Sequencer/Definitions/SimpleArpeggiator");
+const ThreeFour: string = require("./Sequencer/Definitions/ThreeFour");
+const FourOTFloor: string = require("./Sequencer/Definitions/FourOTFloor");
+const OffBeatFour: string = require("./Sequencer/Definitions/OffBeatFour");
+const HiHat: string = require("./Sequencer/Definitions/HiHat");
+const SimpleDrone: string = require("./Sequencer/Definitions/SimpleDrone");
 
 export default class Sequencer extends SequencerType {
   id: number;
@@ -84,7 +85,7 @@ toJSON() {
 
   bindSynth(synth: Synthesizer) {
     this.boundSynthesizer = synth;
-    this.setAwaitBuffers();
+    // this.setAwaitBuffers();
     debug("SEQUENCER", `Bound Synthesizer: ${synth}`, this.boundSynthesizer);
   }
 
@@ -94,6 +95,15 @@ toJSON() {
 
   editParameters(): ISequencerParameters {
     return [
+      {
+        name: "TriggerSet",
+        field: "chosenTriggerParameterSet",
+        fieldType: "arraySelector",
+        fieldOptions: {
+          options: [3, 4, 5, 6, 7, 8],
+          current: this.droneLength
+        },
+      },
       {
         name: "Drone Length",
         field: "droneLength",
@@ -148,43 +158,42 @@ toJSON() {
           current: this.octaveRangeLow
         },
       },
-
     ];
   }
 
-  setAwaitBuffers() {
-    if (this.awaitBuffers !== undefined) {
-      return;
-    }
-    if (this.sequencerType() === "drone") {
-      this.awaitBuffers = Promise.all([
-        this.bounceChord(
-          ["A#6", "F7", "A#7", "D#8", "F8"],
-          (params) => this.boundSynthesizer.play(params),
-          3,
-          3
-        ),
-        this.bounceChord(
-          ["D#5", "A#5", "C6", "G6", "A#6", "C9"],
-          (params) => this.boundSynthesizer.play(params),
-          3,
-          3
-        ),
-        this.bounceChord(
-          ["F6", "C6", "D#7", "A#7", "C8"],
-          (params) => this.boundSynthesizer.play(params),
-          3,
-          3
-        ),
-        this.bounceChord(
-          ["A#5", "D#6", "G6", "C7", "D#7", "G8"],
-          (params) => this.boundSynthesizer.play(params),
-          3,
-          3
-        ),
-      ]);
-    }
-  }
+  // setAwaitBuffers() {
+  //   if (this.awaitBuffers !== undefined) {
+  //     return;
+  //   }
+  //   if (this.sequencerType() === "drone") {
+  //     this.awaitBuffers = Promise.all([
+  //       this.bounceChord(
+  //         ["A#6", "F7", "A#7", "D#8", "F8"],
+  //         (params) => this.boundSynthesizer.play(params),
+  //         3,
+  //         3
+  //       ),
+  //       this.bounceChord(
+  //         ["D#5", "A#5", "C6", "G6", "A#6", "C9"],
+  //         (params) => this.boundSynthesizer.play(params),
+  //         3,
+  //         3
+  //       ),
+  //       this.bounceChord(
+  //         ["F6", "C6", "D#7", "A#7", "C8"],
+  //         (params) => this.boundSynthesizer.play(params),
+  //         3,
+  //         3
+  //       ),
+  //       this.bounceChord(
+  //         ["A#5", "D#6", "G6", "C7", "D#7", "G8"],
+  //         (params) => this.boundSynthesizer.play(params),
+  //         3,
+  //         3
+  //       ),
+  //     ]);
+  //   }
+  // }
 
   async load() {
     info(
@@ -220,7 +229,6 @@ toJSON() {
         let seqD = await fetch(SimpleDrone);
         let seqDText = await seqD.text();
         runInAction(() => {
-          this.name = "Got This Far...";
           this.sequencerLoader = new SequencerLoader(seqDText);
         });
         break;
@@ -238,7 +246,14 @@ toJSON() {
           this.sequencerLoader = new SequencerLoader(seqFText);
         });
         break;  
-      default:
+      case "SimpleArpeggiator":
+        let seqG = await fetch(SimpleArpeggiator);
+        let seqGText = await seqG.text();
+        runInAction(() => {
+          this.sequencerLoader = new SequencerLoader(seqGText);
+        });
+        break;
+        default:
     }
 
     this.sequencerLoader.load();
@@ -255,19 +270,34 @@ toJSON() {
     });
   }
 
+  /*
+   * This is a simple step sequencer, that enables you to sequence based on either a list or a mathematical formula.
+   * This is only for triggers/gates it does not determine what note to play.
+   */
   playEveryX(beatNumber: number, parameters: PlayParameters): boolean {
+    let playEveryX = new PlayEveryX(this.sequencerLoader);
+    let val = playEveryX.run(beatNumber, parameters);    
+    debug("PLAY_EVERY_X", `sequencer Type: ${this.sequencerType()}, val: ${val}`, parameters);
+    return val;
+  }
+
+  /*
+   * For a given step, this determines if the the step should trigger the synthesizer.  This will mainly call different
+   * kinds of sequencers, such as a step sequencer to determine if it should play.
+   * 
+   * Step Sequencer
+   * Euclidian Sequencer
+   * Drone Sequencer?
+   */
+  shouldPlay(beatNumber: number): boolean {
     if (!this.boundSynthesizer) {
       return false;
     }
 
-    let playEveryX = new PlayEveryX(this.sequencerLoader);
-    return playEveryX.run(beatNumber, parameters);    
-  }
-
-  shouldPlay(beatNumber: number): boolean {
     if (!this.triggerWhen) {
       return false;
     }
+
     switch (this.triggerWhen.type) {
       case "everyX":
         return this.playEveryX(beatNumber, this.triggerWhen.parameterSets[this.chosenTriggerParameterSet], );
@@ -275,13 +305,19 @@ toJSON() {
         return true;
     }
   }
+  
+  /* 
+    This triggers the volume sequencer.  Some sequencers may have steps with different volume levels.
+  */
 
   volume(beatNumber: number): number {
     return this.sequencerLoader.volume(beatNumber);
   }
 
-  note(key: string, scale: string, beatNumber: number): number {
-    return this.sequencerLoader.note(key, scale, beatNumber);
+  /* This triggers the note sequencer.*/
+
+  note(key: string, scale: string, chord: string, beatNumber: number): number {
+    return this.sequencerLoader.note(key, scale, chord, beatNumber);
   }
 
   bounceChord(notes, synthFn, playDuration, tailDuration) {
@@ -308,7 +344,21 @@ toJSON() {
     return chordDef.notes
   }
 
-  drone(key, chord, beatNumber: number, time: any) {
+  arpParams(
+    key: string,
+    scale: string,
+    chord: string,
+    beatNumber: number,
+    time: any
+  ): IPlayParams {
+    return {
+      volume: this.volume(beatNumber),
+      note: this.note(key, scale, chord, beatNumber),
+      time: time,
+    };
+  }
+
+  droneParams(key, chord, beatNumber: number, time: any): any {
     info("DRONE_SEQUENCER", "Starting Drone");
     // this.setAwaitBuffers();
 
@@ -316,22 +366,22 @@ toJSON() {
     playParams.lengthSeconds = this.droneLength;
     playParams.tailSeconds = this.droneTail;
 
-    console.log(">>>>>>>>>>>>>>");
     let chordNotes = this.getChord(key, chord);
-    console.log(chordNotes);
 
     let octave = this.octaveRangeHigh;
+
     let rand = Math.floor(Math.random() * (4 - 1 + 1) + 4);
     if (rand < 4) {
       octave = this.octaveRangeLow;
     }
 
     let toneFrequencyChord = chordNotes.map((note: string) => { return Tone.Frequency(`${note}${octave}`) });
-    console.log(toneFrequencyChord);
     let _ = toneFrequencyChord.sort(() => Math.random() - 0.5)[0];
     playParams.notes = toneFrequencyChord;
-    // playParams.note = playParams.notes[0];
-    console.log(playParams);
+
+    debug("Playing Drone Sequencer", "Getting Buffers", playParams);
+    return playParams;
+
     // playParams.notes = [
     //   [
     //     Tone.Frequency("C2"),
@@ -364,8 +414,6 @@ toJSON() {
     //     Tone.Frequency("B3"),
     //   ],
     // ].sort(() => Math.random() - 0.5)[0];
-    debug("Playing Drone Sequencer", "Getting Buffers", playParams);
-    this.boundSynthesizer.play(playParams);
     // this.awaitBuffers.then((buffers) => {
     //   debug("DRONE_SEQUENCER", "Getting Buffers", buffers);
     //   let patternCtrl = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
@@ -395,12 +443,13 @@ toJSON() {
   playParams(
     key: string,
     scale: string,
+    chord: string,
     beatNumber: number,
     time: any
   ): IPlayParams {
     return {
       volume: this.volume(beatNumber),
-      note: this.note(key, scale, beatNumber),
+      note: this.note(key, scale, chord, beatNumber),
       time: time,
     };
   }
@@ -409,23 +458,37 @@ toJSON() {
     return this.sequencerLoader.type;
   }
 
+  /* This action is triggered externall to possibly play a sequencer */
   async play(key: string, scale: string, chord: string, beatNumber: number, time: any) {
     if (!this.boundSynthesizer) {
       return // debug("SEQUENCER", "No Bound Synthesizer");
     }
+    
+    debug("SEQUENCER", `shouldPlay? ${this.sequencerType()}`);
+
     if (this.shouldPlay(beatNumber)) {
       if (this.sequencerType() === "drone") {
-        return this.drone(key, chord, beatNumber, time);
+        console.log("sequencerType Drone");
+        return this.boundSynthesizer.play(
+          this.droneParams(key, chord, beatNumber, time)
+        );
+      } 
+
+      if (this.sequencerType() === "arpeggiator") {
+        console.log(`sequencerType Arpeggiator ${beatNumber}`);
+        return this.boundSynthesizer.play(
+          this.arpParams(key, scale, chord, beatNumber, time)
+        );
       } 
 
       return this.boundSynthesizer.play(
-        this.playParams(key, scale, beatNumber, time)
+        this.playParams(key, scale, chord, beatNumber, time)
       );
     }
   }
 
   constructor(type: string, audioContext: any, musicFeaturesStore: MusicFeaturesStore) {
-    super();
+    super(type, 0);
 
     this.audioContext = audioContext;
     this.musicFeaturesStore = musicFeaturesStore;

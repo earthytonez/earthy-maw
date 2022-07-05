@@ -1,6 +1,6 @@
 import { debug, info } from "../../Util/logger.ts";
 
-interface TriggerParameters {
+export interface ITriggerParameters {
   triggerType: "stepList" | "stepInterval";
   stepInterval?: number;
   on?: number;

@@ -18,18 +18,17 @@ export default class Track {
   vol: Tone.Volume;
   id: number;
   slug: string;
+  muted: boolean = false;
 
   musicFeaturesStore: MusicFeaturesStore;
   trackStore: TrackStore;
 
   remove = () => {
-    console.log("Clicked Remove Track");
     this.trackStore.removeTrack(this.id);
   };
 
   raiseVolume = () => {
     this.vol.volume.value = this.vol.volume.value + 1;
-    console.log(this.vol.volume.value);
   };
 
   lowerVolume = () => {
@@ -42,6 +41,7 @@ export default class Track {
 
   toggleMute = () => {
     this.vol.mute = !this.vol.mute;
+    this.muted = this.vol.mute;
   };
 
   get volume() {
@@ -53,6 +53,7 @@ export default class Track {
     if (!this.musicFeaturesStore) {
       return error("this.musicFeaturesStore is not set");
     }
+
     await this.sequencer.play(
       this.musicFeaturesStore.musicKey,
       this.musicFeaturesStore.musicScale,
@@ -150,7 +151,7 @@ export default class Track {
   ) {
     Tone.setContext(audioContext);
     if (!musicFeaturesStore) {
-      throw("musicFeaturesStore must be set");
+      throw(new Error("musicFeaturesStore must be set"));
     }
     
     this.musicFeaturesStore = musicFeaturesStore;
@@ -164,19 +165,20 @@ export default class Track {
     this.sequencer = undefined;
     this.synthesizer = undefined;
 
-
     makeObservable(this, {
       id: observable,
       slug: observable,
       sequencer: observable,
       synthesizer: observable,
       arranger: observable,
+      muted: observable,
+      vol: observable,
       volume: computed,
       raiseVolume: action.bound,
       setVolume: action.bound,
       setLoading: action.bound,
       lowerVolume: action.bound,
-      vol: observable,
+      toggleMute: action.bound,
       assignMachine: action.bound,
       // fetch: flow
     });

@@ -18,11 +18,14 @@ MMF (Minimum Marketable Features)
 2. The 3/4 from Misanthropic Glee. -- Can it also be the 3/4 from loop build 2?
 3. Simple Arpeggiator
 4. Complex Arpeggiator
+5. Time based Modulation
+6. Random/Chaos Arpeggiator/bleeps and bloops
 
 Productionalization:
 1. Undo delete track
 2. Rock solid save track.
 3. Export track to json.    
+4. Volume/Mute Visual Feedback.
 
 
 ToDo:

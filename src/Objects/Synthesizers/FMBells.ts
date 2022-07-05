@@ -1,11 +1,10 @@
+import * as Tone from "tone";
+
 import Synthesizer from "../Synthesizer.ts";
 
-import * as Tone from "tone";
 import IPlayParams from "../../Types/IPlayParams";
 
 import { Frequency } from "tone/build/esm/core/type/Units";
-
-import { debug } from '../../Util/logger.ts';
 
 export default class FMBells extends Synthesizer {
   name: string = "FM Bells";

@@ -16,8 +16,6 @@ const OSCILLATOR_TYPES: OscillatorType[] = [
   "sawtooth",
 ];
 
-let reverbDecayMod = 4;
-
 export default class FMDrone extends Synthesizer {
   name: string = "Waveform";
   slug: string = "waveform";
