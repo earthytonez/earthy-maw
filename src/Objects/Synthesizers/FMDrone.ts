@@ -30,7 +30,7 @@ export default class FMDrone extends Synthesizer {
     this[parameter] = value;
   }
 
-  editParameters() {
+  get editParameters() {
     return [
       {
         name: "Oscillator Type",

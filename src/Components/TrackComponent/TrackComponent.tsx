@@ -25,7 +25,7 @@ const TrackComponent = observer(({ track }: TrackComponentProps) => {
           <ListItem sx={{ pl: 2, width: "15%", height: "100%" }}>
             <TrackSettingsComponent track={track} />
           </ListItem>
-          <ListItem
+          {/* <ListItem
             sx={{
               margin: 0,
               pt: 0,
@@ -43,7 +43,7 @@ const TrackComponent = observer(({ track }: TrackComponentProps) => {
               title="Arranger"
               placeholder="Drop Arranger Here"
             ></DroppableTrackElement>
-          </ListItem>
+          </ListItem> */}
           <ListItem
             sx={{
               margin: 0,

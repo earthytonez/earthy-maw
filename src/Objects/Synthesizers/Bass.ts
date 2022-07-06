@@ -24,15 +24,23 @@ export default class Bass extends Synthesizer {
   }
 
   play(params: IPlayParams) {
-    this.synth.triggerAttackRelease("C1", "8n", params.time, .6);
+    this.synth.triggerAttackRelease("C1", "2n", params.time, .6);
     debug("Bass Context: ", this.synth);
   }
 
   constructor(vol: Volume) {
     super();
-    this.synth = new Tone.Synth().toDestination()
+    this.synth = new Tone.Synth({
+      envelope: {
+      attack: 0.1,
+      decay: 0,
+      sustain: 0,
+      release: .2
+    }});
+    
     this.synth.oscillator.type = "square"
-    this.filter = new Tone.Filter(400, "lowpass").toDestination();
+
+    this.filter = new Tone.Filter(400, "lowpass");
     this.synth.connect(this.filter);
 
     if (vol) {

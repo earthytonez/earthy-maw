@@ -27,6 +27,8 @@ theme.typography.h1 = {
   fontSize: "2rem",
 };
 
+console.log(filesTheme);
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <StoreProvider>

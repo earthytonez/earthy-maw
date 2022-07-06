@@ -158,7 +158,7 @@ const MachineEditDrawer = observer(() => {
 
   if (objectEditIsOpen) {
     editParameters =
-      store.trackStore.tracks[objectEditTrack][objectEditType].editParameters();
+      store.trackStore.tracks[objectEditTrack][objectEditType].editParameters;
     editParameter =
       store.trackStore.tracks[objectEditTrack][objectEditType].changeParameter;
     incrementParameter =

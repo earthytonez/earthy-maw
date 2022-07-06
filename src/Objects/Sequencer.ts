@@ -102,7 +102,7 @@ toJSON() {
     this[parameter] = value;
   }
 
-  editParameters(): ISequencerParameters {
+  get editParameters(): ISequencerParameters {
     return [
       {
         name: "TriggerSet",

@@ -1,113 +1,143 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 
-import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "@mui/material/Button";
 
 import Box from "@mui/joy/Box";
 import IconButton from "@mui/joy/IconButton";
-import Typography from "@mui/joy/Typography";
 import MenuIcon from "@mui/icons-material/Menu";
-
+import Slider from "@mui/joy/Slider";
+import Typography from "@mui/joy/Typography";
 
 import Track from "../../Objects/Track";
 
-import Menu from './TrackSettingsMenu';
+import Menu from "./TrackSettingsMenu";
 
 interface VolumeComponentProps {
   track: Track;
   raiseVolume: () => null;
   lowerVolume: () => null;
+  setVolume: () => null;
   toggleMute: () => null;
 }
 
-const VolumeComponent = observer(
-  ({ track }: VolumeComponentProps) => {
-    // const store = useStore();
-    const { volume, muted } = track;
-    console.log(muted);
-    
-    return (
-      <ButtonGroup size="small" aria-label="small outlined button group">
-        <Button variant="outlined" size="small" onClick={track.raiseVolume}>
-          +
-        </Button>
-        <Button variant="contained" disabled>
-          {Math.round(track.volume)}
-        </Button>
-        <Button variant="outlined" size="small" onClick={track.lowerVolume}>
-          -
-        </Button>
-        <Button variant={muted ? "contained" : "outlined"} size="small" onClick={track.toggleMute}>
-          Mute
-        </Button>
-      </ButtonGroup>
-    );
+const VolumeComponent = observer(({ track }: VolumeComponentProps) => {
+  // const store = useStore();
+  const { volume, setVolume, muted } = track;
+  console.log(muted);
+
+  const marks = [
+    {
+      value: 0,
+      label: "",
+    },
+    {
+      value: 6,
+      label: "6db",
+    },
+    {
+      value: -100,
+      label: "-60db",
+    },
+  ];
+
+  function valueText(value: number) {
+    return `${value}db`;
   }
-);
-
-interface ITrackSettingsComponentProps {
-  track: Track;
-}
-
-const TrackSettingsComponent = observer(({ track }: ITrackSettingsComponentProps) => {
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   return (
-    <Box sx={{ height: "100%" }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          mb: 0.5,
-        }}
-      >
-        <Typography
-          textColor="neutral.500"
-          fontWeight={700}
-          sx={{
-            fontSize: "10px",
-            textTransform: "uppercase",
-            letterSpacing: ".1rem",
-          }}
+    <Box sx={{ width: "200px" }}>
+      <Box>
+        <Slider
+          aria-label="Custom marks"
+          defaultValue={volume}
+          getAriaValueText={valueText}
+          step={1}
+          onChange={(ev, value) => setVolume(value)}
+          valueLabelDisplay="auto"
+          min={-100}
+          max={6}
+          marks={marks}
+        />
+      </Box>
+      <Box>
+        <Button
+          variant={muted ? "contained" : "outlined"}
+          size="small"
+          onClick={track.toggleMute}
         >
-          Track {track.id + 1}
-        </Typography>
-      </Box>
-      <Box>
-        <VolumeComponent
-          track={track}
-          raiseVolume={track.raiseVolume}
-          lowerVolume={track.lowerVolume}
-        />
-      </Box>
-      <Box>
-        <Menu
-          id="app-selector"
-          control={
-            <IconButton
-              size="sm"
-              variant="outlined"
-              color="primary"
-              aria-label="Apps"
-            >
-              <MenuIcon />
-            </IconButton>
-          }
-          menus={[
-            {
-              label: "Delete",
-              onClick: () => { track.remove() }
-            },
-          ]}
-        />
+          Mute
+        </Button>
       </Box>
     </Box>
   );
 });
 
-export default TrackSettingsComponent;
+interface ITrackSettingsComponentProps {
+  track: Track;
+}
 
+const TrackSettingsComponent = observer(
+  ({ track }: ITrackSettingsComponentProps) => {
+    const [drawerOpen, setDrawerOpen] = React.useState(false);
+
+    return (
+      <Box sx={{ height: "100%" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            mb: 0.5,
+          }}
+        >
+          <Typography
+            textColor="neutral.500"
+            fontWeight={700}
+            sx={{
+              fontSize: "10px",
+              textTransform: "uppercase",
+              letterSpacing: ".1rem",
+            }}
+          >
+            Track {track.id + 1}
+          </Typography>
+        </Box>
+        <Box>
+          <VolumeComponent
+            track={track}
+            raiseVolume={track.raiseVolume}
+            lowerVolume={track.lowerVolume}
+          />
+        </Box>
+        <Box>
+          <Menu
+            id="app-selector"
+            control={
+              <IconButton
+                size="sm"
+                variant="outlined"
+                color="primary"
+                aria-label="Apps"
+              >
+                <MenuIcon />
+              </IconButton>
+            }
+            menus={[
+              {
+                label: "Delete",
+                onClick: () => {
+                  track.remove();
+                },
+              },
+            ]}
+          />
+        </Box>
+      </Box>
+    );
+  }
+);
+
+export default TrackSettingsComponent;
 
 // const DroppableTrackElement = observer(
 //   ({
