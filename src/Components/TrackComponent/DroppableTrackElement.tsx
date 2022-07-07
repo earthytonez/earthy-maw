@@ -128,7 +128,6 @@ const DroppableTrackElement = observer(
             </CardContent>
             <CardOverflow
               variant="soft"
-              color="primary"
               sx={{
                 px: 0.2,
                 borderRadius: 0,

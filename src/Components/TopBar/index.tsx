@@ -48,7 +48,6 @@ const TopBar = observer(() => {
         id="toggle-mode"
         size="sm"
         variant="outlined"
-        color="primary"
         onClick={playPause}
       >
         {play ? <PauseIcon /> : <PlayArrowIcon />}
@@ -74,7 +73,6 @@ const TopBar = observer(() => {
         id="toggle-mode"
         size="sm"
         variant="outlined"
-        color="primary"
         onClick={() => {
           if (mode === "light") {
             colorMode.toggleColorMode();

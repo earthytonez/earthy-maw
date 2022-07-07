@@ -116,7 +116,6 @@ const TrackSettingsComponent = observer(
               <IconButton
                 size="sm"
                 variant="outlined"
-                color="primary"
                 aria-label="Apps"
               >
                 <MenuIcon />
