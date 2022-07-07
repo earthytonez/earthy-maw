@@ -1,7 +1,12 @@
+import React from "react";
 import Box from "@mui/material/Box";
 
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import Paper from "@mui/material/Paper";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import CardActions from "@mui/material/CardActions";
+import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 
 import { styled } from "@mui/material/styles";
@@ -28,14 +33,26 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  }));
-  
+// const Item = styled(Paper)(({ theme }) => ({
+//     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+//     ...theme.typography.body2,
+//     padding: theme.spacing(1),
+//     textAlign: "center",
+//     color: theme.palette.text.secondary,
+//   }));
+
+const MachineCard = ({ id, name }: { id: string; name: string }) => {
+  return (
+    <React.Fragment>
+      <CardContent>
+        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+          {name}
+        </Typography>
+      </CardContent>
+    </React.Fragment>
+  );
+};
+
 interface MachineDrawerProps {
   machines: Array<any>;
   index: number;
@@ -55,9 +72,8 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   background: isDragging ? "lightgreen" : "grey",
 
   // styles we need to apply on draggables
-  ...draggableStyle
+  ...draggableStyle,
 });
-
 
 export default function MachineDrawer(props: MachineDrawerProps): JSX {
   return (
@@ -86,9 +102,12 @@ export default function MachineDrawer(props: MachineDrawerProps): JSX {
                           snapshot.isDragging,
                           provided.draggableProps.style
                         )}
-
                       >
-                        <Item id={machine.id}>{machine.name}</Item>
+                        <Box sx={{ minWidth: 275 }}>
+                          <Card variant="outlined">
+                            <MachineCard id={machine.id} name={machine.name} />
+                          </Card>
+                        </Box>
                       </div>
                     )}
                   </Draggable>

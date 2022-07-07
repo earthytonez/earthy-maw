@@ -1,21 +1,26 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import InputLabel from "@mui/material/InputLabel";
-import FormGroup from "@mui/material/FormGroup";
-import MenuIcon from "@mui/icons-material/Menu";
-import Drawer from "@mui/material/Drawer";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-
-import Layout from "./Layout.tsx";
 import { observer } from "mobx-react-lite";
 
+import Box from "@mui/material/Box";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import FormGroup from "@mui/material/FormGroup";
+import Drawer from "@mui/material/Drawer";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Toolbar from "@mui/material/Toolbar";
+
+import MenuIcon from "@mui/icons-material/Menu";
+import MoreIcon from "@mui/icons-material/More";
+
+import Layout from "./Layout.tsx";
+
 import { useStore } from "../../stores/useStore.tsx";
+import { useUIStore } from "../../stores/UI/useUIStore";
 
 import MachineDrawer from "./MachineDrawer.tsx";
 import {
@@ -39,6 +44,9 @@ interface BottomBarProps {
 
 const BottomBar = observer((props: BottomBarProps) => {
   const store = useStore();
+
+  const uiStore = useUIStore();
+  const { toggleObjectEdit } = uiStore;
 
   const { musicChord, setChord, musicScale, setScale, musicKey, setKey } =
     store.musicFeaturesStore;
@@ -124,103 +132,112 @@ const BottomBar = observer((props: BottomBarProps) => {
 
   let anchor = "bottom";
 
-  return (
-      <React.Fragment>
-        <Layout.Footer>
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawer("bottom", true)}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Box sx={{ flexGrow: 1 }}>
-              <FormGroup style={flexContainer}>
-                <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-                  <InputLabel id="key-label">Key</InputLabel>
-                  <Select
-                    labelId="key-label"
-                    id="key-select"
-                    value={musicKey}
-                    label="Key"
-                    onChange={(event) => {
-                      console.log(event.target.value);
-                      setKey(event.target.value);
-                    }}
-                  >
-                    {MUSIC_THEORY_KEYS.map((keyOption: string, i: number) => {
-                      return (
-                        <MenuItem key={i} value={keyOption}>
-                          {keyOption}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
 
-                <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-                  <InputLabel id="scale-label">Scale</InputLabel>
-                  <Select
-                    labelId="scale-label"
-                    id="scale-select"
-                    value={musicScale}
-                    label="Scale"
-                    onChange={(event) => {
-                      console.log(event.target.value);
-                      setScale(event.target.value);
-                    }}
-                  >
-                    {MUSIC_THEORY_SCALES.map(
-                      (scaleOption: string, i: number) => {
-                        return (
-                          <MenuItem key={i} value={scaleOption}>
-                            {scaleOption}
-                          </MenuItem>
-                        );
-                      }
-                    )}
-                  </Select>
-                </FormControl>
-                <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-                  <InputLabel id="scale-label">Chord</InputLabel>
-                  <Select
-                    labelId="scale-label"
-                    id="scale-select"
-                    value={musicChord}
-                    label="Chord"
-                    onChange={(event) => {
-                      console.log(event.target.value);
-                      setChord(event.target.value);
-                    }}
-                  >
-                    {MUSIC_THEORY_CHORDS.map(
-                      (chordOption: string, i: number) => {
-                        return (
-                          <MenuItem key={i} value={chordOption}>
-                            {chordOption}
-                          </MenuItem>
-                        );
-                      }
-                    )}
-                  </Select>
-                </FormControl>
-              </FormGroup>
-            </Box>
-            <Box sx={{ flexGrow: 1 }} />
-          </Toolbar>
-          <div></div>
-          {/* </AppBar> */}
-          <Drawer
-            anchor={anchor}
-            variant="persistent"
-            open={state[anchor]}
-            onClose={toggleDrawer(anchor, false)}
+
+  return (
+    <React.Fragment>
+      <Layout.Footer>
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={toggleDrawer("bottom", true)}
           >
-            {list(anchor)}
-          </Drawer>
-        </Layout.Footer>
-      </React.Fragment>
+            <MenuIcon />
+          </IconButton>
+          <Box sx={{ flexGrow: 1 }}>
+            <FormGroup style={flexContainer}>
+              <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
+                <InputLabel id="key-label">Key</InputLabel>
+                <Select
+                  labelId="key-label"
+                  id="key-select"
+                  value={musicKey}
+                  label="Key"
+                  onChange={(event) => {
+                    console.log(event.target.value);
+                    setKey(event.target.value);
+                  }}
+                >
+                  {MUSIC_THEORY_KEYS.map((keyOption: string, i: number) => {
+                    return (
+                      <MenuItem key={i} value={keyOption}>
+                        {keyOption}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+              <FormControl>
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={() =>
+                    toggleObjectEdit(true, "musicFeature", "musicFeature", "Key")
+                  }
+                  edge="end"
+                >
+                  <MoreIcon />
+                </IconButton>
+              </FormControl>
+
+              <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
+                <InputLabel id="scale-label">Scale</InputLabel>
+                <Select
+                  labelId="scale-label"
+                  id="scale-select"
+                  value={musicScale}
+                  label="Scale"
+                  onChange={(event) => {
+                    console.log(event.target.value);
+                    setScale(event.target.value);
+                  }}
+                >
+                  {MUSIC_THEORY_SCALES.map((scaleOption: string, i: number) => {
+                    return (
+                      <MenuItem key={i} value={scaleOption}>
+                        {scaleOption}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+              <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
+                <InputLabel id="scale-label">Chord</InputLabel>
+                <Select
+                  labelId="scale-label"
+                  id="scale-select"
+                  value={musicChord}
+                  label="Chord"
+                  onChange={(event) => {
+                    console.log(event.target.value);
+                    setChord(event.target.value);
+                  }}
+                >
+                  {MUSIC_THEORY_CHORDS.map((chordOption: string, i: number) => {
+                    return (
+                      <MenuItem key={i} value={chordOption}>
+                        {chordOption}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </FormGroup>
+          </Box>
+          <Box sx={{ flexGrow: 1 }} />
+        </Toolbar>
+        <div></div>
+        {/* </AppBar> */}
+        <Drawer
+          anchor={anchor}
+          variant="persistent"
+          open={state[anchor]}
+          onClose={toggleDrawer(anchor, false)}
+        >
+          {list(anchor)}
+        </Drawer>
+      </Layout.Footer>
+    </React.Fragment>
   );
 });
 
