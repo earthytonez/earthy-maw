@@ -9,8 +9,6 @@ import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 
-import { styled } from "@mui/material/styles";
-
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -32,14 +30,6 @@ function TabPanel(props: TabPanelProps) {
     </div>
   );
 }
-
-// const Item = styled(Paper)(({ theme }) => ({
-//     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-//     ...theme.typography.body2,
-//     padding: theme.spacing(1),
-//     textAlign: "center",
-//     color: theme.palette.text.secondary,
-//   }));
 
 const MachineCard = ({ id, name }: { id: string; name: string }) => {
   return (
