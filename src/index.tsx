@@ -14,12 +14,18 @@ import { CssVarsProvider } from "@mui/joy/styles";
 import filesTheme from "./theme.ts";
 
 const theme = createTheme({
-  palette: {
+  palette : {
     mode: "dark",
+    error: {
+      main: '#148C94',
+    },
     primary: {
       main: '#148C94',
     },
   },
+  zIndex: {
+    drawer: 1
+  }
 });
 
 theme.typography.h1 = {
