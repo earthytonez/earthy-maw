@@ -2,7 +2,6 @@ import * as React from "react";
 import { observer } from "mobx-react-lite";
 
 import Box from "@mui/material/Box";
-import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/joy/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";

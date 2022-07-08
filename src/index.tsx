@@ -1,13 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App.tsx";
+import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import { StoreProvider } from "./stores/useStore.tsx";
-import { UIStoreProvider } from "./stores/UI/useUIStore.tsx";
+import { StoreProvider } from "./stores/useStore";
+import { UIStoreProvider } from "./stores/UI/useUIStore";
 
 import { CssVarsProvider } from "@mui/joy/styles";
 

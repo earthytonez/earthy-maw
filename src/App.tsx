@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 
 import * as Tone from "tone";
@@ -6,10 +6,12 @@ import * as Tone from "tone";
 import Arranger from "./Objects/Arranger";
 import Sequencer from "./Objects/Sequencer";
 import SequencerType from "./Objects/SequencerType";
+import Track from "./Objects/Track";
 
 import BottomBar from "./Components/BottomBar/index";
 import TopBar from "./Components/TopBar/index";
 import TrackList from "./Components/TrackComponent/TrackListComponent";
+
 
 import { observer } from "mobx-react-lite";
 import { DragDropContext } from "react-beautiful-dnd";
