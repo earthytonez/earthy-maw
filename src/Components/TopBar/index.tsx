@@ -2,12 +2,13 @@ import * as React from "react";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 
-import TextField from "@mui/joy/TextField";
+import OutlinedInput from "@mui/material/OutlinedInput";
 
-import { useColorScheme } from "@mui/joy/styles";
-import Box from "@mui/joy/Box";
-import Typography from "@mui/joy/Typography";
-import IconButton from "@mui/joy/IconButton";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
 
 import { observer } from "mobx-react-lite";
 
@@ -17,9 +18,6 @@ import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import FindInPageRoundedIcon from "@mui/icons-material/FindInPageRounded";
 import MenuIcon from "@mui/icons-material/Menu";
 
-// custom
-import Layout from "./Layout.tsx";
-// import Navigation from './components/Navigation';
 
 import { useStore } from "../../stores/useStore.tsx";
 
@@ -27,7 +25,14 @@ type Anchor = "top" | "left" | "bottom" | "right";
 
 const TopBar = observer(() => {
   const store = useStore();
-  const { play, playPause, tempo, setTempo, musicSectionLength, setSectionLength } = store.musicFeaturesStore;
+  const {
+    play,
+    playPause,
+    tempo,
+    setTempo,
+    musicSectionLength,
+    setSectionLength,
+  } = store.musicFeaturesStore;
 
   const [state, setState] = React.useState({
     top: false,
@@ -56,11 +61,20 @@ const TopBar = observer(() => {
   }
 
   function ColorSchemeToggle() {
-    const { mode, setMode } = useColorScheme();
+    const [mode, setMode] = React.useState<PaletteMode>("light");
     const [mounted, setMounted] = React.useState(false);
-    const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 
-    const colorMode = React.useContext(ColorModeContext);
+    const colorMode = React.useMemo(
+      () => ({
+        // The dark mode switch would invoke this method
+        toggleColorMode: () => {
+          setMode((prevMode: PaletteMode) =>
+            prevMode === "light" ? "dark" : "light"
+          );
+        },
+      }),
+      []
+    );
 
     React.useEffect(() => {
       setMounted(true);
@@ -89,86 +103,90 @@ const TopBar = observer(() => {
   }
 
   return (
-      <React.Fragment>
-        <Layout.Header>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 1.5,
-            }}
-          >
-            <IconButton
-              variant="outlined"
-              size="sm"
-              onClick={() => setDrawerOpen(true)}
-              sx={{ display: { sm: "none" } }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <IconButton
-              size="sm"
-              variant="solid"
-              sx={{ display: { xs: "none", sm: "inline-flex" } }}
-            >
-              <FindInPageRoundedIcon />
-            </IconButton>
-            <Typography component="h1" fontWeight="xl">
-              Earthy MAW
-            </Typography>
-          </Box>
-          <PlayButtonToggle play={play} playPause={playPause} />
-          <Box sx={{ display: "flex", flexDirection: "row", gap: 1.5 }}>
-            <TextField
-              size="sm"
-              value={tempo}
-              onChange={setTempo}
-              endDecorator={
-                  <Typography
-                    fontWeight="lg"
-                    fontSize="sm"
-                    textColor="text.tertiary"
-                  >
-                    bpm
-                  </Typography>
-              }
-              sx={{
-                flexBasis: "100px",
-                display: {
-                  xs: "none",
-                  sm: "flex",
-                },
-              }}
-            />
-            <TextField
-              size="sm"
-              value={musicSectionLength}
-              onChange={setSectionLength}
-              endDecorator={
-                  <Typography
-                    fontWeight="lg"
-                    fontSize="sm"
-                    textColor="text.tertiary"
-                  >
-                    Section Length
-                  </Typography>
-              }
-              sx={{
-                flexBasis: "100px",
-                display: {
-                  xs: "none",
-                  sm: "flex",
-                },
-              }}
-            />
-          </Box>
+    <React.Fragment>
+      <AppBar>
+      <Toolbar>
 
-          <Box sx={{ display: "flex", flexDirection: "row", gap: 1.5 }}>
-            <ColorSchemeToggle />
-          </Box>
-        </Layout.Header>
-      </React.Fragment>  );
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 1.5,
+          }}
+        >
+          <IconButton
+            variant="outlined"
+            size="sm"
+            onClick={() => setDrawerOpen(true)}
+            sx={{ display: { sm: "none" } }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <IconButton
+            size="sm"
+            variant="solid"
+            sx={{ display: { xs: "none", sm: "inline-flex" } }}
+          >
+            <FindInPageRoundedIcon />
+          </IconButton>
+          <Typography component="h1" fontWeight="xl">
+            Earthy MAW
+          </Typography>
+        </Box>
+        <PlayButtonToggle play={play} playPause={playPause} />
+        <Box sx={{ display: "flex", flexDirection: "row", gap: 1.5 }}>
+          <OutlinedInput
+            size="sm"
+            value={tempo}
+            onChange={setTempo}
+            endAdornment={
+              <Typography
+                fontWeight="lg"
+                fontSize="sm"
+                color="text.tertiary"
+              >
+                bpm
+              </Typography>
+            }
+            sx={{
+              flexBasis: "100px",
+              display: {
+                xs: "none",
+                sm: "flex",
+              },
+            }}
+          />
+          <OutlinedInput
+            size="sm"
+            value={musicSectionLength}
+            onChange={setSectionLength}
+            endAdornment={
+              <Typography
+                fontWeight="lg"
+                fontSize="sm"
+                color="text.tertiary"
+              >
+                Section Length
+              </Typography>
+            }
+            sx={{
+              flexBasis: "100px",
+              display: {
+                xs: "none",
+                sm: "flex",
+              },
+            }}
+          />
+        </Box>
+
+        <Box sx={{ display: "flex", flexDirection: "row", gap: 1.5 }}>
+          <ColorSchemeToggle />
+        </Box>
+        </Toolbar>
+      </AppBar>
+    </React.Fragment>
+  );
 });
 
 export default TopBar;

@@ -3,12 +3,11 @@ import { Droppable } from "react-beautiful-dnd";
 
 import Button from "@mui/material/Button";
 
-import Card from "@mui/joy/Card";
-import CardContent from "@mui/joy/CardContent";
-import CardOverflow from "@mui/joy/CardOverflow";
-import IconButton from "@mui/joy/IconButton";
-import Box from "@mui/joy/Box";
-import Typography from "@mui/joy/Typography";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import IconButton from "@mui/material/IconButton";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 import OpenInBrowserOutlinedIcon from "@mui/icons-material/OpenInBrowserOutlined";
 import LaunchIcon from "@mui/icons-material/Launch";
@@ -65,7 +64,6 @@ const DroppableTrackElement = observer(
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
-            row
             variant="outlined"
             sx={{
               minWidth: "90%",
@@ -77,7 +75,6 @@ const DroppableTrackElement = observer(
               bgcolor: "background.body",
             }}
           >
-            <CardOverflow></CardOverflow>
             <CardContent sx={{ pl: 2 }}>
               <Box>
                 {machine &&
@@ -87,7 +84,7 @@ const DroppableTrackElement = observer(
                     <Box>
                       <Typography
                         fontWeight="md"
-                        textColor="success.plainColor"
+                        color="success"
                         mb={0.5}
                       >
                         {machine.name}
@@ -126,21 +123,7 @@ const DroppableTrackElement = observer(
               )}
               <Presets />
             </CardContent>
-            <CardOverflow
-              variant="soft"
-              sx={{
-                px: 0.2,
-                borderRadius: 0,
-                writingMode: "vertical-rl",
-                textAlign: "center",
-                fontSize: "xs2",
-                fontWeight: "xl2",
-                letterSpacing: "1px",
-                textTransform: "uppercase",
-              }}
-            >
               {title}
-            </CardOverflow>
           </Card>
         )}
       </Droppable>

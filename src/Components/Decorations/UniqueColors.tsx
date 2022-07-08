@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 
 import CircleIcon from "@mui/icons-material/Circle";
-import Box from "@mui/joy/Box";
+import Box from "@mui/material/Box";
 
 import { LOTS_OF_RETRO_COLORS } from "../../config/colors";
 

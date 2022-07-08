@@ -1,13 +1,12 @@
+import { observer } from "mobx-react-lite";
+
 import Button from "@mui/material/Button";
-// import TableBody from "@mui/material/TableBody";
-// import TableRow from "@mui/material/TableRow";
+import Grid from "@mui/material/Grid";
+
 
 import Track from "./Objects/Track.ts";
 import TrackComponent from "./TrackComponent.tsx";
 
-import { observer } from "mobx-react-lite";
-
-import List from '@mui/joy/List';
 
 import { useStore } from '../../stores/useStore.tsx';
 
@@ -22,11 +21,11 @@ const TrackListComponent = observer((props: TrackListComponentProps) => {
   let tracks = stores.trackStore.tracks;
   return (
     <div>
-    <List>
+<Grid container spacing={2}>
       {tracks.map((track: Track, i: number) => (
             <TrackComponent key={i} track={track}></TrackComponent>
         ))}
-    </List>
+    </Grid>
     <Button variant="outlined" onClick={stores.trackStore.addTrack}>Add Track</Button>
     </div>
   );

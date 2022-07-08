@@ -3,11 +3,11 @@ import { observer } from "mobx-react-lite";
 
 import Button from "@mui/material/Button";
 
-import Box from "@mui/joy/Box";
-import IconButton from "@mui/joy/IconButton";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import Slider from "@mui/joy/Slider";
-import Typography from "@mui/joy/Typography";
+import Slider from "@mui/material/Slider";
+import Typography from "@mui/material/Typography";
 
 import Track from "../../Objects/Track";
 
@@ -91,7 +91,7 @@ const TrackSettingsComponent = observer(
           }}
         >
           <Typography
-            textColor="neutral.500"
+            color="neutral.500"
             fontWeight={700}
             sx={{
               fontSize: "10px",

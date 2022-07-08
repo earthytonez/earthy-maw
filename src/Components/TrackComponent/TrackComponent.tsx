@@ -2,16 +2,13 @@ import * as React from "react";
 
 import { observer } from "mobx-react-lite";
 
-import Box from "@mui/joy/Box";
-import List from "@mui/joy/List";
-import ListDivider from "@mui/joy/ListDivider";
-import ListItem from "@mui/joy/ListItem";
+import Grid from "@mui/material/Grid";
+import Divider from "@mui/material/Divider";
 
 import Track from "../../Objects/Track";
 
 import DroppableTrackElement from "./DroppableTrackElement";
 import TrackSettingsComponent from './TrackSettingsComponent';
-import { useUIStore } from "../../stores/UI/useUIStore";
 
 interface TrackComponentProps {
   track: Track;
@@ -19,13 +16,12 @@ interface TrackComponentProps {
 
 const TrackComponent = observer(({ track }: TrackComponentProps) => {
   return (
-    <Box>
-      <ListItem sx={{ margin: 0, padding: 0 }}>
-        <List row>
-          <ListItem sx={{ pl: 2, width: "15%", height: "100%" }}>
+      <Grid item xs={12} sx={{ margin: 0, padding: 0 }}>
+        <Grid container>
+          <Grid item sx={{ pl: 2, width: "15%", height: "100%" }}>
             <TrackSettingsComponent track={track} />
-          </ListItem>
-          {/* <ListItem
+          </Grid>
+          {/* <Grid
             sx={{
               margin: 0,
               pt: 0,
@@ -43,8 +39,8 @@ const TrackComponent = observer(({ track }: TrackComponentProps) => {
               title="Arranger"
               placeholder="Drop Arranger Here"
             ></DroppableTrackElement>
-          </ListItem> */}
-          <ListItem
+          </Grid> */}
+          <Grid item
             sx={{
               margin: 0,
               pt: 0,
@@ -62,9 +58,9 @@ const TrackComponent = observer(({ track }: TrackComponentProps) => {
               title="Sequencer"
               placeholder="Drop Sequencer Here"
             ></DroppableTrackElement>
-          </ListItem>
+          </Grid>
 
-          <ListItem
+          <Grid item
             sx={{
               margin: 0,
               pt: 0,
@@ -82,11 +78,10 @@ const TrackComponent = observer(({ track }: TrackComponentProps) => {
               title="Synthesizer"
               placeholder="Drop Synthesizer Here"
             ></DroppableTrackElement>
-          </ListItem>
-        </List>
-      </ListItem>
-      <ListDivider sx={{ m: 0 }} />
-    </Box>
+          </Grid>
+        </Grid>
+        <Divider sx={{ m: 0 }} />
+      </Grid>
   );
 });
 

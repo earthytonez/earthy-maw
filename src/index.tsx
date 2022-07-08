@@ -9,10 +9,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { StoreProvider } from "./stores/useStore";
 import { UIStoreProvider } from "./stores/UI/useUIStore";
 
-import { CssVarsProvider } from "@mui/joy/styles";
-
-import filesTheme from "./theme.ts";
-
 const theme = createTheme({
   palette : {
     mode: "dark",
@@ -33,16 +29,12 @@ theme.typography.h1 = {
   fontSize: "2rem",
 };
 
-console.log(filesTheme);
-
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <StoreProvider>
     <UIStoreProvider>
       <ThemeProvider theme={theme}>
-        <CssVarsProvider disableTransitionOnChange theme={filesTheme}>
           <App />
-        </CssVarsProvider>
       </ThemeProvider>
     </UIStoreProvider>
   </StoreProvider>
@@ -54,3 +46,6 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+// {/* <CssVarsProvider disableTransitionOnChange theme={filesTheme}> */}
+// </CssVarsProvider>

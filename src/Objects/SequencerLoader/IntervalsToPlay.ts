@@ -21,7 +21,7 @@ export default class IntervalToPlay {
         if (this.intervalType === "arpeggiator") {
             /* This shouldn't necessarily be based on the section Length */
             let length = this.getChordLength(chord)
-            if (this.intervalArp == "up") {
+            if (this.intervalArp === "up") {
                 let step = beatNumber % length;
                 console.log(`Getting interval for intervalType Arpeggiator ${chord} -- ${step} - ${beatNumber} - ${length}`)
                 return [1,3,5,7][step]; // This needs to be better

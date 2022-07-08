@@ -6,11 +6,11 @@ import Button from "@mui/material/Button";
 import Drawer from "@mui/material/Drawer";
 import Typography from "@mui/material/Typography";
 
-import List from "@mui/joy/List";
-import ListItem from "@mui/joy/ListItem";
-import Slider from "@mui/joy/Slider";
-import RadioGroup from "@mui/joy/RadioGroup";
-import Radio from "@mui/joy/Radio";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import Slider from "@mui/material/Slider";
+import RadioGroup from "@mui/material/RadioGroup";
+import Radio from "@mui/material/Radio";
 
 import CloseIcon from "@mui/icons-material/Close";
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { styled } from '@mui/joy/styles';
+import { styled } from '@mui/material/styles';
 import MenuUnstyled, { MenuUnstyledActions } from '@mui/base/MenuUnstyled';
 import MenuItemUnstyled from '@mui/base/MenuItemUnstyled';
 import PopperUnstyled from '@mui/base/PopperUnstyled';
