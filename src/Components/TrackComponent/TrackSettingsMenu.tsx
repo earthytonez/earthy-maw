@@ -1,54 +1,53 @@
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import MenuUnstyled, { MenuUnstyledActions } from '@mui/base/MenuUnstyled';
-import MenuItemUnstyled from '@mui/base/MenuItemUnstyled';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import PopperUnstyled from '@mui/base/PopperUnstyled';
 
-const Popper = styled(PopperUnstyled)({
-  zIndex: 1500,
-});
+// const Popper = styled(PopperUnstyled)({
+//   zIndex: 1500,
+// });
 
-const Listbox = styled('ul')(({ theme }) => ({
-  ...theme.variants.outlined.neutral,
-  marginBlock: '0.25rem',
-  padding: '0.45rem',
-  borderRadius: theme.vars.radius.sm,
-  boxShadow: theme.vars.shadow.md,
-  backgroundColor: theme.vars.palette.background.componentBg,
-  gap: theme.spacing(1),
-  display: 'flex',
-  flexDirection: 'column',
-  listStyle: 'none',
-}));
+// const Listbox = styled('ul')(({ theme }) => ({
+//   ...theme.variants.outlined.neutral,
+//   marginBlock: '0.25rem',
+//   padding: '0.45rem',
+//   borderRadius: theme.vars.radius.sm,
+//   boxShadow: theme.vars.shadow.md,
+//   backgroundColor: theme.vars.palette.background.componentBg,
+//   gap: theme.spacing(1),
+//   display: 'flex',
+//   flexDirection: 'column',
+//   listStyle: 'none',
+// }));
 
-const MenuItem = styled(MenuItemUnstyled, {
-  shouldForwardProp: (prop) => prop !== 'active',
-})<{ active?: boolean }>(({ theme, active }) => ({
-  listStyle: 'none',
-  fontFamily: theme.vars.fontFamily.body,
-  fontSize: theme.vars.fontSize.sm,
-  padding: '0.45rem 0.75rem',
-  borderRadius: theme.vars.radius.xs,
-  minWidth: 120,
-  textDecoration: 'none',
-  display: 'flex',
-  ...theme.variants.plain.neutral,
-  ...(active
-    ? {
-        ...theme.variants.soft.primary,
-        cursor: 'default',
-      }
-    : {
-        '&:hover': {
-          ...theme.variants.softHover.neutral,
-          cursor: 'pointer',
-        },
-        '&:active': theme.variants.outlinedHover.neutral,
-      }),
-  [theme.focus.selector]: theme.focus.default,
-}));
+// const MenuItem = styled(MenuItemUnstyled, {
+//   shouldForwardProp: (prop) => prop !== 'active',
+// })<{ active?: boolean }>(({ theme, active }) => ({
+//   listStyle: 'none',
+//   fontFamily: theme.vars.fontFamily.body,
+//   fontSize: theme.vars.fontSize.sm,
+//   padding: '0.45rem 0.75rem',
+//   borderRadius: theme.vars.radius.xs,
+//   minWidth: 120,
+//   textDecoration: 'none',
+//   display: 'flex',
+//   ...theme.variants.plain.neutral,
+//   ...(active
+//     ? {
+//         ...theme.variants.soft.primary,
+//         cursor: 'default',
+//       }
+//     : {
+//         '&:hover': {
+//           ...theme.variants.softHover.neutral,
+//           cursor: 'pointer',
+//         },
+//         '&:active': theme.variants.outlinedHover.neutral,
+//       }),
+//   [theme.focus.selector]: theme.focus.default,
+// }));
 
-const Menu = ({
+const TrackSettingsMenu = ({
   control,
   menus,
   id,
@@ -97,12 +96,12 @@ const Menu = ({
         'aria-expanded': isOpen || undefined,
         'aria-haspopup': 'menu',
       })}
-      <MenuUnstyled
+      <Menu
         actions={menuActions}
         open={isOpen}
         onClose={close}
         anchorEl={anchorEl}
-        components={{ Root: Popper, Listbox }}
+        // components={{ Root: Popper, Listbox }}
         componentsProps={{ root: { placement: 'bottom-end' }, listbox: { id } }}
       >
         {menus.map(({ label, active, ...item }) => {
@@ -120,9 +119,9 @@ const Menu = ({
           }
           return React.cloneElement(menuItem, { key: label });
         })}
-      </MenuUnstyled>
+      </Menu>
     </React.Fragment>
   );
 };
 
-export default Menu;
+export default TrackSettingsMenu;

@@ -4,30 +4,30 @@ import Synthesizer from "./Synthesizer.ts";
 import {
   runInAction,
   makeObservable,
+  computed,
   observable,
 } from "mobx";
 
 import { SequencerLoader, TriggerWhen } from "./SequencerLoader/index";
 
-import { info } from "../Util/logger";
+import { error, info } from "../Util/logger";
+import { Console } from "console";
 
 const OneTwo: string = require("./Sequencer/Definitions/OneTwo");
 const FourOTFloor: string = require("./Sequencer/Definitions/FourOTFloor");
 const OffBeatFour: string = require("./Sequencer/Definitions/OffBeatFour");
 const HiHat: string = require("./Sequencer/Definitions/HiHat");
 const SimpleDrone: string = require("./Sequencer/Definitions/SimpleDrone");
-const ThreeFour: string = require("./Sequencer/Definitions/ThreeFour");
+const OneTwoThree: string = require("./Sequencer/Definitions/OneTwoThree");
+const Random: string = require("./Sequencer/Definitions/Random");
 
 export default class Sequencer extends Placeable {
   id: number;
-  name: string;
   slug: string;
   boundSynthesizer: Synthesizer = undefined;
-  sequencerLoader: SequencerLoader = new SequencerLoader();
+  sequencerLoader: SequencerLoader = undefined;
   type: string = "";
-  code: string = "";
   x = 0;
-  triggerWhen: TriggerWhen;
 
   awaitBuffers: Promise<any>;
 
@@ -47,48 +47,87 @@ export default class Sequencer extends Placeable {
       case "FourOTFloor":
         let seqA = await fetch(FourOTFloor);
         let seqAText = await seqA.text();
-        this.sequencerLoader = new SequencerLoader(seqAText);
+        
+        if (seqAText == undefined) {
+          console.error("Problem loading seqFText");
+        }
+
+        runInAction(async () => {        
+          this.sequencerLoader = new SequencerLoader(seqAText);
+          await this.sequencerLoader.load();
+        });
+
         break;
       case "HiHat":
         let seqB = await fetch(HiHat);
         let seqBText = await seqB.text();
-        this.sequencerLoader = new SequencerLoader(seqBText);
+        if (seqBText == undefined) {
+          console.error("Problem loading seqFText");
+        }
+
+        runInAction(async () => {
+          this.sequencerLoader = new SequencerLoader(seqBText);
+          await this.sequencerLoader.load();
+
+        });
         break;
       case "OneTwo":
         let seqC = await fetch(OneTwo);
         let seqCText = await seqC.text();
-        this.sequencerLoader = new SequencerLoader(seqCText);
+        if (seqCText == undefined) {
+          console.error("Problem loading seqCText");
+        }
+        runInAction(async () => {
+          this.sequencerLoader = new SequencerLoader(seqCText);
+          await this.sequencerLoader.load();
+        });
         break;
       case "SimpleDrone":
         let seqD = await fetch(SimpleDrone);
         let seqDText = await seqD.text();
+        if (seqDText == undefined) {
+          console.error("Problem loading seqDText");
+        }
         this.sequencerLoader = new SequencerLoader(seqDText);
+        await this.sequencerLoader.load();
         break;
       case "OffBeatFour":
         let seqE = await fetch(OffBeatFour);
         let seqEText = await seqE.text();
+        if (seqEText == undefined) {
+          console.error("Problem loading seqFText");
+        }
         this.sequencerLoader = new SequencerLoader(seqEText);
+        await this.sequencerLoader.load();
         break;
-      case "ThreeFour":
-        let seqF = await fetch(ThreeFour);
+      case "OneTwoThree":
+        let seqF = await fetch(OneTwoThree);
         let seqFText = await seqF.text();
+
+        if (seqFText == undefined) {
+          console.error("Problem loading seqFText");
+        }
+
         this.sequencerLoader = new SequencerLoader(seqFText);
+
+        await this.sequencerLoader.load();
+
         break;  
-      default:
     }
+  }
 
-    this.sequencerLoader.load();
-    runInAction(() => {
-      this.triggerWhen = this.sequencerLoader.triggerWhen();
-      this.code = this.sequencerLoader.code();
-      this.name = this.sequencerLoader.name;
+  get triggerWhen() {
+    return this.sequencerLoader.triggerWhen();
+  }
 
-      info(
-        "SEQUENCER",
-        `Loaded Sequencer Type ${this.name}`,
-        this.sequencerLoader.sequencerHolder
-      );
-    });
+  get name() {
+    if (this.sequencerLoader) {
+      return this.sequencerLoader.name;
+    }
+  }
+
+  get code() {
+    return this.sequencerLoader.code();
   }
 
   volume(beatNumber: number): number {
@@ -109,8 +148,9 @@ export default class Sequencer extends Placeable {
     this.id = id;
     this.slug = type;
     this.type = type;
+
     makeObservable(this, {
-      name: observable,
+      name: computed,
       slug: observable,
     });
   }

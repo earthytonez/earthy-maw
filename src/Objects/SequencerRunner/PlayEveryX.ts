@@ -3,9 +3,13 @@ import { debug } from "../../Util/logger";
 
 import { ITriggerParameters } from "../SequencerLoader/TriggerWhen";
 
+/* 
+ * Play Every X is used to calculate whether or not a trigger should occur, usually
+ * playing every x notes.
+ */
 export default class PlayEveryX {
-  sequencerLoader: SequencerLoader;
-  playEveryXStepInterval(beatNumber: number, parameters: ITriggerParameters) {
+  rhythm_length: number;
+  playEveryXStepInterval(beatNumber: number, parameters: ITriggerParameters): boolean {
     let stepCount = beatNumber % parameters.stepInterval!;
     debug("PLAY_EVERY_X",
       `Playing steps: ${beatNumber} / ${stepCount} - ${parameters.stepInterval} on ${parameters.on} x: ${this.x}`
@@ -18,16 +22,16 @@ export default class PlayEveryX {
     return false;
   }
 
-  playEveryXStepList(beatNumber: number, parameters: ITriggerParameters) {
-    let stepCount = beatNumber % this.sequencerLoader.rhythm_length;
+  playEveryXStepList(beatNumber: number, parameters: ITriggerParameters): boolean {
+    let stepCount = beatNumber % this.rhythm_length;
     debug("PLAY_EVERY_X",
-      `Playing from step list steps: ${this.sequencerLoader.rhythm_length} -- ${beatNumber} / ${stepCount} (${parameters.stepList}`
+      `Playing from step list steps: ${this.rhythm_length} -- ${beatNumber} / ${stepCount} (${parameters.stepList}`
     );
 
     return parameters.stepList.includes(stepCount);
   }
 
-  run(beatNumber: number, parameters: ITriggerParameters) {
+  run(beatNumber: number, parameters: ITriggerParameters): boolean {
     debug("PLAY_EVERY_X", "Parameters = ", parameters);
 
     switch (parameters.triggerType) {
@@ -38,7 +42,7 @@ export default class PlayEveryX {
     }
   }
 
-  constructor(sequencerLoader: SequencerLoader) {
-    this.sequencerLoader = sequencerLoader;
+  constructor(rhythm_length: number) {
+    this.rhythm_length = rhythm_length;
   }
 }

@@ -1,20 +1,22 @@
 import React, { useEffect } from "react";
+
+import { observer } from "mobx-react-lite";
+import { DragDropContext } from "react-beautiful-dnd";
 import "./App.css";
 
 import * as Tone from "tone";
 
+import Box from "@mui/material/Box"
+
 import Arranger from "./Objects/Arranger";
 import Sequencer from "./Objects/Sequencer";
 import SequencerType from "./Objects/SequencerType";
-import Track from "./Objects/Track";
 
 import BottomBar from "./Components/BottomBar/index";
 import TopBar from "./Components/TopBar/index";
 import TrackList from "./Components/TrackComponent/TrackListComponent";
 
 
-import { observer } from "mobx-react-lite";
-import { DragDropContext } from "react-beautiful-dnd";
 
 import { useStore } from './stores/useStore';
 
@@ -136,13 +138,15 @@ const App = observer(() => {
       onDragEnd={onDragEnd}
     >
       <TopBar />
+      <Box sx={{marginTop: '82px'}}>
+        <TrackList tracks={tracks} />
+      </Box>
       <BottomBar
         beatNumber={store.musicFeaturesStore.beatNumber}
         arrangerTypes={arrangerTypes}
         sequencerTypes={sequencerTypes}
         synthTypes={synthTypes}
       />
-      <TrackList tracks={tracks} />
       <MachineEditDrawer />
     </DragDropContext>
     

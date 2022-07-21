@@ -1,0 +1,21 @@
+name = "Random"
+description = "Random Gates and Notes"
+outputs = 1
+tags = ["minimalism"]
+type = "step"
+
+[parameters]
+octaves = { }
+minGate = {}
+maxGate = {}
+minInterval = {}
+maxInterval = {}
+
+[LengthOfNote]
+length = "Rand()"
+
+[NoteToPlay]
+note = "Rand()"
+
+[TriggerWhen]
+trigger = "Rand()"

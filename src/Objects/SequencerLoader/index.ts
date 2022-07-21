@@ -1,5 +1,5 @@
-import NoteToPlay from './NoteToPlay.ts';
-import TriggerWhen from './TriggerWhen.ts';
-import SequencerLoader from './SequencerLoader.ts';
+import NoteToPlay from './NoteToPlay';
+import TriggerWhen from './TriggerWhen';
+import SequencerLoader from './SequencerLoader';
 
 export { TriggerWhen, NoteToPlay, SequencerLoader }

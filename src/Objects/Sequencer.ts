@@ -27,10 +27,10 @@ const FourOTFloor: string = require("./Sequencer/Definitions/FourOTFloor");
 const OffBeatFour: string = require("./Sequencer/Definitions/OffBeatFour");
 const HiHat: string = require("./Sequencer/Definitions/HiHat");
 const SimpleDrone: string = require("./Sequencer/Definitions/SimpleDrone");
+const Random: string = require("./Sequencer/Definitions/Random")
 
 export default class Sequencer extends SequencerType {
   id: number;
-  name: string;
   slug: string;
 
   /*
@@ -42,12 +42,10 @@ export default class Sequencer extends SequencerType {
   chosenTriggerParameterSet: number = 0;
 
   boundSynthesizer: Synthesizer = undefined;
-  sequencerLoader: SequencerLoader = new SequencerLoader();
+  sequencerLoader: SequencerLoader = undefined;
   machineType: string = "Sequencer";
   type: string = "";
-  code: string = "";
   x = 0;
-  triggerWhen: TriggerWhen;
   loading: boolean = true;
 
   droneLength: number = 9;
@@ -218,6 +216,8 @@ toJSON() {
         let seqAText = await seqA.text();
         runInAction(() => {
           this.sequencerLoader = new SequencerLoader(seqAText);
+          this.sequencerLoader.load();
+
         });
         break;
       case "HiHat":
@@ -225,6 +225,8 @@ toJSON() {
         let seqBText = await seqB.text();
         runInAction(() => {
           this.sequencerLoader = new SequencerLoader(seqBText);
+          this.sequencerLoader.load();
+
         });
         break;
       case "OneTwo":
@@ -232,6 +234,8 @@ toJSON() {
         let seqCText = await seqC.text();
         runInAction(() => {
           this.sequencerLoader = new SequencerLoader(seqCText);
+          this.sequencerLoader.load();
+
         });
         break;
       case "SimpleDrone":
@@ -239,6 +243,7 @@ toJSON() {
         let seqDText = await seqD.text();
         runInAction(() => {
           this.sequencerLoader = new SequencerLoader(seqDText);
+          this.sequencerLoader.load();
         });
         break;
       case "OffBeatFour":
@@ -246,13 +251,16 @@ toJSON() {
         let seqEText = await seqE.text();
         runInAction(() => {
           this.sequencerLoader = new SequencerLoader(seqEText);
+          this.sequencerLoader.load();
         });
         break;
       case "ThreeFour":
         let seqF = await fetch(ThreeFour);
         let seqFText = await seqF.text();
         runInAction(() => {
+          console.error("Sequencer runInAction seqFText");
           this.sequencerLoader = new SequencerLoader(seqFText);
+          this.sequencerLoader.load();
         });
         break;  
       case "SimpleArpeggiator":
@@ -260,23 +268,12 @@ toJSON() {
         let seqGText = await seqG.text();
         runInAction(() => {
           this.sequencerLoader = new SequencerLoader(seqGText);
+          this.sequencerLoader.load();
+
         });
         break;
         default:
     }
-
-    this.sequencerLoader.load();
-    runInAction(() => {
-      this.triggerWhen = this.sequencerLoader.triggerWhen();
-      this.code = this.sequencerLoader.code();
-      this.name = this.sequencerLoader.name;
-
-      info(
-        "SEQUENCER",
-        `Loaded Sequencer ${this.name}`,
-        this.sequencerLoader.sequencerHolder
-      );
-    });
   }
 
   /*
@@ -284,10 +281,17 @@ toJSON() {
    * This is only for triggers/gates it does not determine what note to play.
    */
   playEveryX(beatNumber: number, parameters: PlayParameters): boolean {
-    let playEveryX = new PlayEveryX(this.sequencerLoader);
-    let val = playEveryX.run(beatNumber, parameters);    
-    debug("PLAY_EVERY_X", `sequencer Type: ${this.sequencerType()}, val: ${val}`, parameters);
-    return val;
+    if (!parameters) {
+      throw("parameters must be defined");
+    }
+    try {
+      let playEveryX = new PlayEveryX(this.sequencerLoader.rhythm_length);
+      let val = playEveryX.run(beatNumber, parameters);    
+      debug("PLAY_EVERY_X", `sequencer Type: ${this.sequencerType()}, val: ${val}`, parameters);
+      return val;
+    } catch(err) {
+      console.error(err, parameters);
+    }
   }
 
   /*
@@ -503,7 +507,6 @@ toJSON() {
     this.musicFeaturesStore = musicFeaturesStore;
     this.slug = type;
     this.type = type;
-    this.name = "";
 
     makeObservable(this, {
       changeParameter: action.bound,

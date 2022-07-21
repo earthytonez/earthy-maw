@@ -15,22 +15,22 @@ def NoteToPlay beat
     64 # This is the midi number
 end
 
-def TriggerWhen beat
+[TriggerWhen] beat
     every 4 steps
 end
 
-def TriggerWhen beat
+[TriggerWhen] beat
     every step
 end
 
-def TriggerWhen beat
+[TriggerWhen] beat
     beat is divisible by 4
 end
 
-def TriggerWhen beat
+[TriggerWhen] beat
     percent 20
 end
 
-def TriggerWhen beat
+[TriggerWhen] beat
     20 percent
 end

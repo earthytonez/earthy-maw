@@ -7,35 +7,33 @@ tags = [ "minimalism", "arpeggiator" ]
 type = "arpeggiator"
 
 
-def IntervalsToPlay
-    interval_type = "arpeggiator"
-    up
-    down
-    updown
-    updowntoptwo
-    random
-end
+[IntervalsToPlay]
+interval_type = "arpeggiator"
+list = [
+    "up",
+    "down",
+    "updown",
+    "updowntoptwo",
+    "random"
+]
 
 # Not sure about this
-def lengthOfInterval
-    [1, 1, 1, 1]
-    [1, 1, 2, 0]
-    [1, 2, 1, 0]
-    [1, 2, 0, 1]
-    [2, 1, 1, 0]
-    [2, 1, 0, 1]
-    [2, 0, 1, 1]
-    [2, 0, 1, 1]
-    [0, 1, 1, 2]
-    [0, 1, 2, 1]
-    [0, 2, 1, 1]
-    # [3, 0, 0, 0]
-    # [0, 3, 0, 0]
-    # [0, 0, 3, 0]
-    # [0, 0, 0, 3]
-end
+[lengthOfInterval]
+list =[
+[1, 1, 1, 1],
+[1, 1, 2, 0],
+[1, 2, 1, 0],
+[1, 2, 0, 1],
+[2, 1, 1, 0],
+[2, 1, 0, 1],
+[2, 0, 1, 1],
+[2, 0, 1, 1],
+[0, 1, 1, 2],
+[0, 1, 2, 1],
+[0, 2, 1, 1]
+]
 
-def TriggerWhen
-    every 4 steps
-end
+[TriggerWhen]
+trigger = "every 4 steps"
+
 

@@ -4,11 +4,9 @@ length = 16
 outputs = 1
 type = "step"
 
-def NoteToPlay
-    C4 # This is the note
-end
+[NoteToPlay]
+note = "C4"
 
-def TriggerWhen
-    every 4 steps on 2
-end
+[TriggerWhen]
+trigger = "every 4 steps on 2"
 

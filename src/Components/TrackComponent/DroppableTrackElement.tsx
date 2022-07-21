@@ -3,10 +3,12 @@ import { Droppable } from "react-beautiful-dnd";
 
 import Button from "@mui/material/Button";
 
+import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
 import IconButton from "@mui/material/IconButton";
-import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 
 import OpenInBrowserOutlinedIcon from "@mui/icons-material/OpenInBrowserOutlined";
@@ -24,26 +26,26 @@ interface DroppableTrackElementProps {
 }
 
 const MachinePlaceholder = observer(
-    ({ placeholder, title }: { placeholder: string; title: string }) => {
-      return (
+  ({ placeholder, title }: { placeholder: string; title: string }) => {
+    return (
+      <Box>
+        <Box>{placeholder}</Box>
         <Box>
-          <Box>{placeholder}</Box>
-          <Box>
-            <Button variant="outline">
-              <OpenInBrowserOutlinedIcon />
-            </Button>
-          </Box>
+          <Button variant="outline">
+            <OpenInBrowserOutlinedIcon />
+          </Button>
         </Box>
-      );
-    }
-  );
-  
-  interface PresetsProps {}
+      </Box>
+    );
+  }
+);
 
-  const Presets = observer(({}: PresetsProps) => {
-    return <div></div>;
-  });
-  
+interface PresetsProps {}
+
+const Presets = observer(({}: PresetsProps) => {
+  return <div></div>;
+});
+
 const DroppableTrackElement = observer(
   ({
     track_id,
@@ -60,71 +62,72 @@ const DroppableTrackElement = observer(
         droppableId={`track-${track_id}-${slug}`}
       >
         {(provided, snapshot) => (
-          <Card
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            variant="outlined"
-            sx={{
-              minWidth: "90%",
-              minHeight: "100%",
-              borderRadius: 0,
-              gap: 0,
-              borderTop: 0,
-              borderBottom: 0,
-              bgcolor: "background.body",
-            }}
-          >
-            <CardContent sx={{ pl: 2 }}>
-              <Box>
-                {machine &&
-                machine.name !== "" &&
-                machine.name !== undefined ? (
-                  <Box>
+          <Paper>
+            <Card
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              sx={{
+                minWidth: "90%",
+                minHeight: "100%",
+                borderRadius: 0,
+                gap: 0,
+                borderTop: 0,
+                borderBottom: 0,
+              }}
+            >
+              <CardContent sx={{ pl: 2 }}>
+                <Box>
+                  {machine &&
+                  machine.name !== "" &&
+                  machine.name !== undefined ? (
                     <Box>
-                      <Typography
-                        fontWeight="md"
-                        color="success"
-                        mb={0.5}
-                      >
-                        {machine.name}
-                      </Typography>
+                      <Box>
+                        <Typography fontWeight="md" color="success" mb={0.5}>
+                          {machine.name}
+                        </Typography>
+                      </Box>
+                      <Box>
+                        <IconButton
+                          aria-label={`edit ${machine.name}`}
+                          variant="plain"
+                          size="sm"
+                          sx={{
+                            position: "absolute",
+                            top: "1rem",
+                            right: "2rem",
+                          }}
+                          onClick={() =>
+                            toggleObjectEdit(true, track_id, slug, machine.slug)
+                          }
+                        >
+                          <LaunchIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
                     </Box>
-                    <Box>
-                      <IconButton
-                        aria-label={`edit ${machine.name}`}
-                        variant="plain"
-                        size="sm"
-                        sx={{
-                          position: "absolute",
-                          top: "1rem",
-                          right: "2rem",
-                        }}
-                        onClick={() =>
-                          toggleObjectEdit(true, track_id, slug, machine.slug)
-                        }
-                      >
-                        <LaunchIcon fontSize="small" />
-                      </IconButton>
-                    </Box>
-                  </Box>
-                ) : machine && machine.loading ? (
-                  "Loading..."
-                ) : (
-                  <MachinePlaceholder placeholder={placeholder} title={title} />
-                )}
+                  ) : machine && machine.loading ? (
+                    "Loading..."
+                  ) : (
+                    <MachinePlaceholder
+                      placeholder={placeholder}
+                      title={title}
+                    />
+                  )}
 
-                {provided.placeholder}
-              </Box>
-              {machine && machine.name !== "" ? (
-                <UniqueColors name={`${machine.machineType}${machine.name}`} />
-              ) : (
-                ""
-              )}
-              <Presets />
-            </CardContent>
-              {title}
-          </Card>
+                  {provided.placeholder}
+                </Box>
+                {machine && machine.name !== "" ? (
+                  <UniqueColors
+                    name={`${machine.machineType}${machine.name}`}
+                  />
+                ) : (
+                  ""
+                )}
+                <Presets />
+                <Chip label={title} />
+              </CardContent>
+            </Card>
+          </Paper>
         )}
       </Droppable>
     );

@@ -12,8 +12,23 @@ import IMusicScale from '../../Types/IMusicScale';
 import IMusicKey from '../../Types/IMusicKey';
 import IToneJSDuration from '../../Types/IToneJSDuration';
 import IToneJSNote from '../../Types/IToneJSNote';
+import ISequencerParameters from '../SequencerRunner/ISequencerParameters';
+
+import toml from 'toml';
 
 import { makeObservable, action, computed } from "mobx"
+
+interface IParsedSequencerCodeFormat {
+    name: string,
+    description: string,
+    outputs: number,
+    tags: string[],
+    type: string,
+    parameters: ISequencerParameters[],
+    lengthOfNote: ILengthOfNote ,
+    noteToPlay: INoteToPlay,
+    TriggerWhen: ITriggerWhen,
+}
 
 class SequencerLoaderHolder {
     name: string;
@@ -26,6 +41,10 @@ class SequencerLoaderHolder {
     intervalToPlay: IntervalsToPlay = new IntervalsToPlay();
     noteToPlay: NoteToPlay = new NoteToPlay();
     volumeToPlay: VolumeToPlay = new VolumeToPlay();
+
+    assign() {
+
+    }
 
     note(key: IMusicKey, scale: IMusicScale, chord: IMusicChord, beatNumber: number): IToneJSNote {
         let startNote = `${key}4`;
@@ -54,6 +73,10 @@ export default class SequencerLoader {
     
     get name() {
         return this.sequencerHolder.name;   
+    }
+
+    get description() {
+        return this.sequencerHolder.description;
     }
 
     get type() {
@@ -88,7 +111,7 @@ export default class SequencerLoader {
         return this.sequencerCode;
     }
 
-    triggerWhen() {
+    triggerWhen(): TriggerWhen {
         return this.sequencerHolder.triggerWhen;
     }
 
@@ -103,83 +126,100 @@ export default class SequencerLoader {
         return line.split(" ")[1];
     }
 
-    getVariable(name: string, line: string) {
-        return line.split("=")[1].trim().replace(/['"]+/g, '');
-    }
+    // getVariable(name: string, line: string) {
+    //     return line.split("=")[1].trim().replace(/['"]+/g, '');
+    // }
 
-    getNumberVariable(name: string, line: string) {
-        return parseInt(line.split("=")[1]);
-    }
+    // getNumberVariable(name: string, line: string) {
+    //     return parseInt(line.split("=")[1]);
+    // }
 
-    parseLineForFunction(functionIn: string, line: string) {
-        switch(functionIn) {
-            case "NoteToPlay":
-                this.sequencerHolder.noteNotInterval = true;
-                this.sequencerHolder.noteToPlay.parse(line);
-                break;
-            case "IntervalToPlay":
-                this.sequencerHolder.intervalToPlay.parse(line);
-                break;
-            case "IntervalsToPlay":
-                this.sequencerHolder.intervalToPlay.parse(line);
-                break;
-            case "TriggerWhen":
-                this.sequencerHolder.triggerWhen.parse(line);
-                break;
-            case "TriggerWhenList":
-                this.sequencerHolder.triggerWhen.parseList(line);
-                break;
-                default:
-                break;
-        }
-    }
+    // parseLineForFunction(functionIn: string, line: string) {
+    //     switch(functionIn) {
+    //         case "NoteToPlay":
+    //             this.sequencerHolder.noteNotInterval = true;
+    //             this.sequencerHolder.noteToPlay.parse(line);
+    //             break;
+    //         case "IntervalToPlay":
+    //             this.sequencerHolder.intervalToPlay.parse(line);
+    //             break;
+    //         case "IntervalsToPlay":
+    //             this.sequencerHolder.intervalToPlay.parse(line);
+    //             break;
+    //         case "TriggerWhen":
+    //             this.sequencerHolder.triggerWhen.parse(line);
+    //             break;
+    //         case "TriggerWhenList":
+    //             this.sequencerHolder.triggerWhen.parseList(line);
+    //             break;
+    //             default:
+    //             break;
+    //     }
+    // }
 
     async load() {
-        let inFunction = false;
-        let functionIn = "";
-
-        for (const line of this.lines()) {
-            if (inFunction) {
-                if (line === "end") {
-                    inFunction = false;
-                    functionIn = "";
-                } else {
-                    this.parseLineForFunction(functionIn, line);
-                }
-            }
-
-            if (line.startsWith('name = ')) {
-                this.sequencerHolder.name = this.getVariable('name', line);
-            }
-
-            if (line.startsWith('description = ')) {
-                this.sequencerHolder.description = this.getVariable('description', line);
-            }
-
-            if (line.startsWith('length = ')) {
-                this.sequencerHolder.total_length = this.getNumberVariable('length', line);                
-            }
-            if (line.startsWith('total_length = ')) {
-                this.sequencerHolder.total_length = this.getNumberVariable('total_length', line);                
-            }
-            if (line.startsWith('rhythm_length = ')) {
-                this.sequencerHolder.rhythm_length = this.getNumberVariable('rhythm_length', line);                
-            }
-
-            if (line.startsWith('type = ') || line.startsWith('type=')) {
-                this.sequencerHolder.type = this.getVariable('type', line);
-            }
-
-            if (line.startsWith('def ')) {
-                inFunction = true;
-                functionIn = this.functionNameFromLine(line);
-            }
+        console.log(this.sequencerCode);
+        try {
+        var data: IParsedSequencerCodeFormat = toml.parse(this.sequencerCode);
+        } catch(err) {
+            console.error(this.sequencerCode)
+            console.error(err);
         }
+        console.log(data);
+        this.sequencerHolder.name = data.name;
+        this.sequencerHolder.description = data.description;
+        this.sequencerHolder.outputs = data.outputs;
+        this.sequencerHolder.tags = data.tags;
+        this.sequencerHolder.type = data.type;
+        this.sequencerHolder.parameters = data.parameters;
+        this.sequencerHolder.triggerWhen.parse(data.TriggerWhen);
+
+        this.sequencerHolder.name = data.name;
+
+        // let inFunction = false;
+        // let functionIn = "";
+
+        // for (const line of this.lines()) {
+        //     if (inFunction) {
+        //         if (line === "end") {
+        //             inFunction = false;
+        //             functionIn = "";
+        //         } else {
+        //             this.parseLineForFunction(functionIn, line);
+        //         }
+        //     }
+
+        //     if (line.startsWith('name = ')) {
+        //         this.sequencerHolder.name = this.getVariable('name', line);
+        //     }
+
+        //     if (line.startsWith('description = ')) {
+        //         this.sequencerHolder.description = this.getVariable('description', line);
+        //     }
+
+        //     if (line.startsWith('length = ')) {
+        //         this.sequencerHolder.total_length = this.getNumberVariable('length', line);                
+        //     }
+        //     if (line.startsWith('total_length = ')) {
+        //         this.sequencerHolder.total_length = this.getNumberVariable('total_length', line);                
+        //     }
+        //     if (line.startsWith('rhythm_length = ')) {
+        //         this.sequencerHolder.rhythm_length = this.getNumberVariable('rhythm_length', line);                
+        //     }
+
+        //     if (line.startsWith('type = ') || line.startsWith('type=')) {
+        //         this.sequencerHolder.type = this.getVariable('type', line);
+        //     }
+
+        //     if (line.startsWith('def ')) {
+        //         inFunction = true;
+        //         functionIn = this.functionNameFromLine(line);
+        //     }
+        // }
     }
 
     constructor(sequencerCode: string) {
         this.sequencerCode = sequencerCode;
-
         makeObservable(this, {
             name: computed,
             type: computed,

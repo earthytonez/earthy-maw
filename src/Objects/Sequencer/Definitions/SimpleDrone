@@ -5,10 +5,8 @@ outputs = 1
 tags = [ "minimalism", "drone" ]
 type = "drone"
 
-def NoteToPlay
-    C4 # This is the note
-end
+[NoteToPlay]
+play = "C4" # This is the note
 
-def TriggerWhen
-    every 64 steps
-end
+[TriggerWhen]
+trigger = "every 64 steps"

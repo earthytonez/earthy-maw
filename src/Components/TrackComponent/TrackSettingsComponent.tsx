@@ -4,9 +4,12 @@ import { observer } from "mobx-react-lite";
 import Button from "@mui/material/Button";
 
 import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Slider from "@mui/material/Slider";
+import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
 import Track from "../../Objects/Track";
@@ -24,7 +27,6 @@ interface VolumeComponentProps {
 const VolumeComponent = observer(({ track }: VolumeComponentProps) => {
   // const store = useStore();
   const { volume, setVolume, muted } = track;
-  console.log(muted);
 
   const marks = [
     {
@@ -47,7 +49,7 @@ const VolumeComponent = observer(({ track }: VolumeComponentProps) => {
 
   return (
     <Box sx={{ width: "200px" }}>
-      <Box>
+      <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
         <Slider
           aria-label="Custom marks"
           defaultValue={volume}
@@ -59,16 +61,14 @@ const VolumeComponent = observer(({ track }: VolumeComponentProps) => {
           max={6}
           marks={marks}
         />
-      </Box>
-      <Box>
         <Button
           variant={muted ? "contained" : "outlined"}
           size="small"
           onClick={track.toggleMute}
         >
-          Mute
+          M
         </Button>
-      </Box>
+      </Stack>
     </Box>
   );
 });
@@ -82,11 +82,13 @@ const TrackSettingsComponent = observer(
     const [drawerOpen, setDrawerOpen] = React.useState(false);
 
     return (
-      <Box sx={{ height: "100%" }}>
+      <Card sx={{ height: "100%" }}>
+        <CardContent>
         <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
+            position: 'relative',
             mb: 0.5,
           }}
         >
@@ -101,15 +103,7 @@ const TrackSettingsComponent = observer(
           >
             Track {track.id + 1}
           </Typography>
-        </Box>
-        <Box>
-          <VolumeComponent
-            track={track}
-            raiseVolume={track.raiseVolume}
-            lowerVolume={track.lowerVolume}
-          />
-        </Box>
-        <Box>
+          <Box sx={{top: 0, right: 0, position: 'absolute'}}>
           <Menu
             id="app-selector"
             control={
@@ -130,8 +124,17 @@ const TrackSettingsComponent = observer(
               },
             ]}
           />
+          </Box>
         </Box>
-      </Box>
+        <Box>
+          <VolumeComponent
+            track={track}
+            raiseVolume={track.raiseVolume}
+            lowerVolume={track.lowerVolume}
+          />
+        </Box>
+        </CardContent>
+      </Card>
     );
   }
 );
@@ -171,7 +174,7 @@ export default TrackSettingsComponent;
 //             }}
 //           >
 //             <CardOverflow></CardOverflow>
-//             <CardContent sx={{ pl: 2 }}>
+//             <Box sx={{ pl: 2 }}>
 //               <Box>
 //                 {machine &&
 //                 machine.name !== "" &&

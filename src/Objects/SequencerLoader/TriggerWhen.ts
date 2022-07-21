@@ -1,15 +1,15 @@
 import { debug, info } from "../../Util/logger.ts";
 
 export interface ITriggerParameters {
-  triggerType: "stepList" | "stepInterval";
+  triggerType: "stepList" | "stepInterval" | "random";
   stepInterval?: number;
   on?: number;
   stepList?: number[];
 }
 
 export default class TriggerWhen {
-  type: "everyX" | "stepArray" = "everyX";
-  parameterSets: TriggerParameters[] = [];
+  type: "random" | "everyX" | "stepArray" = "everyX";
+  parameterSets: ITriggerParameters[] = [];
 
   trim(line: string): string {
     const trimmedLine = line.trimStart().trimEnd();
@@ -31,11 +31,15 @@ export default class TriggerWhen {
   }
 
   /* Resets parameterSets */
-  parse(line: string) {
-    let trimmedLine = this.trim(line);
-    if (!trimmedLine) {
+  parse(line: any) {
+    if (!line) {
       return;
     }
+    const trimmedLine = this.trim(line.trigger);
+
+    if (!trimmedLine) return;
+
+    if (trimmedLine == "Rand()") return (this.type = "random");
 
     switch (trimmedLine) {
       case trimmedLine.match(/every [0-9]{1,2} steps on [0-9]+/)?.input:
@@ -76,8 +80,9 @@ export default class TriggerWhen {
     }
 
     debug(`TRIGGER_WHEN`, "parsed", {
+      trigger: line.trigger,
       type: this.type,
-      parameters: this.parameters,
+      parameters: this.parameterSets[0],
     });
   }
 }

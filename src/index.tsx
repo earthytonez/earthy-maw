@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/system";
 
 import { StoreProvider } from "./stores/useStore";
 import { UIStoreProvider } from "./stores/UI/useUIStore";
@@ -24,10 +24,10 @@ const theme = createTheme({
   }
 });
 
-theme.typography.h1 = {
-  fontFamily: "Fascinate, cursive",
-  fontSize: "2rem",
-};
+// theme.typography.h1 = {
+//   fontFamily: "Fascinate, cursive",
+//   fontSize: "2rem",
+// };
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

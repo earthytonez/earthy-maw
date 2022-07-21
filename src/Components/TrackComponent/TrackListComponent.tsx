@@ -1,14 +1,15 @@
 import { observer } from "mobx-react-lite";
 
 import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
 
+import Track from "./Objects/Track";
+import TrackComponent from "./TrackComponent";
 
-import Track from "./Objects/Track.ts";
-import TrackComponent from "./TrackComponent.tsx";
-
-
-import { useStore } from '../../stores/useStore.tsx';
+import { useStore } from "../../stores/useStore";
+import React from "react";
 
 const grid = 8;
 
@@ -20,15 +21,20 @@ const TrackListComponent = observer((props: TrackListComponentProps) => {
   const stores = useStore();
   let tracks = stores.trackStore.tracks;
   return (
-    <div>
-<Grid container spacing={2}>
-      {tracks.map((track: Track, i: number) => (
-            <TrackComponent key={i} track={track}></TrackComponent>
+    <React.Fragment>
+      <Grid container spacing={0} direction="column">
+        {tracks.map((track: Track, i: number) => (
+          <React.Fragment key={i}>
+            <TrackComponent track={track}></TrackComponent>
+            <Divider light />
+          </React.Fragment>
         ))}
-    </Grid>
-    <Button variant="outlined" onClick={stores.trackStore.addTrack}>Add Track</Button>
-    </div>
+      </Grid>
+      <Button variant="outlined" onClick={stores.trackStore.addTrack}>
+        Add Track
+      </Button>
+    </React.Fragment>
   );
 });
 
-export default TrackListComponent
+export default TrackListComponent;
