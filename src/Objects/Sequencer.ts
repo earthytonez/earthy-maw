@@ -20,14 +20,16 @@ import MusicFeaturesStore from "../stores/MusicFeatures.store";
 
 import Synthesizer from "./Synthesizer";
 
-const OneTwo: string = require("./Sequencer/Definitions/OneTwo");
-const SimpleArpeggiator: string = require("./Sequencer/Definitions/SimpleArpeggiator");
-const ThreeFour: string = require("./Sequencer/Definitions/ThreeFour");
-const FourOTFloor: string = require("./Sequencer/Definitions/FourOTFloor");
-const OffBeatFour: string = require("./Sequencer/Definitions/OffBeatFour");
-const HiHat: string = require("./Sequencer/Definitions/HiHat");
-const SimpleDrone: string = require("./Sequencer/Definitions/SimpleDrone");
-const Random: string = require("./Sequencer/Definitions/Random")
+const TOMLFiles = {
+  "OneTwo": require("./Sequencer/Definitions/OneTwo"),
+  "SimpleArpeggiator": require("./Sequencer/Definitions/SimpleArpeggiator"),
+  "ThreeFour": require("./Sequencer/Definitions/ThreeFour"),
+  "FourOTFloor": require("./Sequencer/Definitions/FourOTFloor"),
+  "OffBeatFour": require("./Sequencer/Definitions/OffBeatFour"),
+  "HiHat": require("./Sequencer/Definitions/HiHat"),
+  "SimpleDrone": require("./Sequencer/Definitions/SimpleDrone"),
+  "Random": require("./Sequencer/Definitions/Random")
+}
 
 export default class Sequencer extends SequencerType {
   id: number;
@@ -202,6 +204,7 @@ toJSON() {
   //   }
   // }
 
+
   async load() {
     info(
       "SEQUENCER",
@@ -210,70 +213,7 @@ toJSON() {
       "font-weight:bold"
     );
 
-    switch (this.type) {
-      case "FourOTFloor":
-        let seqA = await fetch(FourOTFloor);
-        let seqAText = await seqA.text();
-        runInAction(() => {
-          this.sequencerLoader = new SequencerLoader(seqAText);
-          this.sequencerLoader.load();
-
-        });
-        break;
-      case "HiHat":
-        let seqB = await fetch(HiHat);
-        let seqBText = await seqB.text();
-        runInAction(() => {
-          this.sequencerLoader = new SequencerLoader(seqBText);
-          this.sequencerLoader.load();
-
-        });
-        break;
-      case "OneTwo":
-        let seqC = await fetch(OneTwo);
-        let seqCText = await seqC.text();
-        runInAction(() => {
-          this.sequencerLoader = new SequencerLoader(seqCText);
-          this.sequencerLoader.load();
-
-        });
-        break;
-      case "SimpleDrone":
-        let seqD = await fetch(SimpleDrone);
-        let seqDText = await seqD.text();
-        runInAction(() => {
-          this.sequencerLoader = new SequencerLoader(seqDText);
-          this.sequencerLoader.load();
-        });
-        break;
-      case "OffBeatFour":
-        let seqE = await fetch(OffBeatFour);
-        let seqEText = await seqE.text();
-        runInAction(() => {
-          this.sequencerLoader = new SequencerLoader(seqEText);
-          this.sequencerLoader.load();
-        });
-        break;
-      case "ThreeFour":
-        let seqF = await fetch(ThreeFour);
-        let seqFText = await seqF.text();
-        runInAction(() => {
-          console.error("Sequencer runInAction seqFText");
-          this.sequencerLoader = new SequencerLoader(seqFText);
-          this.sequencerLoader.load();
-        });
-        break;  
-      case "SimpleArpeggiator":
-        let seqG = await fetch(SimpleArpeggiator);
-        let seqGText = await seqG.text();
-        runInAction(() => {
-          this.sequencerLoader = new SequencerLoader(seqGText);
-          this.sequencerLoader.load();
-
-        });
-        break;
-        default:
-    }
+    this.sequencerLoader = await this.fetchTOML(TOMLFiles[this.type]);
   }
 
   /*

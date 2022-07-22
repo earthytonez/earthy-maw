@@ -1,6 +1,7 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 
+import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
@@ -16,7 +17,7 @@ import Toolbar from "@mui/material/Toolbar";
 import MenuIcon from "@mui/icons-material/Menu";
 import MoreIcon from "@mui/icons-material/More";
 
-import Layout from "./Layout.tsx";
+// import Layout from "./Layout.tsx";
 
 import { useStore } from "../../stores/useStore.tsx";
 import { useUIStore } from "../../stores/UI/useUIStore";
@@ -135,7 +136,7 @@ const BottomBar = observer((props: BottomBarProps) => {
 
   return (
     <React.Fragment>
-      <Layout.Footer>
+      <AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>        
         <Toolbar>
           <IconButton
             color="inherit"
@@ -226,7 +227,7 @@ const BottomBar = observer((props: BottomBarProps) => {
           <Box sx={{ flexGrow: 1 }} />
         </Toolbar>
         <div></div>
-        {/* </AppBar> */}
+        </AppBar>
         <Drawer
           anchor={anchor}
           variant="persistent"
@@ -235,7 +236,6 @@ const BottomBar = observer((props: BottomBarProps) => {
         >
           {list(anchor)}
         </Drawer>
-      </Layout.Footer>
     </React.Fragment>
   );
 });

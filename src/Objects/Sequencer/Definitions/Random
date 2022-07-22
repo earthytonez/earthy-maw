@@ -5,7 +5,7 @@ tags = ["minimalism"]
 type = "step"
 
 [parameters]
-octaves = { }
+octaves = {}
 minGate = {}
 maxGate = {}
 minInterval = {}

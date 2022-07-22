@@ -48,7 +48,8 @@ export const SEQUENCER_TYPES = [
   "OneFour",
   "TwoFour",
   "ThreeFour",
-  "SimpleArpeggiator"
+  "SimpleArpeggiator",
+  "Random"
 ];
 
 export const SYNTH_TYPES = [
