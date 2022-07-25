@@ -29,7 +29,7 @@ export default class RootStore {
       if (tracks.length <= 0) return;
       tracks.forEach((track: Track, i: number) => {
         try {
-          track.tick(this.musicFeaturesStore.beatNumber, time);
+          track.tick(this.musicFeaturesStore.beatMarker, time);
         } catch (err: any) {
           error("Error caught during track loop", err);
         }

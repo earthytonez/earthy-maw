@@ -4,6 +4,7 @@ import { action, autorun, observable, makeObservable } from "mobx";
 import RootStore from '../stores/Root.store';
 
 import { info } from "../Util/logger";
+import { BeatMarker } from '../stores/MusicFeatures/BeatMarker';
 
 export default class MusicFeaturesStore {
   audioContext: any;
@@ -23,7 +24,7 @@ export default class MusicFeaturesStore {
 
   tempo: number = 120; // in bpm
   play: boolean = false;
-  beatNumber: number = 1;
+  beatMarker: BeatMarker = new BeatMarker(1);
 
   greaterMusicSectionLength(): number {
     if (!this.musicSectionLengthOnDeck) return this.musicSectionLength;
@@ -34,7 +35,7 @@ export default class MusicFeaturesStore {
   }
 
   changeFeatures() {
-    if (this.beatNumber % this.greaterMusicSectionLength() === 0) {
+    if (this.beatMarker.num % this.greaterMusicSectionLength() === 0) {
       info("MUSIC_FEATURES", "Changing Features!")
       if (this.musicKeyOnDeck) this.musicKey = this.musicKeyOnDeck;
       if (this.musicScaleOnDeck) this.musicScale = this.musicScaleOnDeck;
@@ -45,7 +46,8 @@ export default class MusicFeaturesStore {
   }
 
   incrementBeatNumber() {
-    this.beatNumber++;
+    console.log(this.beatMarker);
+    this.beatMarker.increment();
   }
 
   setPlay(newValue: boolean) {
@@ -100,8 +102,8 @@ export default class MusicFeaturesStore {
       this.tempo = _musicFeatures.tempo;
     }
 
-    if (_musicFeatures.beatNumber) {
-      this.beatNumber = _musicFeatures.beatNumber;
+    if (_musicFeatures.beatMarker) {
+      this.beatMarker = new BeatMarker(_musicFeatures.beatMarker);
     }
     if (_musicFeatures.musicKey) {
       this.musicKey = _musicFeatures.musicKey;
@@ -118,7 +120,7 @@ export default class MusicFeaturesStore {
       localStorage.setItem(
         "musicFeatures",
         JSON.stringify({
-          beatNumber: this.beatNumber,
+          beatMarker: this.beatMarker.num,
           tempo: this.tempo,
           musicKey: this.musicKey,
           musicScale: this.musicScale,
@@ -131,7 +133,7 @@ export default class MusicFeaturesStore {
       musicKey: observable,
       musicScale: observable,
       play: observable,
-      beatNumber: observable,
+      beatMarker: observable,
       rootStore: false,
       playPause: action.bound,
       setPlay: action.bound,

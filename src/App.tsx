@@ -142,7 +142,7 @@ const App = observer(() => {
         <TrackList tracks={tracks} />
       </Box>
       <BottomBar
-        beatNumber={store.musicFeaturesStore.beatNumber}
+        beatMarker={store.musicFeaturesStore.beatMarker}
         arrangerTypes={arrangerTypes}
         sequencerTypes={sequencerTypes}
         synthTypes={synthTypes}

@@ -19,7 +19,6 @@ export default class Kick extends Synthesizer {
 
   attachVolume(vol: Volume) {
     if (vol) {
-      this.synth.context = vol.context;
       this.synth.connect(vol);
     }
   }

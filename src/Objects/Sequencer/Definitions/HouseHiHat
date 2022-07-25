@@ -1,0 +1,12 @@
+name = "HiHat"
+description = "For Sequencing a Closed Hi Hat on every 1/16th."
+length = 16
+outputs = 1
+type = "step"
+
+[NoteToPlay]
+note = "C4"
+
+[TriggerWhen]
+trigger = "every 2 steps on 2"
+

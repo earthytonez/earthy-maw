@@ -5,7 +5,7 @@ export default abstract class Synthesizer extends Placeable {
     loading: boolean = true;
 
     abstract play();
-
+    
     setLoading(loading: boolean) {
         this.loading = loading;
       }

@@ -1,7 +1,8 @@
-import { SequencerLoader } from "../SequencerLoader";
 import { debug } from "../../Util/logger";
 
 import { ITriggerParameters } from "../SequencerLoader/TriggerWhen";
+
+import { BeatMarker } from "../../stores/MusicFeatures/BeatMarker";
 
 /* 
  * Play Every X is used to calculate whether or not a trigger should occur, usually
@@ -9,10 +10,10 @@ import { ITriggerParameters } from "../SequencerLoader/TriggerWhen";
  */
 export default class PlayEveryX {
   rhythm_length: number;
-  playEveryXStepInterval(beatNumber: number, parameters: ITriggerParameters): boolean {
-    let stepCount = beatNumber % parameters.stepInterval!;
+  playEveryXStepInterval(beatMarker: BeatMarker, parameters: ITriggerParameters): boolean {
+    let stepCount = beatMarker.num % parameters.stepInterval!;
     debug("PLAY_EVERY_X",
-      `Playing steps: ${beatNumber} / ${stepCount} - ${parameters.stepInterval} on ${parameters.on} x: ${this.x}`
+      `Playing steps: ${beatMarker.num} / ${stepCount} - ${parameters.stepInterval} on ${parameters.on} x: ${this.x}`
     );
 
     if (stepCount === parameters.on) {
@@ -22,23 +23,23 @@ export default class PlayEveryX {
     return false;
   }
 
-  playEveryXStepList(beatNumber: number, parameters: ITriggerParameters): boolean {
-    let stepCount = beatNumber % this.rhythm_length;
+  playEveryXStepList(beatMarker: BeatMarker, parameters: ITriggerParameters): boolean {
+    let stepCount = beatMarker.num % this.rhythm_length;
     debug("PLAY_EVERY_X",
-      `Playing from step list steps: ${this.rhythm_length} -- ${beatNumber} / ${stepCount} (${parameters.stepList}`
+      `Playing from step list steps: ${this.rhythm_length} -- ${beatMarker.num} / ${stepCount} (${parameters.stepList}`
     );
 
     return parameters.stepList.includes(stepCount);
   }
 
-  run(beatNumber: number, parameters: ITriggerParameters): boolean {
+  run(beatMarker: BeatMarker, parameters: ITriggerParameters): boolean {
     debug("PLAY_EVERY_X", "Parameters = ", parameters);
 
     switch (parameters.triggerType) {
       case "stepList":
-        return this.playEveryXStepList(beatNumber, parameters);
+        return this.playEveryXStepList(beatMarker, parameters);
       case "stepInterval":
-        return this.playEveryXStepInterval(beatNumber, parameters);
+        return this.playEveryXStepInterval(beatMarker, parameters);
     }
   }
 

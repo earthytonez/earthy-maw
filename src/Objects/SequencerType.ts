@@ -15,11 +15,14 @@ import { Console } from "console";
 
 const TOMLFiles = {
   "OneTwo": require("./Sequencer/Definitions/OneTwo"),
+  "OneFour": require("./Sequencer/Definitions/OneFour"),
+  "TwoFour": require("./Sequencer/Definitions/TwoFour"),
   "SimpleArpeggiator": require("./Sequencer/Definitions/SimpleArpeggiator"),
   "ThreeFour": require("./Sequencer/Definitions/ThreeFour"),
   "FourOTFloor": require("./Sequencer/Definitions/FourOTFloor"),
   "OffBeatFour": require("./Sequencer/Definitions/OffBeatFour"),
   "HiHat": require("./Sequencer/Definitions/HiHat"),
+  "HouseHiHat": require("./Sequencer/Definitions/HouseHiHat"),
   "SimpleDrone": require("./Sequencer/Definitions/SimpleDrone"),
   "Random": require("./Sequencer/Definitions/Random")
 }
@@ -41,6 +44,13 @@ export default class Sequencer {
   async fetchTOML(fileName: any) {
     let seq = await fetch(fileName);
     let seqText = await seq.text();
+    
+    if (!seqText.startsWith("name")) {
+      console.error(`FileName: ${fileName}`)
+      console.error(seqText);
+      throw("seqText did not start with name");
+    }
+    
     runInAction(() => {
       this.sequencerLoader = new SequencerLoader(seqText);
       this.sequencerLoader.load();
@@ -56,6 +66,10 @@ export default class Sequencer {
       { type: this.type },
       "font-weight:bold"
     );
+
+    if (TOMLFiles[this.type] == undefined) {
+      throw(`Sequencer Type Not Found: ${this.type}`)
+    }
 
     this.sequencerLoader = await this.fetchTOML(TOMLFiles[this.type]);
   }
@@ -74,12 +88,8 @@ export default class Sequencer {
     return this.sequencerLoader.code();
   }
 
-  volume(beatNumber: number): number {
-    return this.sequencerLoader.volume(beatNumber);
-  }
-
-  note(key: string, scale: string, beatNumber: number): number {
-    return this.sequencerLoader.note(key, scale, beatNumber);
+  volume(beatMarker: number): number {
+    return this.sequencerLoader.volume(beatMarker);
   }
 
   sequencerType(): string {

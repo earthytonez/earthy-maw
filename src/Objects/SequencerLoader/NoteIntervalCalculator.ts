@@ -1,5 +1,5 @@
-import { MAJOR_SCALE_INTERVALS, MINOR_SCALE_INTERVALS } from "../../config/constants.ts";
-import { IMusicKey, IMusicScale } from "../../Types/index.ts"
+import { MAJOR_SCALE_INTERVALS, MINOR_SCALE_INTERVALS } from "../../config/constants";
+import { IMusicKey, IMusicScale } from "../../Types/index"
 // C4 = 60;
 
 const SINGLE_OCTAVE_NOTES = ["A", "A#", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#"];

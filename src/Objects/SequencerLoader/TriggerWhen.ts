@@ -5,6 +5,12 @@ export interface ITriggerParameters {
   stepInterval?: number;
   on?: number;
   stepList?: number[];
+
+  // random parameters
+  octaves: number
+  minSkip: number
+  maxSkip: number
+
 }
 
 export default class TriggerWhen {
@@ -39,9 +45,19 @@ export default class TriggerWhen {
 
     if (!trimmedLine) return;
 
-    if (trimmedLine == "Rand()") return (this.type = "random");
+    console.log(`TRIMMED_LINE: ${trimmedLine}`)
 
     switch (trimmedLine) {
+      case trimmedLine.match(/Rand\(\)/)?.input:
+        console.log("TRIGGER_WHEN MATCHED TRIMMED_LINE")
+        this.type = "random"
+        this.parameterSets[0] = {
+          triggerType: "random",
+          octaves: 1,
+          minSkip: 0,
+          maxSkip: 64,
+        }
+        break;
       case trimmedLine.match(/every [0-9]{1,2} steps on [0-9]+/)?.input:
         this.type = "everyX";
         var rx = /every ([0-9]{1,2}) steps on ([0-9]+)/;

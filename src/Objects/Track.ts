@@ -1,20 +1,21 @@
 import { makeObservable, computed, observable, action } from "mobx";
 import * as Tone from "tone";
 
-import Arranger from "./Arranger.ts";
-import Sequencer from "./Sequencer.ts";
-import Synthesizer from "./Synthesizer.ts";
-import { getSynthesizer } from "./SynthesizerFactory.ts";
+import Arranger from "./Arranger";
+import Sequencer from "./Sequencer";
+import Synthesizer from "./Synthesizer";
+import { getSynthesizer } from "./SynthesizerFactory";
 
 import MusicFeaturesStore from "../stores/MusicFeatures.store";
 import TrackStore from "../stores/Track.store";
 
-import { debug, error } from "../Util/logger.ts";
+import { debug, error } from "../Util/logger";
 
 export default class Track {
   arranger: Arranger;
   sequencer: Sequencer;
   synthesizer: Synthesizer;
+  octaves: number[] = [1, 2, 3, 4, 5, 6, 7, 8];
   vol: Tone.Volume;
   id: number;
   slug: string;
@@ -39,6 +40,22 @@ export default class Track {
     this.vol.volume.value = newValue;
   }
 
+  setOctaves(octaves: number[]) {
+    this.octaves = octaves;
+  }
+
+  toggleOctave(octave: number) {
+      if (this.octaves.includes(octave)) {
+        const index = this.octaves.indexOf(octave, 0);
+        if (index > -1) {
+           this.octaves.splice(index, 1);
+        }
+      } else {
+        this.octaves.push(octave);
+        this.setOctaves(this.octaves);
+      }
+  }
+
   toggleMute = () => {
     this.vol.mute = !this.vol.mute;
     this.muted = this.vol.mute;
@@ -48,7 +65,7 @@ export default class Track {
     return this.vol.volume.value;
   }
 
-  async tick(beatNumber, time) {
+  async tick(beatMarker, time) {
     if (!this.sequencer) return;
     if (!this.musicFeaturesStore) {
       return error("this.musicFeaturesStore is not set");
@@ -58,7 +75,7 @@ export default class Track {
       this.musicFeaturesStore.musicKey,
       this.musicFeaturesStore.musicScale,
       this.musicFeaturesStore.musicChord,
-      beatNumber,
+      beatMarker,
       time
     );
   }
@@ -122,7 +139,8 @@ export default class Track {
         this.sequencer = new Sequencer(
           trackData.sequencer.type,
           Tone.getContext(),
-          this.musicFeaturesStore
+          this.musicFeaturesStore,
+          this.octaves
         );
         await this.sequencer.load();
         debug("TRACK", "LOADED SEQUENCER", this.sequencer);
@@ -153,7 +171,7 @@ export default class Track {
     if (!musicFeaturesStore) {
       throw(new Error("musicFeaturesStore must be set"));
     }
-    
+
     this.musicFeaturesStore = musicFeaturesStore;
     this.trackStore = trackStore;
 
@@ -167,6 +185,7 @@ export default class Track {
 
     makeObservable(this, {
       id: observable,
+      octaves: observable,
       slug: observable,
       sequencer: observable,
       synthesizer: observable,
@@ -180,6 +199,7 @@ export default class Track {
       lowerVolume: action.bound,
       toggleMute: action.bound,
       assignMachine: action.bound,
+      toggleOctave: action.bound
       // fetch: flow
     });
   }

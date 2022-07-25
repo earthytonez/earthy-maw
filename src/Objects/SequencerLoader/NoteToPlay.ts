@@ -1,6 +1,63 @@
+import NoteIntervalCalculator from "./NoteIntervalCalculator";
+import { debug, info, warn } from '../../Util/logger';
+
+import { Scale } from '@tonaljs/tonal';
+
+import { BeatMarker } from "../../stores/MusicFeatures/BeatMarker";
+
+export interface INoteToPlayDefinition {
+    note: string
+}
+
 export default class NoteToPlay {
-    get() {
-        return "C4";
+    noteNotInterval: boolean = false;
+    note: string;
+
+    noteChooser: "random" | "interval" | "single"
+
+    getRandomNote(
+        key: IMusicKey,
+        scale: IMusicScale,
+        chord: IMusicChord,
+        octaves: number[],
+        measureBeat: number
+    ) {
+        let scaleName = `${key} ${scale.toLowerCase()}`;
+        debug("NoteToPlay", `Getting notes from ${scaleName} scale.`);
+        let notes = Scale.get(scaleName).notes;
+        debug("NoteToPlay", `NOTES: `, notes);
+        let octave = octaves[Math.floor(Math.random()*octaves.length)];
+        let note = notes[Math.floor(Math.random()*notes.length)];
+
+        return `${note}${octave}`;
+    }
+
+    get(
+        key: IMusicKey,
+        scale: IMusicScale,
+        chord: IMusicChord,
+        octaves: number[],
+        measureBeat: number,
+        intervalToPlay: any,
+        intervalsToPlay: any
+      ): IToneJSNote {
+        switch(this.noteChooser) {
+            case "random":
+                return this.getRandomNote(key, scale, chord, octaves, measureBeat);
+        }
+        let startNote = `${key}4`;
+        let noteIntervalCalculator = new NoteIntervalCalculator(key, scale);
+    
+        if (this.noteNotInterval) {
+          return startNote;
+        }
+    
+        let interval = intervalToPlay.get(measureBeat, chord);
+        if (!interval) {
+          return startNote;
+        }
+    
+        return noteIntervalCalculator.getNote(startNote, interval);
     }
     
     isLetterNumberNote(line: string): boolean {
@@ -27,16 +84,35 @@ export default class NoteToPlay {
         return 64;
     }
 
-    parse(line: string) {
-        if (this.isLetterNumberNote(line)) {
-            return this.letterNumberNoteToMidi(line);
-        }
-        if (this.isHzNote(line)) {
-            return this.hzNoteToMidi(line);
+    isRandomNote(noteChooserString: string) {
+        return noteChooserString == "Rand()";
+    }
+
+    randomNoteToMidi() {
+
+    }
+
+    parse(noteToPlayDefinition:INoteToPlayDefinition) {
+        if (!noteToPlayDefinition) {
+            warn("NOTE_TO_PLAY", "NoteToPlay is not set.");
+            return;
         }
 
-        if (this.isIntNote(line)) {
-            return this.intNoteToMidi(line);
+        let note = noteToPlayDefinition.note;
+
+        if (this.isRandomNote(note)) {
+            this.noteChooser = "random";
+        }
+        if (this.isLetterNumberNote(note)) {
+            return this.letterNumberNoteToMidi(note);
+        }
+
+        if (this.isHzNote(note)) {
+            return this.hzNoteToMidi(note);
+        }
+
+        if (this.isIntNote(note)) {
+            return this.intNoteToMidi(note);
         }
     }
 }

@@ -12,6 +12,7 @@ import Slider from "@mui/material/Slider";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
+import OctaveComponent from "./OctaveComponent";
 import Track from "../../Objects/Track";
 
 import Menu from "./TrackSettingsMenu";
@@ -132,6 +133,9 @@ const TrackSettingsComponent = observer(
             raiseVolume={track.raiseVolume}
             lowerVolume={track.lowerVolume}
           />
+        </Box>
+        <Box>
+          <OctaveComponent octaves={track.octaves} toggleOctave={track.toggleOctave}></OctaveComponent>
         </Box>
         </CardContent>
       </Card>

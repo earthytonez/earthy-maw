@@ -15,7 +15,6 @@ interface IUniqueColorsProps {
 }
 
 const UniqueColors = observer(({ name }: IUniqueColorsProps) => {
-  console.log(name);
   let murmurHash = murmur(name);
   let uniqueVal = murmurHash % Math.pow(NUM_COLORS, NUM_CIRCLES);
   let digits: number[] = [];
