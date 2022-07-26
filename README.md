@@ -10,7 +10,6 @@ Sources/Docs:
 
 MMF (Minimum Marketable Features)
 1. Basic House Track -- Kick, Hi Hat, Bass
-    1. Tech Debt -- Remove .tx/tsx requirement.
     2. Finish Kick with fill.
     3. Finish Hi Hat with adjustements
     4. Finish Bass with multiple versions.
@@ -26,6 +25,11 @@ Productionalization:
 2. Rock solid save track.
 3. Export track to json.    
 4. Volume/Mute Visual Feedback.
+
+Tech Debt:
+1. Refactor to be more of a pipeline.  Multiple Sequencers or effects with same ins and outs.
+2. All NoteToPlay should take into account the Octave.
+Make ui more consistent
 
 
 ToDo:
@@ -52,6 +56,9 @@ https://github.com/generativefm/generators
 Sequencers:
 1. Simple Arpeggiator
 2. Complex Arpeggiator
+
+Sequencer Modifiers (Midi Effects)
+1. Glitch -- Add random 8/th notes after playing a note.
 
 
 http://nexus-js.github.io/ui/

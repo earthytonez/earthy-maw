@@ -4,7 +4,8 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
-import { createTheme, ThemeProvider } from "@mui/system";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 import { StoreProvider } from "./stores/useStore";
 import { UIStoreProvider } from "./stores/UI/useUIStore";
@@ -34,7 +35,8 @@ root.render(
   <StoreProvider>
     <UIStoreProvider>
       <ThemeProvider theme={theme}>
-          <App />
+        <CssBaseline />
+        <App />
       </ThemeProvider>
     </UIStoreProvider>
   </StoreProvider>

@@ -16,7 +16,7 @@ interface TrackComponentProps {
 
 const TrackComponent = observer(({ track }: TrackComponentProps) => {
   return (
-    <Grid container direction="row" spacing={2} p={2}>
+    <Grid container direction="row" spacing={2} p={2} style={{backgroundColor: "#333", marginTop: '3px', padding: 0, maxHeight: "8rem"}}>
       <Grid
         item
         p={0}
