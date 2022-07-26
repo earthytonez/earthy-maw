@@ -1,9 +1,9 @@
 import * as Tone from "tone";
 import { Chord } from "@tonaljs/tonal";
 
-import { runInAction, makeObservable, action, computed } from "mobx";
+import { makeObservable, action, computed } from "mobx";
 
-import { SequencerLoader, TriggerWhen } from "./SequencerLoader/index";
+import { SequencerLoader } from "./SequencerLoader/index";
 
 import IPlayParams from "../Types/IPlayParams";
 import ISequencerParameters from "./SequencerRunner/ISequencerParameters";
@@ -196,7 +196,7 @@ export default class Sequencer extends SequencerType {
    */
   playEveryX(beatMarker: number, parameters: IPlayParameters): boolean {
     if (!parameters) {
-      throw "parameters for playEveryX sequencer must be defined";
+      throw new Error("parameters for playEveryX sequencer must be defined");
     }
     try {
       let val = this.playEveryXRunner.run(beatMarker, parameters);
@@ -217,10 +217,10 @@ export default class Sequencer extends SequencerType {
    */
   randomTrigger(beatMarker: number, parameters: PlayParameters): boolean {
     if (!parameters) {
-      throw "parameters for random sequencer must be defined";
+      throw new Error("parameters for random sequencer must be defined");
     }
     try {
-      let val = this.randomTriggerRunner.run(beatMarker, parameters);
+      let val = this.randomTriggerRunner.run(beatMarker, this.beatsSinceLastNote, this.resetBeatsSinceLastNote, parameters);
       debug(
         "PLAY_EVERY_X",
         `sequencer Type: ${this.sequencerType()}, val: ${val}`,
@@ -240,7 +240,7 @@ export default class Sequencer extends SequencerType {
    * Euclidian Sequencer
    * Drone Sequencer?
    */
-  shouldPlay(beatMarker: number): boolean {
+  shouldPlay(beatMarker: BeatMarker): boolean {
     if (!this.boundSynthesizer) {
       return false;
     }
@@ -252,12 +252,12 @@ export default class Sequencer extends SequencerType {
     switch (this.triggerWhen.type) {
       case "random":
         return this.randomTrigger(
-          beatMarker,
+          beatMarker.num,
           this.triggerWhen.parameterSets[this.chosenTriggerParameterSet]
         );
       case "everyX":
         return this.playEveryX(
-          beatMarker,
+          beatMarker.num,
           this.triggerWhen.parameterSets[this.chosenTriggerParameterSet]
         );
       default:
@@ -281,10 +281,6 @@ export default class Sequencer extends SequencerType {
     chord: string,
     beatMarker: BeatMarker
   ): number {
-    console.log(beatMarker);
-    console.log(beatMarker);
-    console.log(beatMarker);
-
     return this.sequencerLoader.note(
       key,
       scale,
@@ -352,7 +348,8 @@ export default class Sequencer extends SequencerType {
     let toneFrequencyChord = chordNotes.map((note: string) => {
       return Tone.Frequency(`${note}${octave}`);
     });
-    let _ = toneFrequencyChord.sort(() => Math.random() - 0.5)[0];
+    let toneFrequencyChords = toneFrequencyChord.sort(() => Math.random() - 0.5)[0]; // What is this doing?
+    console.log(toneFrequencyChords);
     playParams.notes = toneFrequencyChord;
 
     debug("Playing Drone Sequencer", "Getting Buffers", playParams);
@@ -488,12 +485,13 @@ export default class Sequencer extends SequencerType {
     this.type = type;
 
     makeObservable(this, {
+      bindSynth: action,
       changeParameter: action.bound,
+      decrementParameter: action.bound,
       editParameters: computed,
       incrementParameter: action.bound,
-      decrementParameter: action.bound,
       play: action,
-      bindSynth: action,
+      resetBeatsSinceLastNote: action.bound,
       toJSON: action.bound,
     });
   }

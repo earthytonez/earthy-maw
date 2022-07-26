@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { observer } from "mobx-react-lite";
 
 import CircleIcon from "@mui/icons-material/Circle";
@@ -29,7 +31,7 @@ const UniqueColors = observer(({ name }: IUniqueColorsProps) => {
         return (
           <CircleIcon
             key={i}
-            sx={{ color: LOTS_OF_RETRO_COLORS[digit], ml: i == 0 ? 0 : -2 }}
+            sx={{ color: LOTS_OF_RETRO_COLORS[digit], ml: i === 0 ? 0 : -2 }}
           />
         );
       })}

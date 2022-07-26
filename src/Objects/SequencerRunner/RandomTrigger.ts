@@ -26,34 +26,34 @@ export default class RandomTrigger {
 }
 
 
-  randomInterval(beatMarker: any, parameters: ITriggerParameters): boolean {
-
-    debug("RANDOM_TRIGGER", "beatMarker", beatMarker);
-    debug("RANDOM_TRIGGER", "rhythm_length", this.rhythm_length);
-    debug("RANDOM_TRIGGER", "parameters", parameters);
-    let stepCount = beatMarker.num % this.rhythm_length;
+  randomInterval(beatMarker: number, beatsSinceLastNote: number, resetBeatsSinceLastNote: Function, parameters: ITriggerParameters): boolean {
+    let stepCount = beatMarker % this.rhythm_length;
+    
     debug("RANDOM_TRIGGER",
-      `Playing from step list steps: ${this.rhythm_length} -- ${beatMarker.num} / ${stepCount} (${parameters.stepList}`
+      `Playing from step list steps: ${beatMarker} / ${stepCount} (${parameters.stepList}`
     );
 
-    if (beatMarker.beatsSinceLastNote > this.generateRandom(parameters.minSkip, parameters.maxSkip)) {
-      beatMarker.resetBeatsSinceLastNote();
+    console.log('a');
+    if (beatsSinceLastNote > this.generateRandom(parameters.minSkip, parameters.maxSkip)) {
+      console.log('b');
+      resetBeatsSinceLastNote();
       return true;
     }
+    return false;
   }
 
-  run(beatMarker: number, parameters: ITriggerParameters): boolean {
+  run(beatMarker: number, beatsSinceLastNote: number, resetBeatsSinceLastNote: Function, parameters: ITriggerParameters): boolean {
     debug("RANDOM_TRIGGER", "Parameters = ", parameters);
 
     switch (parameters.triggerType) {
       case "random":
-        return this.randomInterval(beatMarker, parameters);
-      case "stepInterval":
-        return this.randomInterval(beatMarker, parameters);
+        return this.randomInterval(beatMarker, beatsSinceLastNote, resetBeatsSinceLastNote, parameters);
     }
+    return false;
   }
 
   constructor(rhythm_length: number) {
     this.rhythm_length = rhythm_length;
+    this.rhythm_length = 0;
   }
 }

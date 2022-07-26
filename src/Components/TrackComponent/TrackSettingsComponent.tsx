@@ -80,7 +80,6 @@ interface ITrackSettingsComponentProps {
 
 const TrackSettingsComponent = observer(
   ({ track }: ITrackSettingsComponentProps) => {
-    const [drawerOpen, setDrawerOpen] = React.useState(false);
 
     return (
       <Card sx={{ height: "100%" }}>

@@ -1,5 +1,3 @@
-import { BeatMarker } from '../../stores/MusicFeatures/BeatMarker';
-
 import { debug } from "../../Util/logger";
 
 export default class IntervalToPlay {
@@ -10,12 +8,14 @@ export default class IntervalToPlay {
 
     /* This code needs to be fixed */
     getChordLength(chord): number {
-        if (chord == "major") {
-            return 3;
+        let chordLengths = {
+            "major": 3,
+            "maj7": 4,
+            "maj9": 5
         }
 
-        if (chord == "maj7") {
-            return 4;
+        if (chordLengths[chord]) {
+            return chordLengths[chord]
         }
         return 3;
     }
@@ -50,9 +50,12 @@ export default class IntervalToPlay {
     }
 
     parse(line: any) {
+        if (!line) {
+            return;
+        }
         this.intervalType = line.interval_type;
         this.intervalArp = line.list[0];
-        return
+        return;
         // let trimmedLine = line.trim();
         // let replacedLine = trimmedLine.replace(/[\[\]]/g, '');
 

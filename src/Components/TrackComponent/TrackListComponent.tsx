@@ -3,15 +3,12 @@ import { observer } from "mobx-react-lite";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
 
 import Track from "./Objects/Track";
 import TrackComponent from "./TrackComponent";
 
 import { useStore } from "../../stores/useStore";
 import React from "react";
-
-const grid = 8;
 
 interface TrackListComponentProps {
   tracks: Array<Track>;

@@ -2,10 +2,8 @@ import * as React from "react";
 
 import { observer } from "mobx-react-lite";
 
-import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
 
 import Track from "../../Objects/Track";
 

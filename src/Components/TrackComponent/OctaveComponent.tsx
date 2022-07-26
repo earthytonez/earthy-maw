@@ -3,11 +3,10 @@ import React from "react";
 import { observer } from "mobx-react-lite";
 
 import Chip from "@mui/material/Chip";
-import Track from "../../Objects/Track";
 
 interface OctaveComponentProps {
   octaves: number[];
-  toggleOctave: (a: number[]) => null;
+  toggleOctave: (a: number) => null;
 }
 
 const OctaveComponent = observer(

@@ -1,51 +1,7 @@
 import * as React from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import PopperUnstyled from '@mui/base/PopperUnstyled';
-
-// const Popper = styled(PopperUnstyled)({
-//   zIndex: 1500,
-// });
-
-// const Listbox = styled('ul')(({ theme }) => ({
-//   ...theme.variants.outlined.neutral,
-//   marginBlock: '0.25rem',
-//   padding: '0.45rem',
-//   borderRadius: theme.vars.radius.sm,
-//   boxShadow: theme.vars.shadow.md,
-//   backgroundColor: theme.vars.palette.background.componentBg,
-//   gap: theme.spacing(1),
-//   display: 'flex',
-//   flexDirection: 'column',
-//   listStyle: 'none',
-// }));
-
-// const MenuItem = styled(MenuItemUnstyled, {
-//   shouldForwardProp: (prop) => prop !== 'active',
-// })<{ active?: boolean }>(({ theme, active }) => ({
-//   listStyle: 'none',
-//   fontFamily: theme.vars.fontFamily.body,
-//   fontSize: theme.vars.fontSize.sm,
-//   padding: '0.45rem 0.75rem',
-//   borderRadius: theme.vars.radius.xs,
-//   minWidth: 120,
-//   textDecoration: 'none',
-//   display: 'flex',
-//   ...theme.variants.plain.neutral,
-//   ...(active
-//     ? {
-//         ...theme.variants.soft.primary,
-//         cursor: 'default',
-//       }
-//     : {
-//         '&:hover': {
-//           ...theme.variants.softHover.neutral,
-//           cursor: 'pointer',
-//         },
-//         '&:active': theme.variants.outlinedHover.neutral,
-//       }),
-//   [theme.focus.selector]: theme.focus.default,
-// }));
+import MenuUnstyled, { MenuUnstyledActions } from '@mui/base/MenuUnstyled';
 
 const TrackSettingsMenu = ({
   control,
