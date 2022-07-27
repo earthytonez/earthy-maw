@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 import { observer } from "mobx-react-lite";
 import { Droppable } from "react-beautiful-dnd";
@@ -66,7 +66,8 @@ const DroppableTrackElement = observer(
       >
         {(provided, snapshot) => (
           <Paper>
-            <Card
+            <Card style={{                padding: '8px'
+}}
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
@@ -79,16 +80,26 @@ const DroppableTrackElement = observer(
                 borderBottom: 0,
               }}
             >
-              <CardContent sx={{ pl: 2 }}>
+              <CardContent sx={{ pl: 2, padding: 0 }}>
                 <Box>
                   {machine &&
                   machine.name !== "" &&
                   machine.name !== undefined ? (
                     <Grid container spacing={2}>
                       <Grid item xs={10}>
-                        <Typography fontWeight="md" color="success" mb={0.5}>
+                        <Typography
+            color="neutral.500"
+            fontWeight={700}
+            sx={{
+              fontSize: "12px",
+              textTransform: "uppercase",
+              letterSpacing: ".1rem",
+            }}
+          >
                           {machine.name}
-                        </Typography>
+          </Typography>
+
+                        
                       </Grid>
                       <Grid item xs={2}>
                         <IconButton
@@ -102,7 +113,6 @@ const DroppableTrackElement = observer(
                           <LaunchIcon fontSize="small" />
                         </IconButton>
                       </Grid>
-
                     </Grid>
                   ) : machine && machine.loading ? (
                     "Loading..."
@@ -116,14 +126,20 @@ const DroppableTrackElement = observer(
                   {provided.placeholder}
                 </Box>
                 {machine && machine.name !== "" ? (
-                  <UniqueColors
-                    name={`${machine.machineType}${machine.name}`}
-                  />
+                  <Grid container>
+                    <Grid item xs>
+                      <UniqueColors
+                        name={`${machine.machineType}${machine.name}`}
+                      />
+                    </Grid>
+                    <Grid item xs>
+                      <Chip label={title} />
+                    </Grid>
+                  </Grid>
                 ) : (
                   ""
                 )}
                 <Presets />
-                <Chip label={title} />
               </CardContent>
             </Card>
           </Paper>

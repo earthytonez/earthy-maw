@@ -16,10 +16,11 @@ interface TrackComponentProps {
 
 const TrackComponent = observer(({ track }: TrackComponentProps) => {
   return (
-    <Grid container direction="row" spacing={2} p={2} style={{backgroundColor: "#333", marginTop: '3px', padding: 0, maxHeight: "8rem"}}>
+    <Grid container direction="row" spacing={2} p={2} style={{backgroundColor: "#333", marginTop: '3px', padding: 0, paddingLeft: '1em', paddingTop: '0', maxHeight: "8rem"}}>
       <Grid
         item
         p={0}
+        style={{paddingTop: '8px', height: '7rem', maxHeight: '7rem'}}
         sx={{
           margin: 0,
           pt: 0,
@@ -53,6 +54,7 @@ const TrackComponent = observer(({ track }: TrackComponentProps) => {
           </Grid> */}
       <Grid
         item
+        style={{paddingTop: '8px', height: '7rem', maxHeight: '7rem'}}
         sx={{
           margin: 0,
           pt: 0,
@@ -74,6 +76,7 @@ const TrackComponent = observer(({ track }: TrackComponentProps) => {
 
       <Grid
         item
+        style={{paddingTop: '8px', height: '7rem', maxHeight: '7rem'}}
         sx={{
           margin: 0,
           pt: 0,

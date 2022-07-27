@@ -87,8 +87,8 @@ const TrackSettingsComponent = observer(
   ({ track }: ITrackSettingsComponentProps) => {
 
     return (
-      <Card sx={{ height: "100%" }}>
-        <CardContent>
+      <Card sx={{ height: "100%", padding: '8px', paddingBottom: '0px' }}>
+              <CardContent sx={{ pl: 2, padding: 0 }}>
         <Box
           sx={{
             display: "flex",
@@ -101,7 +101,7 @@ const TrackSettingsComponent = observer(
             color="neutral.500"
             fontWeight={700}
             sx={{
-              fontSize: "10px",
+              fontSize: "12px",
               textTransform: "uppercase",
               letterSpacing: ".1rem",
             }}
