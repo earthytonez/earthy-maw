@@ -1,10 +1,10 @@
-import Bell from "../Objects/Synthesizers/Bell.ts";
-import FMDrone from "../Objects/Synthesizers/FMDrone.ts";
-import FMBells from "../Objects/Synthesizers/FMBells.ts";
-import Kick from "../Objects/Synthesizers/Kick.ts";
-import HiHat from "../Objects/Synthesizers/HiHat.ts";
-import Bass from "../Objects/Synthesizers/Bass.ts";
-import Waveform from "../Objects/Synthesizers/Waveform.ts";
+import Bell from "../Objects/Synthesizers/Bell";
+import FMDrone from "../Objects/Synthesizers/FMDrone";
+import FMBells from "../Objects/Synthesizers/FMBells";
+import Kick from "../Objects/Synthesizers/Kick";
+import HiHat from "../Objects/Synthesizers/HiHat";
+import Bass from "../Objects/Synthesizers/Bass";
+import Waveform from "../Objects/Synthesizers/Waveform";
 
 export const NOTE_LETTERS = ["A", "B", "C", "D", "E", "F", "G"];
 export const OCTAVE_MIN = 0;

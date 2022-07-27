@@ -16,13 +16,18 @@ const OSCILLATOR_TYPES: OscillatorType[] = [
   "sawtooth",
 ];
 
-export default class FMDrone extends Synthesizer {
+export default class Waveform extends Synthesizer {
   name: string = "Waveform";
   slug: string = "waveform";
   synth: Tone.PolySynth;
   toneContext: any;
   reverb: any;
   oscillatorType: OscillatorType = "sine";
+
+
+  // Filter should be a Mixin.
+  filterCutoff: 0;
+  filterResonance: 0;
 
   changeParameter(parameter: string, value: any) {
     this[parameter] = value;
@@ -37,6 +42,26 @@ export default class FMDrone extends Synthesizer {
         fieldOptions: {
           options: OSCILLATOR_TYPES,
           current: this.oscillatorType
+        },
+      },
+      {
+        name: "Filter Cutoff",
+        field: "filterCutoff",
+        fieldType: "dial",
+        fieldOptions: {
+          max: 100,
+          min: 0,
+          current: this.filterCutoff
+        },
+      },
+      {
+        name: "Filter Resonance",
+        field: "filterResonance",
+        fieldType: "dial",
+        fieldOptions: {
+          max: 100,
+          min: 0,
+          current: this.filterResonance
         },
       },
     ];

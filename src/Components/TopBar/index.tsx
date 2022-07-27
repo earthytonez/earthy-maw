@@ -21,8 +21,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 
 import { useStore } from "../../stores/useStore.tsx";
 
-type Anchor = "top" | "left" | "bottom" | "right";
-
 const TopBar = observer(() => {
   const store = useStore();
   const {
@@ -33,13 +31,6 @@ const TopBar = observer(() => {
     musicSectionLength,
     setSectionLength,
   } = store.musicFeaturesStore;
-
-  const [state, setState] = React.useState({
-    top: false,
-    left: false,
-    bottom: false,
-    right: false,
-  });
 
   function PlayButtonToggle({
     play,
@@ -171,7 +162,7 @@ const TopBar = observer(() => {
               </Typography>
             }
             sx={{
-              flexBasis: "100px",
+              flexBasis: "140px",
               display: {
                 xs: "none",
                 sm: "flex",

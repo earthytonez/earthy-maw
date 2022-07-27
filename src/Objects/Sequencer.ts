@@ -54,6 +54,9 @@ export default class Sequencer extends SequencerType {
   droneLength: number = 9;
   droneTail: number = 3;
 
+  /*
+   * These variables are defined on the Track and come in through the constructor
+   */
   octaves: number[];
   octaveRangeHigh: number = 3;
   octaveRangeLow: number = 2;

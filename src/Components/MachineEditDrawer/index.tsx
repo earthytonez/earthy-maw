@@ -6,6 +6,7 @@ import Button from "@mui/material/Button";
 import Drawer from "@mui/material/Drawer";
 import Typography from "@mui/material/Typography";
 
+import FormControlLabel from "@mui/material/FormControlLabel";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Slider from "@mui/material/Slider";
@@ -18,8 +19,6 @@ import ArraySelector from './ArraySelector';
 
 import { useStore } from "../../stores/useStore";
 import { useUIStore } from "../../stores/UI/useUIStore";
-
-type Anchor = "top" | "left" | "bottom" | "right";
 
 const MachineEditDrawerRadioGroup = observer(
   ({
@@ -38,7 +37,6 @@ const MachineEditDrawerRadioGroup = observer(
     }
 
     const { options, current } = fieldOptions;
-
     return (
       <Box sx={{ mt: 2 }}>
         <Typography>{name}</Typography>
@@ -51,14 +49,39 @@ const MachineEditDrawerRadioGroup = observer(
           }}
         >
           {options.map((option: any, i: number) => {
-            console.log(i);
-            return <Radio key={i} label={option} value={option} size="sm" />;
+            return (<FormControlLabel key={i} value={option} control={<Radio />} label={option} />);
           })}
         </RadioGroup>
       </Box>
     );
   }
 );
+
+const MachineEditDrawerDial = observer(
+  ({
+    edit,
+    name,
+    field,
+    fieldOptions,
+  }: {
+    edit: Function;
+    name: string;
+    field: string;
+    fieldOptions: any;
+  }) => {
+    if (!fieldOptions) {
+      return <Box sx={{ mt: 2 }}></Box>;
+    }
+    
+    return (
+      <Box sx={{ mt: 2 }}>
+        <Typography>{name}</Typography>
+        <div id={`dial-${field}`} />
+      </Box>
+    );
+  }
+);
+
 
 const LoadParameter = observer(
   ({
@@ -78,12 +101,6 @@ const LoadParameter = observer(
     fieldType: string;
     fieldOptions: any;
   }) => {
-    console.log("Return fieldType");
-    console.log(edit);
-    console.log(name);
-    console.log(field);
-    console.log(fieldType);
-    console.log(fieldOptions);
     switch (fieldType) {
       case "radio":
         return (
@@ -94,7 +111,16 @@ const LoadParameter = observer(
             edit={edit}
           ></MachineEditDrawerRadioGroup>
         );
-      case "slider":
+      case "dial":
+        return (
+          <MachineEditDrawerDial
+            name={name}
+            field={field}
+            fieldOptions={fieldOptions}
+            edit={edit}
+          ></MachineEditDrawerDial>
+        );
+        case "slider":
         return (
           <Box>
             <Typography id="track-false-slider" gutterBottom>
@@ -146,7 +172,6 @@ const MachineEditDrawer = observer(() => {
     objectEditTrack,
     objectEditType,
     objectEditIsOpen,
-    objectEditing,
   } = uiStore;
 
   let anchor = "right";

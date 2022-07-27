@@ -21,7 +21,7 @@ const Footer = (props: BoxProps) => (
         position: 'fixed',
         width: '100%',
         bottom: 0,
-        zIndex: 1100,
+        zIndex: 0,
         top: "auto"
       },
       ...(Array.isArray(props.sx) ? props.sx : [props.sx]),

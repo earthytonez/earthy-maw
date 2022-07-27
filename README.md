@@ -9,7 +9,17 @@ Sources/Docs:
 6. https://cables.gl/p/bmG4rF
 
 MMF (Minimum Marketable Features)
-1. Basic House Track -- Kick, Hi Hat, Bass
+Tech Debt: 1. Save more things (like Octaves)
+
+1. Random/Chaos Arpeggiator/bleeps and bloops
+    1. Simple Waveform Synth with Changes.
+    2. Modulate Random
+    3. Modulate Drone Sequencer
+    4. Modulate "FMDrone" Synth
+    5. Modulate "FMBell" Synth
+
+
+2. Basic House Track -- Kick, Hi Hat, Bass
     2. Finish Kick with fill.
     3. Finish Hi Hat with adjustements
     4. Finish Bass with multiple versions.
@@ -18,7 +28,7 @@ MMF (Minimum Marketable Features)
 3. Simple Arpeggiator
 4. Complex Arpeggiator
 5. Time based Modulation
-6. Random/Chaos Arpeggiator/bleeps and bloops
+
 
 Productionalization:
 1. Undo delete track
@@ -29,6 +39,8 @@ Productionalization:
 Tech Debt:
 1. Refactor to be more of a pipeline.  Multiple Sequencers or effects with same ins and outs.
 2. All NoteToPlay should take into account the Octave.
+3. Like/Dark Mode Switching
+4. Nexus Audio API -- Stereo Decibal Meter on Track.
 Make ui more consistent
 
 

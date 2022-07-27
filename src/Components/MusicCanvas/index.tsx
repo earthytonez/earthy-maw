@@ -1,8 +1,8 @@
 import React from "react";
 import "./index.css";
 
-import Sequencer from "./Objects/Sequencer.ts";
-import Synthesizer from "./Objects/Synthesizer.ts";
+import Sequencer from "./Objects/Sequencer";
+import Synthesizer from "./Objects/Synthesizer";
 
 import { Group, Layer, Line, Circle, Rect, Text } from "react-konva";
 

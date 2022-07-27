@@ -17,17 +17,15 @@ import Toolbar from "@mui/material/Toolbar";
 import MenuIcon from "@mui/icons-material/Menu";
 import MoreIcon from "@mui/icons-material/More";
 
-// import Layout from "./Layout.tsx";
-
-import { useStore } from "../../stores/useStore.tsx";
+import { useStore } from "../../stores/useStore";
 import { useUIStore } from "../../stores/UI/useUIStore";
 
-import MachineDrawer from "./MachineDrawer.tsx";
+import MachineDrawer from "./MachineDrawer";
 import {
   MUSIC_THEORY_KEYS,
   MUSIC_THEORY_SCALES,
   MUSIC_THEORY_CHORDS,
-} from "../../config/constants.ts";
+} from "../../config/constants";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 

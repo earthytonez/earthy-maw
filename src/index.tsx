@@ -21,7 +21,7 @@ const theme = createTheme({
     },
   },
   zIndex: {
-    drawer: 1
+    drawer: 1200
   }
 });
 
