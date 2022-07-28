@@ -132,8 +132,9 @@ const LoadParameter = observer(
               getAriaValueText={() => fieldOptions.current}
               step={1}
               marks
-              min={fieldOptions.options[0]}
-              max={fieldOptions.options[fieldOptions.length - 1]}
+              onChange={(mouseEvent: any) => edit(field, mouseEvent.target.value)}
+              min={fieldOptions.min}
+              max={fieldOptions.max}
               valueLabelDisplay="auto"
             />
           </Box>

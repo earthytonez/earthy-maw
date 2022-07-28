@@ -89,7 +89,7 @@ export default class Waveform extends Synthesizer {
     })
   }
 
-  play(params: IPlayParams) {
+  play(gate: ISequencerGate, params: IPlayParams) {
     debug("Waveform Playing");
 
     this.synth.set({
@@ -97,9 +97,9 @@ export default class Waveform extends Synthesizer {
       modulationIndex: 1,
       envelope: {
         attack: 0,
-        decay: .3,
-        sustain: 0,
-        release: 0
+        decay: 10,
+        sustain: 1, // between 0 and 1
+        release: 1
       },
       oscillator: {
         type: this.oscillatorType,
@@ -107,6 +107,8 @@ export default class Waveform extends Synthesizer {
       volume: 0,
     });
 
-    this.synth.triggerAttackRelease(params.note as Frequency);
+    console.log(`WaveForm triggerAttackRelase ${gate.length}`);
+    this.synth.triggerAttackRelease(params.note as Frequency, Tone.Time(gate.length).toNotation());
+    // this.synth.triggerAttackRelease(params.note as Frequency, 1000);
   }
 }

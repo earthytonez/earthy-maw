@@ -13,10 +13,16 @@ Tech Debt: 1. Save more things (like Octaves)
 
 1. Random/Chaos Arpeggiator/bleeps and bloops
     1. Simple Waveform Synth with Changes.
+    2. Continue tweak TrackComponent 
+        /Users/mgimenez-peterson/Dev/github.com/earthytonez/web-synth/src/Components/TrackComponent/TrackComponent.tsx
+        Specifically make math workout for padding of lane and components.  Maybe make padding look just like a line.
     2. Modulate Random
     3. Modulate Drone Sequencer
     4. Modulate "FMDrone" Synth
     5. Modulate "FMBell" Synth
+
+    Refactor Function Parameters to Types
+    A Trigger should be a type that includes Gate.
 
 
 2. Basic House Track -- Kick, Hi Hat, Bass

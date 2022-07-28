@@ -4,14 +4,7 @@ outputs = 1
 tags = [
     "minimalism"
 ]
-type = "step"
-
-[Parameters]
-octaves = {}
-minGate = {}
-maxGate = {}
-minInterval = {}
-maxInterval = {}
+type = "randomStep"
 
 [LengthOfNote]
 length = "Rand()"

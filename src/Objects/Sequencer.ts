@@ -16,6 +16,7 @@ import MusicFeaturesStore from "../stores/MusicFeatures.store";
 import { BeatMarker } from "../stores/MusicFeatures/BeatMarker";
 
 import Synthesizer from "./Synthesizer";
+import { Gate } from "tone";
 
 const TOMLFiles = {
   OneTwo: require("./Sequencer/Definitions/OneTwo"),
@@ -58,11 +59,17 @@ export default class Sequencer extends SequencerType {
    * These variables are defined on the Track and come in through the constructor
    */
   octaves: number[];
-  octaveRangeHigh: number = 3;
-  octaveRangeLow: number = 2;
 
   droneSpacingHigh: number = 3;
   droneSpacingLow: number = 2;
+
+  /*
+   * These variables are for random step sequencers.
+   */
+  minGate: number = 0;
+  maxGate: number = 1;
+  minInterval: number = 0;
+  maxInterval: number = 1;
 
   awaitBuffers: Promise<any>;
 
@@ -107,75 +114,102 @@ export default class Sequencer extends SequencerType {
   }
 
   changeParameter(parameter: string, value: any) {
+    console.log(parameter);
+    console.log(`CHANGE PARAMETER ${parameter} ${value}`);
     this[parameter] = value;
   }
 
   get editParameters(): ISequencerParameters {
-    return [
-      {
-        name: "TriggerSet",
-        field: "chosenTriggerParameterSet",
-        fieldType: "arraySelector",
-        fieldOptions: {
-          options: [0, 1, 2, 3, 4],
-          current: this.chosenTriggerParameterSet,
-        },
-      },
-      {
-        name: "Drone Length",
-        field: "droneLength",
+    if (this.sequencerLoader.sequencerHolder.type == "randomStep") {
+      return [
+              {
+        name: "Minimum Gate",
+        field: "minGate",
         fieldType: "slider",
         fieldOptions: {
-          options: [3, 4, 5, 6, 7, 8],
-          current: this.droneLength,
+          min: 0,
+          max: 10,
+          current: this.minGate,
+        },
+      },
+              {
+        name: "Maximum Gate",
+        field: "maxGate",
+        fieldType: "slider",
+        fieldOptions: {
+          min: 0,
+          max: 100,
+          current: this.maxGate,
         },
       },
       {
-        name: "Drone Tail",
-        field: "droneTail",
+        name: "Minimum Interval",
+        field: "minInterval",
         fieldType: "slider",
         fieldOptions: {
-          options: [3, 4, 5, 6, 7, 8],
-          current: this.droneTail,
+          min: 0,
+          max: 1,
+          current: this.minInterval,
         },
       },
       {
-        name: "Drone Spacing High",
-        field: "droneSpacingHigh",
+        name: "Maximum Interval",
+        field: "maxInterval",
         fieldType: "slider",
         fieldOptions: {
-          options: [3, 4, 5, 6, 7, 8],
-          current: this.droneTail,
+          min: 0,
+          max: 10,
+          current: this.maxInterval,
         },
-      },
-      {
-        name: "Drone Spacing Low",
-        field: "droneSpacingLow",
-        fieldType: "slider",
-        fieldOptions: {
-          options: [3, 4, 5, 6, 7, 8],
-          current: this.droneTail,
-        },
-      },
-      {
-        name: "Octave Range High",
-        field: "octaveRangeHigh",
-        fieldType: "slider",
-        fieldOptions: {
-          options: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-          current: this.octaveRangeHigh,
-        },
-      },
-      {
-        name: "Octave Range Low",
-        field: "octaveRangeLow",
-        fieldType: "slider",
-        fieldOptions: {
-          options: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-          current: this.octaveRangeLow,
-        },
-      },
-    ];
+      }
+    ]}
+    // return [
+    //   {
+    //     name: "TriggerSet",
+    //     field: "chosenTriggerParameterSet",
+    //     fieldType: "arraySelector",
+    //     fieldOptions: {
+    //       options: [0, 1, 2, 3, 4],
+    //       current: this.chosenTriggerParameterSet,
+    //     },
+    //   },
+    //   {
+    //     name: "Drone Length",
+    //     field: "droneLength",
+    //     fieldType: "slider",
+    //     fieldOptions: {
+    //       options: [3, 4, 5, 6, 7, 8],
+    //       current: this.droneLength,
+    //     },
+    //   },
+    //   {
+    //     name: "Drone Tail",
+    //     field: "droneTail",
+    //     fieldType: "slider",
+    //     fieldOptions: {
+    //       options: [3, 4, 5, 6, 7, 8],
+    //       current: this.droneTail,
+    //     },
+    //   },
+    //   {
+    //     name: "Drone Spacing High",
+    //     field: "droneSpacingHigh",
+    //     fieldType: "slider",
+    //     fieldOptions: {
+    //       options: [3, 4, 5, 6, 7, 8],
+    //       current: this.droneTail,
+    //     },
+    //   },
+    //   {
+    //     name: "Drone Spacing Low",
+    //     field: "droneSpacingLow",
+    //     fieldType: "slider",
+    //     fieldOptions: {
+    //       options: [3, 4, 5, 6, 7, 8],
+    //       current: this.droneTail,
+    //     },
+    //   }
+    // ];
   }
 
   async load() {
@@ -190,14 +224,14 @@ export default class Sequencer extends SequencerType {
     this.playEveryXRunner = new PlayEveryX(this.sequencerLoader.rhythm_length);
     this.randomTriggerRunner = new RandomTrigger(
       this.sequencerLoader.rhythm_length
-    );
+      );
   }
 
   /*
    * This is a simple step sequencer, that enables you to sequence based on either a list or a mathematical formula.
    * This is only for triggers/gates it does not determine what note to play.
    */
-  playEveryX(beatMarker: number, parameters: IPlayParameters): boolean {
+  playEveryX(beatMarker: number, parameters: IPlayParameters): ISequencerGate {
     if (!parameters) {
       throw new Error("parameters for playEveryX sequencer must be defined");
     }
@@ -218,12 +252,23 @@ export default class Sequencer extends SequencerType {
    * This is a simple step sequencer, that enables you to sequence based on either a list or a mathematical formula.
    * This is only for triggers/gates it does not determine what note to play.
    */
-  randomTrigger(beatMarker: number, parameters: PlayParameters): boolean {
+  randomTrigger(beatMarker: number, parameters: PlayParameters): ISequencerGate {
     if (!parameters) {
       throw new Error("parameters for random sequencer must be defined");
     }
     try {
-      let val = this.randomTriggerRunner.run(beatMarker, this.beatsSinceLastNote, this.resetBeatsSinceLastNote, parameters);
+      console.log(`getRandomFloat: ${this.minInterval}`);
+      console.log(`getRandomFloat: ${this.maxInterval}`);
+        let val = this.randomTriggerRunner.run(
+        beatMarker, 
+        this.beatsSinceLastNote, 
+        this.resetBeatsSinceLastNote, 
+        parameters,
+        this.minGate,
+        this.maxGate,
+        this.minInterval,
+        this.maxInterval  
+      );
       debug(
         "PLAY_EVERY_X",
         `sequencer Type: ${this.sequencerType()}, val: ${val}`,
@@ -243,13 +288,17 @@ export default class Sequencer extends SequencerType {
    * Euclidian Sequencer
    * Drone Sequencer?
    */
-  shouldPlay(beatMarker: BeatMarker): boolean {
+  shouldPlay(beatMarker: BeatMarker): ISequencerGate {
     if (!this.boundSynthesizer) {
-      return false;
+      return {
+        triggered: false
+      };
     }
 
     if (!this.triggerWhen) {
-      return false;
+      return {
+        triggered: false
+      };
     }
 
     switch (this.triggerWhen.type) {
@@ -264,8 +313,10 @@ export default class Sequencer extends SequencerType {
           this.triggerWhen.parameterSets[this.chosenTriggerParameterSet]
         );
       default:
-        return true;
-    }
+        return {
+          triggered: true
+        };
+      }
   }
 
   /* 
@@ -450,22 +501,24 @@ export default class Sequencer extends SequencerType {
 
     debug("SEQUENCER", `shouldPlay? ${this.sequencerType()}`);
 
-    if (this.shouldPlay(beatMarker)) {
+    let gate: ISequencerGate = this.shouldPlay(beatMarker);
+
+    if (gate.triggered) {
       if (this.sequencerType() === "drone") {
         console.log("sequencerType Drone");
-        return this.boundSynthesizer.play(
+        return this.boundSynthesizer.play(gate, 
           this.droneParams(key, chord, beatMarker, time)
         );
       }
 
       if (this.sequencerType() === "arpeggiator") {
         console.log(`sequencerType Arpeggiator ${beatMarker}`);
-        return this.boundSynthesizer.play(
+        return this.boundSynthesizer.play(gate, 
           this.arpParams(key, scale, chord, beatMarker, time)
         );
       }
 
-      return this.boundSynthesizer.play(
+      return this.boundSynthesizer.play(gate, 
         this.playParams(key, scale, chord, beatMarker, time)
       );
     }
@@ -496,6 +549,7 @@ export default class Sequencer extends SequencerType {
       play: action,
       resetBeatsSinceLastNote: action.bound,
       toJSON: action.bound,
+      randomTrigger: action.bound
     });
   }
 }

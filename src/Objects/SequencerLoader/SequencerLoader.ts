@@ -12,14 +12,10 @@ import IMusicScale from "../../Types/IMusicScale";
 import IMusicKey from "../../Types/IMusicKey";
 import IToneJSDuration from "../../Types/IToneJSDuration";
 import IToneJSNote from "../../Types/IToneJSNote";
-import ISequencerParameters from "../SequencerRunner/ISequencerParameters";
 
 import toml from "toml";
 
 import { makeObservable, action, computed } from "mobx";
-
-import { info } from '../../Util/logger';
-import { ConstructionOutlined } from "@mui/icons-material";
 
 interface IParsedSequencerCodeFormat {
   name: string;
@@ -27,8 +23,7 @@ interface IParsedSequencerCodeFormat {
   outputs: number;
   tags: string[];
   total_length: number;
-  type: "drone" | "step" | "arpeggiator";
-  Parameters: ISequencerParameters[];
+  type: "drone" | "step" | "randomStep" | "arpeggiator";
   LengthOfNote: ILengthOfNote;
   NoteToPlay: INoteToPlay;
   TriggerWhen: ITriggerWhen;
@@ -185,7 +180,6 @@ export default class SequencerLoader {
       this.sequencerHolder.total_length = data.total_length;
       this.sequencerHolder.tags = data.tags;
       this.sequencerHolder.type = data.type;
-      this.sequencerHolder.parameters = data.parameters;
       this.sequencerHolder.triggerWhen.parse(data.TriggerWhen);
       this.sequencerHolder.noteToPlay.parse(data.NoteToPlay);
       this.sequencerHolder.intervalToPlay.parse(data.IntervalsToPlay);
