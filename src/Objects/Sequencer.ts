@@ -13,6 +13,8 @@ import PlayEveryX from "./SequencerRunner/PlayEveryX";
 import RandomTrigger from "./SequencerRunner/RandomTrigger";
 import MusicFeaturesStore from "../stores/MusicFeatures.store";
 
+import SequencerGate from "./SequencerRunner/ISequencerGate";
+
 import { BeatMarker } from "../stores/MusicFeatures/BeatMarker";
 
 import Synthesizer from "./Synthesizer";
@@ -53,7 +55,7 @@ export default class Sequencer extends SequencerType {
   loading: boolean = true;
 
   droneLength: number = 9;
-  droneTail: number = 3;
+  droneTail: number = 6;
 
   /*
    * These variables are defined on the Track and come in through the constructor
@@ -114,13 +116,11 @@ export default class Sequencer extends SequencerType {
   }
 
   changeParameter(parameter: string, value: any) {
-    console.log(parameter);
-    console.log(`CHANGE PARAMETER ${parameter} ${value}`);
     this[parameter] = value;
   }
 
   get editParameters(): ISequencerParameters {
-    if (this.sequencerLoader.sequencerHolder.type == "randomStep") {
+    if (this.sequencerLoader.sequencerHolder.type === "randomStep") {
       return [
               {
         name: "Minimum Gate",
@@ -231,7 +231,7 @@ export default class Sequencer extends SequencerType {
    * This is a simple step sequencer, that enables you to sequence based on either a list or a mathematical formula.
    * This is only for triggers/gates it does not determine what note to play.
    */
-  playEveryX(beatMarker: number, parameters: IPlayParameters): ISequencerGate {
+  playEveryX(beatMarker: number, parameters: IPlayParameters): SequencerGate {
     if (!parameters) {
       throw new Error("parameters for playEveryX sequencer must be defined");
     }
@@ -252,7 +252,7 @@ export default class Sequencer extends SequencerType {
    * This is a simple step sequencer, that enables you to sequence based on either a list or a mathematical formula.
    * This is only for triggers/gates it does not determine what note to play.
    */
-  randomTrigger(beatMarker: number, parameters: PlayParameters): ISequencerGate {
+  randomTrigger(beatMarker: number, parameters: PlayParameters): SequencerGate {
     if (!parameters) {
       throw new Error("parameters for random sequencer must be defined");
     }
@@ -288,7 +288,7 @@ export default class Sequencer extends SequencerType {
    * Euclidian Sequencer
    * Drone Sequencer?
    */
-  shouldPlay(beatMarker: BeatMarker): ISequencerGate {
+  shouldPlay(beatMarker: BeatMarker): SequencerGate {
     if (!this.boundSynthesizer) {
       return {
         triggered: false
@@ -382,7 +382,7 @@ export default class Sequencer extends SequencerType {
     };
   }
 
-  droneParams(key, chord, beatMarker: number, time: any): any {
+  droneParams(key: any, chord: any, beatMarker: number, time: any): any {
     info("DRONE_SEQUENCER", "Starting Drone");
     // this.setAwaitBuffers();
 
@@ -392,12 +392,7 @@ export default class Sequencer extends SequencerType {
 
     let chordNotes = this.getChord(key, chord);
 
-    let octave = this.octaveRangeHigh;
-
-    let rand = Math.floor(Math.random() * (4 - 1 + 1) + 4);
-    if (rand < 4) {
-      octave = this.octaveRangeLow;
-    }
+    let octave = this.octaves[Math.floor(Math.random() * this.octaves.length)];
 
     let toneFrequencyChord = chordNotes.map((note: string) => {
       return Tone.Frequency(`${note}${octave}`);
@@ -501,7 +496,7 @@ export default class Sequencer extends SequencerType {
 
     debug("SEQUENCER", `shouldPlay? ${this.sequencerType()}`);
 
-    let gate: ISequencerGate = this.shouldPlay(beatMarker);
+    let gate: SequencerGate = this.shouldPlay(beatMarker);
 
     if (gate.triggered) {
       if (this.sequencerType() === "drone") {

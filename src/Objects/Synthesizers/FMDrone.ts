@@ -1,10 +1,11 @@
-import Synthesizer from "../Synthesizer.ts";
+import Synthesizer from "../Synthesizer";
 
 import * as Tone from "tone";
 import IPlayParams from "../../Types/IPlayParams";
 import { Frequency } from "tone/build/esm/core/type/Units";
 
-import { debug } from "../../Util/logger.ts";
+import { debug } from "../../Util/logger";
+import SequencerGate from "../SequencerRunner/ISequencerGate";
 
 import { action, makeObservable } from 'mobx';
 
@@ -45,8 +46,6 @@ export default class FMDrone extends Synthesizer {
   }
 
   attachVolume(vol: Tone.Volume) {
-    debug("FMDRONE", "attachVolume");
-    debug("FMDRONE", vol.context === this.synth.context);
     if (vol) {
       try {
         this.synth.connect(vol);
@@ -69,13 +68,16 @@ export default class FMDrone extends Synthesizer {
       decay: 1,
       wet: 0.8,
     });
+
     this.reverb.generate(); // Risky not to wait but ¯\_(ツ)_/¯
+
     let chorus = new Tone.Chorus({
       context: this.toneContext,
       frequency: 0.33,
       depth: 0.7,
       wet: 0.85,
     });
+    
     let delay = new Tone.FeedbackDelay({
       context: this.toneContext,
       delayTime: 3 / 16, // lenghtSeconds / 16;
@@ -94,10 +96,12 @@ export default class FMDrone extends Synthesizer {
     })
   }
 
-  play(params: IPlayParams) {
-    debug("FMDrone Playing");
+  play(gate: SequencerGate, params: IPlayParams) {
+    let { lengthSeconds, tailSeconds, notes } = params;
 
-    const { lengthSeconds, tailSeconds, notes } = params;
+    // if (lengthSeconds == undefined) { lengthSeconds = 3};
+    // if (reverbDecayMod == undefined) { reverbDecayMod = 4};
+    // if (tailSeconds == undefined) { tailSeconds = 3};
 
     this.reverb.decay = lengthSeconds! / reverbDecayMod;
 
@@ -136,7 +140,10 @@ export default class FMDrone extends Synthesizer {
       "FMDrone",
       `Starting FMDrone Play Trigger Attack Release of ${notes} with lengthSeconds ${lengthSeconds}`
     );
-    this.synth.triggerAttackRelease(notes as Frequency[], lengthSeconds);
+
+      console.log(notes);
+
+    this.synth.triggerAttackRelease(notes as Frequency[], Tone.Time(lengthSeconds).toNotation());
   }
 
   // play(params: IPlayParams) {

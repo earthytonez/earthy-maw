@@ -89,7 +89,10 @@ export default class Waveform extends Synthesizer {
     })
   }
 
-  play(gate: ISequencerGate, params: IPlayParams) {
+  play(gate: SequencerGate, params: IPlayParams) {
+    if (gate.length == 0) {
+      return console.log("Gate Length must be greater than 0");
+    }
     debug("Waveform Playing");
 
     this.synth.set({

@@ -1,12 +1,12 @@
 import { debug } from "../../Util/logger";
 
 import { ITriggerParameters } from "../SequencerLoader/TriggerWhen";
-
+import SequencerGate from "./ISequencerGate";
 /*
  * Play Every X is used to calculate whether or not a trigger should occur, usually
  * playing every x notes.
  */
-export default class RandomTrigger {
+export default class RandomTrigger implements ISequencerRunner {
   rhythm_length: number;
 
   generateRandom(min, max) {
@@ -39,7 +39,7 @@ export default class RandomTrigger {
     maxGate: number,
     minInterval: number,
     maxInterval: number
-  ): ISequencerGate {
+  ): SequencerGate {
     let stepCount = beatMarker % this.rhythm_length;
 
     debug(
@@ -50,25 +50,19 @@ export default class RandomTrigger {
     if (
       beatsSinceLastNote >
       this.generateRandom(
-        parameters.minSkip,
-        parameters.maxSkip,
-        minGate,
-        maxGate,
         minInterval,
-        maxInterval
+        maxInterval,
       )
     ) {
       resetBeatsSinceLastNote();
       console.log(this.getRandomFloat(minGate, maxGate, 2));
 
-      return {
-        triggered: true,
-        length: this.getRandomFloat(minGate, maxGate, 2),
-      };
+      return new SequencerGate(
+        true,
+        this.getRandomFloat(minGate, maxGate, 2),
+      );
     }
-    return {
-      triggered: false,
-    };
+    return new SequencerGate(false);
   }
 
   run(
@@ -80,7 +74,7 @@ export default class RandomTrigger {
     maxGate: number,
     minInterval: number,
     maxInterval: number
-  ): ISequencerGate {
+  ): SequencerGate {
     debug("RANDOM_TRIGGER", "Parameters = ", parameters);
 
     switch (parameters.triggerType) {
@@ -96,7 +90,7 @@ export default class RandomTrigger {
           maxInterval
         );
     }
-    return false;
+    return new SequencerGate(false);
   }
 
   constructor(rhythm_length: number) {

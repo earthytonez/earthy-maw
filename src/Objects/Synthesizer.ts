@@ -4,7 +4,7 @@ export default abstract class Synthesizer extends Placeable {
     machineType: string = "Synthesizer";
     loading: boolean = true;
 
-    abstract play(ISequencerGate);
+    abstract play(SequencerGate, IPlayParams);
     
     setLoading(loading: boolean) {
         this.loading = loading;

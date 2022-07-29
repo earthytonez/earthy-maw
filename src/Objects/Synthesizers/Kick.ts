@@ -30,7 +30,9 @@ export default class Kick extends Synthesizer {
 
   constructor(vol: Volume) {
     super();
+    
     this.synth = new Tone.MembraneSynth();
+
     if (vol) {
       this.synth.connect(vol);
     } else {
