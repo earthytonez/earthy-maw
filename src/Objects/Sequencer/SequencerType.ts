@@ -7,23 +7,11 @@ import {
   observable,
 } from "mobx";
 
-import { SequencerLoader } from "./SequencerLoader/index";
+import { SequencerLoader, TriggerWhen } from "./SequencerLoader/index";
 
 import { info } from "../../Util/logger";
 
-const TOMLFiles = {
-  "OneTwo": require("./Definitions/OneTwo"),
-  "OneFour": require("./Definitions/OneFour"),
-  "TwoFour": require("./Definitions/TwoFour"),
-  "SimpleArpeggiator": require("./Definitions/SimpleArpeggiator"),
-  "ThreeFour": require("./Definitions/ThreeFour"),
-  "FourOTFloor": require("./Definitions/FourOTFloor"),
-  "OffBeatFour": require("./Definitions/OffBeatFour"),
-  "HiHat": require("./Definitions/HiHat"),
-  "HouseHiHat": require("./Definitions/HouseHiHat"),
-  "SimpleDrone": require("./Definitions/SimpleDrone"),
-  "Random": require("./Definitions/Random")
-}
+import { TOML_FILES } from '../../config/constants';
 
 export default class SequencerType {
   id: number;
@@ -46,7 +34,7 @@ export default class SequencerType {
     if (!seqText.startsWith("name")) {
       console.error(`FileName: ${fileName}`)
       console.error(seqText);
-      throw("seqText did not start with name");
+      throw new Error("seqText did not start with name");
     }
     
     runInAction(() => {
@@ -65,33 +53,31 @@ export default class SequencerType {
       "font-weight:bold"
     );
 
-    if (TOMLFiles[this.type] == undefined) {
-      throw(`Sequencer Type Not Found: ${this.type}`)
+    if (TOML_FILES[this.type] == undefined) {
+      throw new Error(`Sequencer Type Not Found: ${this.type}`)
     }
 
-    this.sequencerLoader = await this.fetchTOML(TOMLFiles[this.type]);
+    this.sequencerLoader = await this.fetchTOML(TOML_FILES[this.type]);
   }
 
-  get triggerWhen() {
-    return this.sequencerLoader.triggerWhen();
+  get triggerWhen(): TriggerWhen | undefined {
+    return this.sequencerLoader?.triggerWhen();
   }
 
-  get name() {
-    if (this.sequencerLoader) {
-      return this.sequencerLoader.name;
-    }
+  get name(): string | undefined{
+    return this.sequencerLoader?.name;
   }
 
-  get code() {
-    return this.sequencerLoader.code();
+  get code(): string | undefined {
+    return this.sequencerLoader?.code();
   }
 
-  volume(beatMarker: number): number {
-    return this.sequencerLoader.volume(beatMarker);
+  volume(beatMarker: number): number | undefined{
+    return this.sequencerLoader?.volume(beatMarker);
   }
 
-  sequencerType(): string {
-    return this.sequencerLoader.type;
+  sequencerType(): string | undefined {
+    return this.sequencerLoader?.type;
   }
 
   constructor(type: string, id: number) {

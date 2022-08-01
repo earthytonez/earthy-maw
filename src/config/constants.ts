@@ -1,3 +1,5 @@
+import { TOML_FILES } from './constants/sequencer';
+
 import Bell from "../Objects/Synthesizer/Synthesizers/Bell";
 import FMDrone from "../Objects/Synthesizer/Synthesizers/FMDrone";
 import FMBells from "../Objects/Synthesizer/Synthesizers/FMBells";
@@ -79,3 +81,6 @@ export const SYNTH_TYPE_FROM_STRING: IHash = {
 }
 
 export const A_ZERO_STARTING_NUMBER = 8;
+
+export { TOML_FILES }
+

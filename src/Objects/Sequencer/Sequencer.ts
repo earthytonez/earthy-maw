@@ -17,16 +17,6 @@ import { BeatMarker } from "../../stores/MusicFeatures/BeatMarker";
 
 import Synthesizer from "../Synthesizer";
 
-const TOMLFiles = {
-  OneTwo: require("./Definitions/OneTwo"),
-  SimpleArpeggiator: require("./Definitions/SimpleArpeggiator"),
-  ThreeFour: require("./Definitions/ThreeFour"),
-  FourOTFloor: require("./Definitions/FourOTFloor"),
-  OffBeatFour: require("./Definitions/OffBeatFour"),
-  HiHat: require("./Definitions/HiHat"),
-  SimpleDrone: require("./Definitions/SimpleDrone"),
-  Random: require("./Definitions/Random"),
-};
 
 export default class Sequencer extends SequencerType {
   slug: string;
@@ -97,7 +87,6 @@ export default class Sequencer extends SequencerType {
 
   bindSynth(synth: Synthesizer) {
     this.boundSynthesizer = synth;
-    // this.setAwaitBuffers();
     debug("SEQUENCER", `Bound Synthesizer: ${synth}`, this.boundSynthesizer);
   }
 

@@ -9,7 +9,7 @@ import SequencerGate from "./SequencerGate";
 export default class RandomTrigger implements ISequencerRunner {
   rhythm_length: number;
 
-  generateRandom(min, max) {
+  generateRandom(min: number, max: number) {
     // find diff
     let difference = max - min;
 
