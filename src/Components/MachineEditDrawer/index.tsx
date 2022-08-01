@@ -15,10 +15,12 @@ import Radio from "@mui/material/Radio";
 
 import CloseIcon from "@mui/icons-material/Close";
 
-import ArraySelector from './ArraySelector';
+import ArraySelectorComponent from './ArraySelectorComponent';
 
 import { useStore } from "../../stores/useStore";
 import { useUIStore } from "../../stores/UI/useUIStore";
+
+type Anchor = "top" | "left" | "bottom" | "right";
 
 const MachineEditDrawerRadioGroup = observer(
   ({
@@ -31,7 +33,7 @@ const MachineEditDrawerRadioGroup = observer(
     name: string;
     field: string;
     fieldOptions: any;
-  }) => {
+  }): React.ReactElement => {
     if (!fieldOptions) {
       return <Box sx={{ mt: 2 }}></Box>;
     }
@@ -68,10 +70,12 @@ const MachineEditDrawerDial = observer(
     name: string;
     field: string;
     fieldOptions: any;
-  }) => {
+  }): React.ReactElement => {
     if (!fieldOptions) {
       return <Box sx={{ mt: 2 }}></Box>;
     }
+
+    console.log(edit);
     
     return (
       <Box sx={{ mt: 2 }}>
@@ -146,7 +150,7 @@ const LoadParameter = observer(
                 {name}
               </Typography>
   
-              <ArraySelector
+              <ArraySelectorComponent
                 aria-label={name}
                 selectableValues={fieldOptions.options}
                 currentValue={fieldOptions.current}
@@ -175,12 +179,12 @@ const MachineEditDrawer = observer(() => {
     objectEditIsOpen,
   } = uiStore;
 
-  let anchor = "right";
+  let anchor: Anchor = "right";
 
   let editParameters = [];
-  let editParameter = () => {};
-  let incrementParameter = () => {};
-  let decrementParameter = () => {};
+  let editParameter: Function;
+  let incrementParameter: Function;
+  let decrementParameter: Function;
 
   if (objectEditIsOpen) {
     editParameters =

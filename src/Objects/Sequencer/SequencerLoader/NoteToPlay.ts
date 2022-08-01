@@ -2,6 +2,7 @@ import NoteIntervalCalculator from "./NoteIntervalCalculator";
 import { debug, info, warn } from '../../../Util/logger';
 
 import { Scale } from '@tonaljs/tonal';
+import { IMusicChord, IMusicKey, IMusicScale } from "Types";
 
 import { BeatMarker } from "../../../stores/MusicFeatures/BeatMarker";
 
@@ -18,9 +19,9 @@ export default class NoteToPlay {
     getRandomNote(
         key: IMusicKey,
         scale: IMusicScale,
-        chord: IMusicChord,
+        _chord: IMusicChord,
         octaves: number[],
-        measureBeat: number
+        _measureBeat: number
     ) {
         let scaleName = `${key} ${scale.toLowerCase()}`;
         debug("NoteToPlay", `Getting notes from ${scaleName} scale.`);

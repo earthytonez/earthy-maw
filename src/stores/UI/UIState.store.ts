@@ -1,12 +1,12 @@
 import { makeObservable, action, observable } from 'mobx';
 
-type MachineType = 'sequencer' | 'modulator' | 'synthesizer' | 'arranger'
+type MachineType = 'sequencer' | 'modulator' | 'synthesizer' | 'arranger' | undefined
 
 export default class UIStateStore {
     objectEditIsOpen: boolean = false;
-    objectEditing: string = '';
-    objectEditType: 'sequencer' | 'modulator' | 'synthesizer' | 'arranger';
-    objectEditTrack: number;
+    objectEditing: string | undefined = '';
+    objectEditType: 'sequencer' | 'modulator' | 'synthesizer' | 'arranger' | undefined;
+    objectEditTrack: number | undefined;
 
   toggleObjectEdit(open: boolean, machineTrack?: number, machineType?: MachineType, machineSlug?: string) {
     if (!open) {

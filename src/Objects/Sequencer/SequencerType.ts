@@ -1,4 +1,4 @@
-import Synthesizer from "./Synthesizer";
+import Synthesizer from "../Synthesizer";
 
 import {
   runInAction,
@@ -25,15 +25,15 @@ const TOMLFiles = {
   "Random": require("./Definitions/Random")
 }
 
-export default class Sequencer {
+export default class SequencerType {
   id: number;
   slug: string;
-  boundSynthesizer: Synthesizer = undefined;
-  sequencerLoader: SequencerLoader = undefined;
+  boundSynthesizer?: Synthesizer = undefined;
+  sequencerLoader?: SequencerLoader = undefined;
   type: string = "";
   x = 0;
 
-  awaitBuffers: Promise<any>;
+  awaitBuffers?: Promise<any>;
 
   isSynth() {
     return false;

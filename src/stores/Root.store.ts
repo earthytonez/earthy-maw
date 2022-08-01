@@ -9,7 +9,7 @@ import * as Tone from "tone";
 export default class RootStore {
   trackStore: TrackStore;
   musicFeaturesStore: MusicFeaturesStore;
-  audioContext: any;
+  audioContext: AudioContext;
 
   constructor() {
     console.log("Constructing Root Store");
@@ -22,17 +22,16 @@ export default class RootStore {
     this.startAudio();
   }
 
-  repeatLoop(time) {
+  repeatLoop(time: any) {
     this.musicFeaturesStore.changeFeatures();
     const tracks = this.trackStore.tracks;
 
       if (tracks.length <= 0) return;
-      tracks.forEach((track: Track, i: number) => {
-        try {
-          track.tick(this.musicFeaturesStore.beatMarker, time);
-        } catch (err: any) {
+      tracks.forEach((track: Track, _i: number) => {
+        let p = track.tick(this.musicFeaturesStore.beatMarker, time);
+        p.catch ((err: any) => {
           error("Error caught during track loop", err);
-        }
+        });
       });
       this.musicFeaturesStore.incrementBeatNumber();  
   }

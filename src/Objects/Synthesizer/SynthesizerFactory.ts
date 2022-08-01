@@ -5,7 +5,7 @@ import { Volume } from 'tone';
 
 import { error } from '../../Util/logger.ts';
 
-export function getSynthesizer(type: string, vol: Volume, audioContext: any) {
+export function getSynthesizer(type: string, vol: Volume, audioContext: AudioContext) {
     console.log(audioContext);
     console.log(`Getting Synthesizer of type ${type}`);
     try {

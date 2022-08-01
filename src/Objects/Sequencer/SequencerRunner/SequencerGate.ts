@@ -7,22 +7,24 @@ interface ISequencerGate {
 }
 
 export default class SequencerGate implements ISequencerGate {
-    _length: number;
+    _length?: number;
     triggered: boolean;
 
-    get length() {
+    get length(): number | undefined {
         return this._length
     }
 
-    set length(length: number) {
-        if (length <= 0) {
+    set length(length: number | undefined) {
+        if (!length || length <= 0) {
             throw new Error("length must be greater than 0")
         }
         this._length = length;
     }
 
-    constructor(triggered: boolean, length?: number) {
-        this.triggered = triggered;
+    constructor(triggered: boolean | undefined, length?: number) {
+        this.triggered = !!triggered;
         if (length) this.length = length;
     }
 }
+
+export { ISequencerGate }

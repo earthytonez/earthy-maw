@@ -8,6 +8,8 @@ import { debug } from "../../../Util/logger";
 
 import { action, makeObservable } from 'mobx';
 
+import ISequencerGate from "../../Sequencer/SequencerRunner/ISequencerGate";
+
 type OscillatorType = "sine" | "square" | "triangle" | "sawtooth";
 const OSCILLATOR_TYPES: OscillatorType[] = [
   "sine",
@@ -26,11 +28,11 @@ export default class Waveform extends Synthesizer {
 
 
   // Filter should be a Mixin.
-  filterCutoff: 0;
-  filterResonance: 0;
+  filterCutoff: number = 10000;
+  filterResonance: number = 0;
 
   changeParameter(parameter: string, value: any) {
-    this[parameter] = value;
+    this[parameter as keyof this] = value;
   }
 
   get editParameters() {
@@ -71,13 +73,13 @@ export default class Waveform extends Synthesizer {
     if (vol) {
       try {
         this.synth.connect(vol);
-      } catch (err) {
+      } catch (err: any) {
         debug("SYNTHESIZER_WAVEFORM", err);
       }
     }
   }
 
-  constructor(vol, audioContext) {
+  constructor(_vol: typeof Tone.Volume, audioContext: AudioContext) {
     super();
     Tone.setContext(audioContext);
     this.synth = new Tone.PolySynth(Tone.FMSynth);
@@ -89,15 +91,15 @@ export default class Waveform extends Synthesizer {
     })
   }
 
-  play(gate: SequencerGate, params: IPlayParams) {
+  play(gate: ISequencerGate, params: IPlayParams) {
     if (gate.length === 0) {
       return console.log("Gate Length must be greater than 0");
     }
-    debug("Waveform Playing");
+    debug("SYNTHESIZER_WAVEFORM", "Waveform Playing");
 
     this.synth.set({
-      harmonicity: 0.5,
-      modulationIndex: 1,
+      // harmonicity: 0.5,
+      // modulationIndex: 1,
       envelope: {
         attack: 0,
         decay: 10,

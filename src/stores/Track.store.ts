@@ -1,12 +1,12 @@
 import { makeObservable, action, observable, autorun } from "mobx";
-import Track from "../Objects/Track.ts";
+import Track from "../Objects/Track";
 import RootStore from "./Root.store";
 
 import { debug, info } from '../Util/logger';
 import pMap from "p-map";
 
 export default class TrackStore {
-  audioContext: any;
+  audioContext: AudioContext;
   tracks: Track[] = [];
   rootStore: RootStore;
 
@@ -20,7 +20,7 @@ export default class TrackStore {
       )
     );
     this.saveTracks();
-    this.tracks[this.tracks.length - 1].setLoading(false);
+    this.tracks[this.tracks.length - 1]!.setLoading(false);
   }
 
   removeTrack(trackID: number) {
@@ -44,7 +44,6 @@ export default class TrackStore {
 
     info("LOADSAVETRACKS", `Saving tracks: ${JSON.stringify(this.tracks)}`)
     localStorage.setItem("tracks", JSON.stringify(this.tracks));
-    debug("LOADSAVETRACKS", localStorage.getItem("tracks"));
   }
 
   initialize() {
@@ -52,8 +51,8 @@ export default class TrackStore {
       new Track(0, this.audioContext, this.rootStore.musicFeaturesStore, this),
       new Track(1, this.audioContext, this.rootStore.musicFeaturesStore, this),
     ];
-    this.tracks[0].setLoading(false);
-    this.tracks[1].setLoading(false);
+    this.tracks[0]!.setLoading(false);
+    this.tracks[1]!.setLoading(false);
   }
 
   load(tracksFromLocalStore: any[]) {
@@ -90,7 +89,7 @@ export default class TrackStore {
     this.load(tracks);
   }
 
-  constructor(rootStore, audioContext) {
+  constructor(rootStore: RootStore, audioContext: AudioContext) {
     this.audioContext = audioContext;
     this.rootStore = rootStore;
 

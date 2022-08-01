@@ -6,8 +6,11 @@ import RootStore from '../stores/Root.store';
 import { info } from "../Util/logger";
 import { BeatMarker } from '../stores/MusicFeatures/BeatMarker';
 
+import IMusicScale from '../Types/IMusicScale'; // Change to Tune.js
+import IMusicKey from '../Types/IMusicKey'; // Change to Tune.js
+
 export default class MusicFeaturesStore {
-  audioContext: any;
+  audioContext: AudioContext;
   rootStore: RootStore;
   musicKey: string = "C";
   musicScale: string = "Major";
@@ -78,7 +81,7 @@ export default class MusicFeaturesStore {
   }
 
   setTempo(tempo: number) {
-    this.tempo = 60;
+    this.tempo = tempo;
     Tone.Transport.bpm.value = this.tempo;
   }
 
@@ -113,8 +116,12 @@ export default class MusicFeaturesStore {
     }
   }
 
-  constructor(rootStore, audioContext) {
-    let _musicFeatures = JSON.parse(localStorage.getItem("musicFeatures"));
+  constructor(rootStore: RootStore, audioContext: AudioContext) {
+    let musicFeaturesRaw: null | string = localStorage.getItem("musicFeatures");
+    if (musicFeaturesRaw) {
+      let _musicFeatures = JSON.parse(musicFeaturesRaw);   
+      this.load(_musicFeatures);   
+    }
 
     autorun(() => {
       localStorage.setItem(
@@ -128,7 +135,6 @@ export default class MusicFeaturesStore {
       );
     });
 
-    this.load(_musicFeatures);
     makeObservable(this, {
       musicKey: observable,
       musicScale: observable,

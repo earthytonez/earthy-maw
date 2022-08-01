@@ -1,8 +1,8 @@
-import * as _React from 'react';
+import * as React from 'react';
 
 import Box, { BoxProps } from '@mui/material/Box';
 
-const Footer = (props: BoxProps) => (
+const Footer = (props: BoxProps): React.ReactElement => (
   <Box
     component="footer"
     className="Footer"

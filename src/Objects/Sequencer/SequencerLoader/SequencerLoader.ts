@@ -17,13 +17,14 @@ import toml from "toml";
 
 import { makeObservable, action, computed } from "mobx";
 
+type ISequencerType = "drone" | "step" | "randomStep" | "arpeggiator";
 interface IParsedSequencerCodeFormat {
   name: string;
   description: string;
   outputs: number;
   tags: string[];
   total_length: number;
-  type: "drone" | "step" | "randomStep" | "arpeggiator";
+  type: ISequencerType
   LengthOfNote: ILengthOfNote;
   NoteToPlay: INoteToPlay;
   TriggerWhen: ITriggerWhen;
@@ -32,7 +33,7 @@ interface IParsedSequencerCodeFormat {
 
 class SequencerLoaderHolder {
   name: string;
-  type: "drone" | "step" | "arpeggiator";
+  type: ISequencerType
   description?: string = "";
   rhythm_length?: number = undefined;
   total_length?: number = undefined;

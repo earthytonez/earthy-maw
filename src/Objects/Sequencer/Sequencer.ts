@@ -3,15 +3,13 @@ import { Chord } from "@tonaljs/tonal";
 
 import { makeObservable, action, computed } from "mobx";
 
-import { SequencerLoader } from "./SequencerLoader/index";
-
 import IPlayParams from "../../Types/IPlayParams";
 import { debug, info } from "../../Util/logger";
 import SequencerType from "./SequencerType";
 
 import PlayEveryX from "./SequencerRunner/PlayEveryX";
 import RandomTrigger from "./SequencerRunner/RandomTrigger";
-import SequencerGate from "./SequencerRunner/ISequencerGate";
+import SequencerGate, { ISequencerGate } from "./SequencerRunner/SequencerGate";
 import ISequencerParameters from "./SequencerRunner/ISequencerParameters";
 
 import MusicFeaturesStore from "../../stores/MusicFeatures.store";
@@ -31,11 +29,10 @@ const TOMLFiles = {
 };
 
 export default class Sequencer extends SequencerType {
-  id: number;
   slug: string;
 
-  randomTriggerRunner: RandomTrigger;
-  playEveryXRunner: PlayEveryX;
+  randomTriggerRunner?: RandomTrigger;
+  playEveryXRunner?: PlayEveryX;
   /*
    * A parameter set determines when a sequence is triggered.
    * There can be multiple parameter sets for a given sequencer, in order to have
@@ -46,8 +43,7 @@ export default class Sequencer extends SequencerType {
 
   beatsSinceLastNote: number;
 
-  boundSynthesizer: Synthesizer = undefined;
-  sequencerLoader: SequencerLoader = undefined;
+  boundSynthesizer?: Synthesizer = undefined;
   machineType: string = "Sequencer";
   type: string = "";
   x = 0;
@@ -72,9 +68,7 @@ export default class Sequencer extends SequencerType {
   minInterval: number = 0;
   maxInterval: number = 1;
 
-  awaitBuffers: Promise<any>;
-
-  audioContext: any;
+  audioContext: AudioContext;
   musicFeaturesStore: MusicFeaturesStore;
 
   setLoading(loading: boolean) {
@@ -108,18 +102,19 @@ export default class Sequencer extends SequencerType {
   }
 
   incrementParameter(parameter: string) {
-    this[parameter] = value;
+    this[parameter as keyof this] = this[parameter as keyof this] + 1;
   }
+
   decrementParameter(parameter: string) {
-    this[parameter] = value;
+    this[parameter as keyof this] = this[parameter as keyof this] - 1;
   }
 
   changeParameter(parameter: string, value: any) {
-    this[parameter] = value;
+    this[parameter as keyof this] = value;
   }
 
   get editParameters(): ISequencerParameters {
-    if (this.sequencerLoader.sequencerHolder.type === "randomStep") {
+    if (this.sequencerLoader?.sequencerHolder.type === "randomStep") {
       return [
               {
         name: "Minimum Gate",
@@ -162,6 +157,8 @@ export default class Sequencer extends SequencerType {
         },
       }
     ]}
+
+    return [];
   }
 
   async load() {
@@ -178,10 +175,10 @@ export default class Sequencer extends SequencerType {
 
 setRunners() {
   this.playEveryXRunner = new PlayEveryX(
-    this.sequencerLoader.rhythm_length
+    this.sequencerLoader!.rhythm_length
   );
   this.randomTriggerRunner = new RandomTrigger(
-    this.sequencerLoader.rhythm_length
+    this.sequencerLoader!.rhythm_length
   );
 
 }
@@ -190,7 +187,7 @@ setRunners() {
    * This is a simple step sequencer, that enables you to sequence based on either a list or a mathematical formula.
    * This is only for triggers/gates it does not determine what note to play.
    */
-  playEveryX(beatMarker: number, parameters: IPlayParameters): SequencerGate {
+  playEveryX(beatMarker: number, parameters: IPlayParameters): ISequencerGate {
     try {
       return this.playEveryXRunner.run(beatMarker, parameters);
     } catch (err) {
@@ -202,7 +199,7 @@ setRunners() {
    * This is a simple step sequencer, that enables you to sequence based on either a list or a mathematical formula.
    * This is only for triggers/gates it does not determine what note to play.
    */
-  randomTrigger(beatMarker: number, parameters: IPlayParameters): SequencerGate {
+  randomTrigger(beatMarker: number, parameters: IPlayParameters): ISequencerGate {
     try {
         return this.randomTriggerRunner.run(
         beatMarker, 
@@ -227,7 +224,7 @@ setRunners() {
    * Euclidian Sequencer
    * Drone Sequencer?
    */
-  shouldPlay(beatMarker: BeatMarker): SequencerGate {
+  shouldPlay(beatMarker: BeatMarker): ISequencerGate {
     if (!this.boundSynthesizer) {
       return {
         triggered: false
@@ -466,7 +463,7 @@ setRunners() {
 
   constructor(
     type: string,
-    audioContext: any,
+    audioContext: AudioContext,
     musicFeaturesStore: MusicFeaturesStore,
     octaves: number[]
   ) {

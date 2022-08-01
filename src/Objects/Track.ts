@@ -11,15 +11,12 @@ import TrackStore from "../stores/Track.store";
 
 import { debug, error } from "../Util/logger";
 
-import {
-  SYNTH_TYPE_FROM_STRING,
-} from "../config/constants";
-
+import { SYNTH_TYPE_FROM_STRING } from "../config/constants";
 
 interface ITrackFeatures {
-  octaves: number[]
-  vol: Tone.Volume,
-  muted: boolean
+  octaves: number[];
+  vol: Tone.Volume;
+  muted: boolean;
 }
 
 export default class Track {
@@ -30,8 +27,8 @@ export default class Track {
   trackFeatures: ITrackFeatures = {
     octaves: [1, 2, 3, 4, 5, 6, 7, 8],
     vol: new Tone.Volume(0),
-    muted: false
-  }
+    muted: false,
+  };
 
   musicFeaturesStore: MusicFeaturesStore;
   trackStore: TrackStore;
@@ -79,7 +76,7 @@ export default class Track {
   }
 
   get octaves(): number[] {
-    return this.trackFeatures.octaves
+    return this.trackFeatures.octaves;
   }
 
   setOctaves(octaves: number[]) {
@@ -87,16 +84,16 @@ export default class Track {
   }
 
   toggleOctave(octave: number) {
-      if (this.octaves.includes(octave)) {
-        const index = this.octaves.indexOf(octave, 0);
-        if (index > -1) {
-           this.octaves.splice(index, 1);
-        }
-        this.trackStore.saveTracks();
-      } else {
-        this.octaves.push(octave);
-        this.setOctaves(this.octaves);
+    if (this.octaves.includes(octave)) {
+      const index = this.octaves.indexOf(octave, 0);
+      if (index > -1) {
+        this.octaves.splice(index, 1);
       }
+      this.trackStore.saveTracks();
+    } else {
+      this.octaves.push(octave);
+      this.setOctaves(this.octaves);
+    }
   }
 
   toggleMute = () => {
@@ -129,26 +126,31 @@ export default class Track {
 
   synthFromSlug(synthSlug: string) {
     const SynthType = SYNTH_TYPE_FROM_STRING[synthSlug];
-    return new SynthType('', Tone.context);
+    return new SynthType("", Tone.context);
   }
-  
+
   sequencerFromSlug(sequencerSlug: string) {
-    return new Sequencer(sequencerSlug, this.audioContext, this.musicFeaturesStore, this.octaves);
+    return new Sequencer(
+      sequencerSlug,
+      this.audioContext,
+      this.musicFeaturesStore,
+      this.octaves
+    );
   }
-  
+
   arrangerFromSlug(arrangerSlug: string) {
-    return new Arranger(arrangerSlug);
+    return new Arranger(arrangerSlug, Tone.getContext());
   }
-  
+
   newMachine(machineType: string, machineSlug: string) {
     if (machineType === "synthesizer") {
       return this.synthFromSlug(machineSlug);
     }
-  
+
     if (machineType === "sequencer") {
       return this.sequencerFromSlug(machineSlug);
     }
-  
+
     if (machineType === "arranger") {
       return this.arrangerFromSlug(machineSlug);
     }
@@ -158,7 +160,7 @@ export default class Track {
     let machine = this.newMachine(machineType, machineSlug);
 
     this[machineType] = machine;
-    
+
     if (this.sequencer && this.synthesizer) {
       this.sequencer.bindSynth(this.synthesizer);
     }
@@ -209,7 +211,6 @@ export default class Track {
     try {
       debug("TRACK", `Loading track from trackdata`, trackData);
 
-
       /* Load Track Features */
       if (trackData.trackFeatures) {
         if (trackData.trackFeatures.vol.volume.value) {
@@ -219,7 +220,6 @@ export default class Track {
         this.trackFeatures.muted = !!trackData.trackFeatures.muted;
       }
       console.log(this.trackFeatures);
-
 
       if (trackData.arranger) {
         this.arranger = new Arranger(trackData.arranger, Tone.getContext());
@@ -241,26 +241,28 @@ export default class Track {
           this.vol,
           Tone.getContext()
         );
-        if (this.sequencer) this.sequencer.bindSynth(this.synthesizer);
-        debug("TRACK_LOADED_SEQUENCER", this.sequencer.toJSON());
-        this.synthesizer?.attachVolume(this.vol);
+        if (this.sequencer && this.synthesizer) {
+          this.sequencer.bindSynth(this.synthesizer);
+          debug("TRACK_LOADED_SEQUENCER", this.sequencer.toJSON());
+          this.synthesizer.attachVolume(this.vol);
+        }
       }
       this.setLoading(false);
-    } catch (err) {
+    } catch (err: any) {
       error("TRACK_LOAD_ERROR", err);
     }
   }
 
   constructor(
     id: number,
-    audioContext: any,
+    audioContext: AudioContext,
     musicFeaturesStore: MusicFeaturesStore,
     trackStore: TrackStore
   ) {
     Tone.setContext(audioContext);
 
     if (!musicFeaturesStore) {
-      throw(new Error("musicFeaturesStore must be set"));
+      throw new Error("musicFeaturesStore must be set");
     }
 
     this.musicFeaturesStore = musicFeaturesStore;
@@ -290,7 +292,7 @@ export default class Track {
       lowerVolume: action.bound,
       toggleMute: action.bound,
       assignMachine: action.bound,
-      toggleOctave: action.bound
+      toggleOctave: action.bound,
       // fetch: flow
     });
   }

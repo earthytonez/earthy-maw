@@ -1,18 +1,15 @@
 export default class Arranger {
-    id: number;
-    number: string;
     type: string;
-    slug: string;
     machineType: string = "Arranger";
     loading: boolean = true;
+    audioContext: AudioContext;
     
     setLoading(loading: boolean) {
         this.loading = loading;
     }
 
-    constructor(type: string, audioContext: any) {
-        this.id = id;
-        this.slug = `arranger-${id}`;
+    constructor(type: string, audioContext: AudioContext) {
+        this.audioContext = audioContext;
         this.type = type;
     }
 }
