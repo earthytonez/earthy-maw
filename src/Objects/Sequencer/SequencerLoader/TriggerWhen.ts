@@ -1,4 +1,4 @@
-import { debug, info } from "../../Util/logger.ts";
+import { debug, info } from "../../../Util/logger";
 
 export interface ITriggerParameters {
   triggerType: "stepList" | "stepInterval" | "random";

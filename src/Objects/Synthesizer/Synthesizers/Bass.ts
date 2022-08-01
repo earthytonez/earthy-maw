@@ -1,9 +1,9 @@
-import Synthesizer from "../Synthesizer.ts";
+import Synthesizer from "../Synthesizer";
 
-import IPlayParams from "../../Types/IPlayParams";
+import IPlayParams from "../../../Types/IPlayParams";
 import { Volume } from "tone";
 
-import { debug } from '../../Util/logger.ts';
+import { debug } from '../../../Util/logger';
 
 import * as Tone from "tone";
 

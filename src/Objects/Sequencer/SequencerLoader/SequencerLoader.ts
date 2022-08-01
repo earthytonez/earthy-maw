@@ -6,12 +6,12 @@ import NoteToPlay from "./NoteToPlay";
 import VolumeToPlay from "./VolumeToPlay";
 import IntervalsToPlay from "./IntervalsToPlay";
 
-import { BeatMarker } from  "../../stores/MusicFeatures/BeatMarker";
+import { BeatMarker } from  "../../../stores/MusicFeatures/BeatMarker";
 
-import IMusicScale from "../../Types/IMusicScale";
-import IMusicKey from "../../Types/IMusicKey";
-import IToneJSDuration from "../../Types/IToneJSDuration";
-import IToneJSNote from "../../Types/IToneJSNote";
+import IMusicScale from "../../../Types/IMusicScale";
+import IMusicKey from "../../../Types/IMusicKey";
+import IToneJSDuration from "../../../Types/IToneJSDuration";
+import IToneJSNote from "../../../Types/IToneJSNote";
 
 import toml from "toml";
 

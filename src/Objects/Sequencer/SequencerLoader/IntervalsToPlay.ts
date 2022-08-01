@@ -1,4 +1,4 @@
-import { debug } from "../../Util/logger";
+import { debug } from "../../../Util/logger";
 
 export default class IntervalToPlay {
     intervalArray: Array<number>

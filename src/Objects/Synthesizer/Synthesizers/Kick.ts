@@ -1,10 +1,10 @@
-import Synthesizer from "../Synthesizer.ts";
+import Synthesizer from "../Synthesizer";
 
-import IPlayParams from "../../Types/IPlayParams";
-import ISynthParams from "../../Types/ISynthParams";
+import IPlayParams from "../../../Types/IPlayParams";
+import ISynthParams from "../../../Types/ISynthParams";
 import { Volume } from "tone";
 
-import { debug } from '../../Util/logger.ts';
+import { debug } from '../../../Util/logger';
 
 import * as Tone from "tone";
 

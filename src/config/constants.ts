@@ -1,10 +1,12 @@
-import Bell from "../Objects/Synthesizers/Bell";
-import FMDrone from "../Objects/Synthesizers/FMDrone";
-import FMBells from "../Objects/Synthesizers/FMBells";
-import Kick from "../Objects/Synthesizers/Kick";
-import HiHat from "../Objects/Synthesizers/HiHat";
-import Bass from "../Objects/Synthesizers/Bass";
-import Waveform from "../Objects/Synthesizers/Waveform";
+import Bell from "../Objects/Synthesizer/Synthesizers/Bell";
+import FMDrone from "../Objects/Synthesizer/Synthesizers/FMDrone";
+import FMBells from "../Objects/Synthesizer/Synthesizers/FMBells";
+import Kick from "../Objects/Synthesizer/Synthesizers/Kick";
+import HiHat from "../Objects/Synthesizer/Synthesizers/HiHat";
+import Bass from "../Objects/Synthesizer/Synthesizers/Bass";
+import Waveform from "../Objects/Synthesizer/Synthesizers/Waveform";
+
+import ISynthesizerType from "../Objects/Synthesizer/ISynthesizerType";
 
 export const NOTE_LETTERS = ["A", "B", "C", "D", "E", "F", "G"];
 export const OCTAVE_MIN = 0;
@@ -52,7 +54,7 @@ export const SEQUENCER_TYPES = [
   "Random"
 ];
 
-export const SYNTH_TYPES = [
+export const SYNTH_TYPES: ISynthesizerType[] = [
   { id: 0, name: "Bell", slug: "bell" },
   { id: 0, name: "Bass", slug: "bass" },
   { id: 1, name: "HiHat", slug: "hihat" },
@@ -62,14 +64,18 @@ export const SYNTH_TYPES = [
   { id: 6, name: "Waveform", slug: "waveform" },
 ];
 
-export const SYNTH_TYPE_FROM_STRING = {
-  bass: Bass,
-  bell: Bell,
-  hihat: HiHat,
-  kick: Kick,
-  fmdrone: FMDrone,
-  fmbells: FMBells,
-  waveform: Waveform
+export interface IHash {
+  [details: string] : any;
+} 
+
+export const SYNTH_TYPE_FROM_STRING: IHash = {
+  "bass": Bass,
+  "bell": Bell,
+  "hihat": HiHat,
+  "kick": Kick,
+  "fmdrone": FMDrone,
+  "fmbells": FMBells,
+  "waveform": Waveform
 }
 
 export const A_ZERO_STARTING_NUMBER = 8;

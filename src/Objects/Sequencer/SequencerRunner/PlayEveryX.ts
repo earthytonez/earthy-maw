@@ -1,8 +1,8 @@
-import { debug } from "../../Util/logger";
+import { debug } from "../../../Util/logger";
 
 import { ITriggerParameters } from "../SequencerLoader/TriggerWhen";
 
-import { BeatMarker } from "../../stores/MusicFeatures/BeatMarker";
+import { BeatMarker } from "../../../stores/MusicFeatures/BeatMarker";
 import SequencerGate from "./ISequencerGate";
 
 /* 
@@ -18,7 +18,6 @@ export default class PlayEveryX implements ISequencerRunner {
     );
 
     if (stepCount === parameters.on) {
-      console.error("RETURNING TRUE!!")
       return new SequencerGate(true);
     }
 

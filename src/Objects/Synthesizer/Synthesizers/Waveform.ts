@@ -1,10 +1,10 @@
-import Synthesizer from "../Synthesizer.ts";
+import Synthesizer from "../Synthesizer";
 
 import * as Tone from "tone";
-import IPlayParams from "../../Types/IPlayParams";
+import IPlayParams from "../../../Types/IPlayParams";
 import { Frequency } from "tone/build/esm/core/type/Units";
 
-import { debug } from "../../Util/logger.ts";
+import { debug } from "../../../Util/logger";
 
 import { action, makeObservable } from 'mobx';
 
@@ -90,7 +90,7 @@ export default class Waveform extends Synthesizer {
   }
 
   play(gate: SequencerGate, params: IPlayParams) {
-    if (gate.length == 0) {
+    if (gate.length === 0) {
       return console.log("Gate Length must be greater than 0");
     }
     debug("Waveform Playing");

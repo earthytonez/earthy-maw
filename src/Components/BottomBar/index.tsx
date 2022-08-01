@@ -1,4 +1,5 @@
 import * as React from "react";
+import CSS from "csstype";
 import { observer } from "mobx-react-lite";
 
 import AppBar from "@mui/material/AppBar";
@@ -7,20 +8,22 @@ import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import FormGroup from "@mui/material/FormGroup";
-import Drawer from "@mui/material/Drawer";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import Toolbar from "@mui/material/Toolbar";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import MoreIcon from "@mui/icons-material/More";
 
+import BottomBarDrawer from "./BottomBarDrawer";
+
+import SequencerType from "../../Objects/Sequencer/SequencerType";
+import Arranger from "../../Objects/Arranger";
+import ISynthesizerType from "../../Objects/Synthesizer/ISynthesizerType";
+
 import { useStore } from "../../stores/useStore";
 import { useUIStore } from "../../stores/UI/useUIStore";
 
-import MachineDrawer from "./MachineDrawer";
 import {
   MUSIC_THEORY_KEYS,
   MUSIC_THEORY_SCALES,
@@ -29,15 +32,15 @@ import {
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
-const flexContainer = {
+const flexContainer: CSS.Properties = {
   display: "flex",
   flexDirection: "row",
 };
 
 interface BottomBarProps {
-  sequencerTypes: Array<string>;
-  arrangerTypes: Array<string>;
-  synthTypes: Array<string>;
+  sequencerTypes: Array<SequencerType>;
+  arrangerTypes: Array<Arranger>;
+  synthTypes: Array<ISynthesizerType>;
 }
 
 const BottomBar = observer((props: BottomBarProps) => {
@@ -49,15 +52,8 @@ const BottomBar = observer((props: BottomBarProps) => {
   const { musicChord, setChord, musicScale, setScale, musicKey, setKey } =
     store.musicFeaturesStore;
 
-  const [state, setState] = React.useState({
-    top: false,
-    left: false,
-    bottom: false,
-    right: false,
-  });
-
   const toggleDrawer =
-    (anchor: Anchor, open: boolean) =>
+    (drawerAnchor: Anchor, open: boolean) =>
     (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
         event.type === "keydown" &&
@@ -67,74 +63,19 @@ const BottomBar = observer((props: BottomBarProps) => {
         return;
       }
 
-      setState({ ...state, [anchor]: open });
+      setState({ ...state, [drawerAnchor]: open });
     };
 
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
-
-  function a11yProps(index: number) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  }
-
-  const list = (anchor: Anchor) => (
-    <Box
-      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
-      role="presentation"
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-        >
-          <Tab label="Synthesizers" {...a11yProps(0)} />
-          <Tab label="Sequencers" {...a11yProps(1)} />
-          <Tab label="Arrangers" {...a11yProps(2)} />
-        </Tabs>
-        <IconButton
-          color="inherit"
-          aria-label="close drawer"
-          onClick={toggleDrawer("bottom", false)}
-        >
-          <MenuIcon />
-        </IconButton>
-      </Box>
-      <MachineDrawer
-        slug="synthesizers"
-        machines={props.synthTypes}
-        index={0}
-        value={value}
-      />
-      <MachineDrawer
-        slug="sequencers"
-        machines={props.sequencerTypes}
-        index={1}
-        value={value}
-      />
-      <MachineDrawer
-        slug="arrangers"
-        machines={props.arrangerTypes}
-        index={2}
-        value={value}
-      />
-    </Box>
-  );
-
-  let anchor = "bottom";
-
-
+  const [state, setState] = React.useState({
+    top: false,
+    left: false,
+    bottom: false,
+    right: false,
+  });
 
   return (
     <React.Fragment>
-      <AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>        
+      <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -170,7 +111,12 @@ const BottomBar = observer((props: BottomBarProps) => {
                 <IconButton
                   aria-label="toggle password visibility"
                   onClick={() =>
-                    toggleObjectEdit(true, "musicFeature", "musicFeature", "Key")
+                    toggleObjectEdit(
+                      true,
+                      "musicFeature",
+                      "musicFeature",
+                      "Key"
+                    )
                   }
                   edge="end"
                 >
@@ -225,15 +171,15 @@ const BottomBar = observer((props: BottomBarProps) => {
           <Box sx={{ flexGrow: 1 }} />
         </Toolbar>
         <div></div>
-        </AppBar>
-        <Drawer
-          anchor={anchor}
-          variant="persistent"
-          open={state[anchor]}
-          onClose={toggleDrawer(anchor, false)}
-        >
-          {list(anchor)}
-        </Drawer>
+      </AppBar>
+      <BottomBarDrawer
+        anchor="bottom"
+        bottom={state.bottom}
+        sequencerTypes={props.sequencerTypes}
+        synthTypes={props.synthTypes}
+        arrangerTypes={props.arrangerTypes}
+        toggleDrawer={toggleDrawer}
+      />
     </React.Fragment>
   );
 });

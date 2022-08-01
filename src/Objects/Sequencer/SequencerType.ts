@@ -1,5 +1,4 @@
-import Placeable from "./Placeable.ts";
-import Synthesizer from "./Synthesizer.ts";
+import Synthesizer from "./Synthesizer";
 
 import {
   runInAction,
@@ -8,23 +7,22 @@ import {
   observable,
 } from "mobx";
 
-import { SequencerLoader, TriggerWhen } from "./SequencerLoader/index";
+import { SequencerLoader } from "./SequencerLoader/index";
 
-import { error, info } from "../Util/logger";
-import { Console } from "console";
+import { info } from "../../Util/logger";
 
 const TOMLFiles = {
-  "OneTwo": require("./Sequencer/Definitions/OneTwo"),
-  "OneFour": require("./Sequencer/Definitions/OneFour"),
-  "TwoFour": require("./Sequencer/Definitions/TwoFour"),
-  "SimpleArpeggiator": require("./Sequencer/Definitions/SimpleArpeggiator"),
-  "ThreeFour": require("./Sequencer/Definitions/ThreeFour"),
-  "FourOTFloor": require("./Sequencer/Definitions/FourOTFloor"),
-  "OffBeatFour": require("./Sequencer/Definitions/OffBeatFour"),
-  "HiHat": require("./Sequencer/Definitions/HiHat"),
-  "HouseHiHat": require("./Sequencer/Definitions/HouseHiHat"),
-  "SimpleDrone": require("./Sequencer/Definitions/SimpleDrone"),
-  "Random": require("./Sequencer/Definitions/Random")
+  "OneTwo": require("./Definitions/OneTwo"),
+  "OneFour": require("./Definitions/OneFour"),
+  "TwoFour": require("./Definitions/TwoFour"),
+  "SimpleArpeggiator": require("./Definitions/SimpleArpeggiator"),
+  "ThreeFour": require("./Definitions/ThreeFour"),
+  "FourOTFloor": require("./Definitions/FourOTFloor"),
+  "OffBeatFour": require("./Definitions/OffBeatFour"),
+  "HiHat": require("./Definitions/HiHat"),
+  "HouseHiHat": require("./Definitions/HouseHiHat"),
+  "SimpleDrone": require("./Definitions/SimpleDrone"),
+  "Random": require("./Definitions/Random")
 }
 
 export default class Sequencer {

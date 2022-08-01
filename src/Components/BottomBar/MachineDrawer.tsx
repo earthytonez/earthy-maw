@@ -5,8 +5,6 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import CardActions from "@mui/material/CardActions";
-import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 
 interface TabPanelProps {
@@ -35,7 +33,12 @@ const MachineCard = ({ id, name }: { id: string; name: string }) => {
   return (
     <React.Fragment>
       <CardContent>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+        <Typography
+          key={id}
+          sx={{ fontSize: 14 }}
+          color="text.secondary"
+          gutterBottom
+        >
           {name}
         </Typography>
       </CardContent>
@@ -52,7 +55,7 @@ interface MachineDrawerProps {
 
 const grid = 8;
 
-const getItemStyle = (isDragging, draggableStyle) => ({
+const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   // some basic styles to make the items look a bit nicer
   userSelect: "none",
   padding: grid * 2,
@@ -65,15 +68,17 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   ...draggableStyle,
 });
 
-export default function MachineDrawer(props: MachineDrawerProps): JSX {
+export default function MachineDrawer(
+  props: MachineDrawerProps
+): React.ReactElement {
   return (
     <TabPanel value={props.value} index={props.index}>
       <Droppable droppableId={`${props.slug}-drawer`}>
-        {(provided, snapshot) => (
+        {(provided, _snapshot) => (
           <div
             ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
+            // {...provided.draggableProps}
+            // {...provided.dragHandleProps}
           >
             <Stack direction="row" spacing={2}>
               {props.machines.map((machine: any, i: number) => {
@@ -83,14 +88,14 @@ export default function MachineDrawer(props: MachineDrawerProps): JSX {
                     draggableId={machine.slug}
                     index={machine.id}
                   >
-                    {(provided, snapshot) => (
+                    {(draggableProvided, _draggableSnapshot) => (
                       <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
+                        ref={draggableProvided.innerRef}
+                        {...draggableProvided.draggableProps}
+                        {...draggableProvided.dragHandleProps}
                         style={getItemStyle(
-                          snapshot.isDragging,
-                          provided.draggableProps.style
+                          _draggableSnapshot.isDragging,
+                          draggableProvided.draggableProps.style
                         )}
                       >
                         <Box sx={{ minWidth: 275 }}>

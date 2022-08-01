@@ -1,6 +1,4 @@
-import Placeable from "./Placeable.ts";
-
-export default class Arranger extends Placeable {
+export default class Arranger {
     id: number;
     number: string;
     type: string;
@@ -12,8 +10,7 @@ export default class Arranger extends Placeable {
         this.loading = loading;
     }
 
-    constructor(type: string, id: number) {
-        super();
+    constructor(type: string, audioContext: any) {
         this.id = id;
         this.slug = `arranger-${id}`;
         this.type = type;

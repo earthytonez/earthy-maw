@@ -1,4 +1,5 @@
-import * as React from 'react';
+import * as _React from 'react';
+
 import Box, { BoxProps } from '@mui/material/Box';
 
 const Footer = (props: BoxProps) => (

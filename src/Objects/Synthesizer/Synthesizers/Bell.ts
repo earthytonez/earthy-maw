@@ -1,9 +1,9 @@
-import Synthesizer from "../Synthesizer.ts";
+import Synthesizer from "../Synthesizer";
 
 import * as Tone from "tone";
 
-import IPlayParams from "../../Types/IPlayParams";
-import { debug } from '../../Util/logger.ts';
+import IPlayParams from "Types/IPlayParams";
+import { debug } from '../../../Util/logger';
 
 export default class Bell extends Synthesizer {
   name: string = "Bell";

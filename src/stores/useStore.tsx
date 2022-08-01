@@ -1,10 +1,10 @@
 import React from 'react'
-import { createStore, TStore } from './createStore.ts'
+import { createStore, TStore } from './createStore';
 import { useLocalObservable } from 'mobx-react-lite' // 6.x or mobx-react-lite@1.4.0
 
 const storeContext = React.createContext<TStore | null>(null)
 
-export const StoreProvider = ({ children }) => {
+export const StoreProvider = ({ children }: { children: React.ReactNode}) => {
   const store = useLocalObservable(createStore);
   return (<storeContext.Provider value={store}>{children}</storeContext.Provider>);
 }

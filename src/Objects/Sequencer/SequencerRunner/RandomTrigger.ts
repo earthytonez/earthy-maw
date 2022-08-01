@@ -1,6 +1,6 @@
 import { debug } from "../../../Util/logger";
 
-import { ITriggerParameters } from "../../SequencerLoader/TriggerWhen";
+import { ITriggerParameters } from "../SequencerLoader/TriggerWhen";
 import SequencerGate from "./ISequencerGate";
 /*
  * Play Every X is used to calculate whether or not a trigger should occur, usually
@@ -9,7 +9,7 @@ import SequencerGate from "./ISequencerGate";
 export default class RandomTrigger implements ISequencerRunner {
   rhythm_length: number;
 
-  generateRandom(min: number, max: number) {
+  generateRandom(min, max) {
     // find diff
     let difference = max - min;
 

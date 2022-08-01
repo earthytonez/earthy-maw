@@ -9,50 +9,20 @@ import * as Tone from "tone";
 import Box from "@mui/material/Box"
 
 import Arranger from "./Objects/Arranger";
-import Sequencer from "./Objects/Sequencer";
-import SequencerType from "./Objects/SequencerType";
+import SequencerType from "./Objects/Sequencer/SequencerType";
 
 import BottomBar from "./Components/BottomBar/index";
 import TopBar from "./Components/TopBar/index";
 import TrackList from "./Components/TrackComponent/TrackListComponent";
-
-
 
 import { useStore } from './stores/useStore';
 
 import {
   SEQUENCER_TYPES,
   SYNTH_TYPES,
-  SYNTH_TYPE_FROM_STRING,
 } from "./config/constants";
 import MachineEditDrawer from "./Components/MachineEditDrawer/index";
 
-function synthFromSlug(synthSlug: string) {
-  const SynthType = SYNTH_TYPE_FROM_STRING[synthSlug];
-  return new SynthType('', Tone.context);
-}
-
-function sequencerFromSlug(sequencerSlug: string) {
-  return new Sequencer(sequencerSlug);
-}
-
-function arrangerFromSlug(arrangerSlug: string) {
-  return new Arranger(arrangerSlug);
-}
-
-function newMachine(machineType: string, machineSlug: string) {
-  if (machineType === "synthesizer") {
-    return synthFromSlug(machineSlug);
-  }
-
-  if (machineType === "sequencer") {
-    return sequencerFromSlug(machineSlug);
-  }
-
-  if (machineType === "arranger") {
-    return arrangerFromSlug(machineSlug);
-  }
-}
 
 const ARRANGER_TYPES = ["Repeater"];
 
@@ -88,19 +58,19 @@ const App = observer(() => {
   /*
    * Main track/loop
    */
-  const onBeforeCapture = (props: any) => {
+  const onBeforeCapture = (_props: any) => {
     console.log("onBeforeCapture");
   };
 
-  const onBeforeDragStart = (props: any) => {
+  const onBeforeDragStart = (_props: any) => {
     console.log("onBeforeDragStart");
   };
 
-  const onDragStart = (props: any) => {
+  const onDragStart = (_props: any) => {
     console.log("onDragStart");
   };
 
-  const onDragUpdate = (props: any) => {
+  const onDragUpdate = (_props: any) => {
     console.log("onDragUpdate");
   };
 
@@ -119,8 +89,7 @@ const App = observer(() => {
       const machineToAssign = props.draggableId;
     try {
       await tracks[trackID].assignMachine(
-        machineType,
-        newMachine(machineType, machineToAssign)
+        machineType, machineToAssign
       );
     } catch (err) {
       console.error(err);
@@ -142,7 +111,6 @@ const App = observer(() => {
         <TrackList tracks={tracks} />
       </Box>
       <BottomBar
-        beatMarker={store.musicFeaturesStore.beatMarker}
         arrangerTypes={arrangerTypes}
         sequencerTypes={sequencerTypes}
         synthTypes={synthTypes}

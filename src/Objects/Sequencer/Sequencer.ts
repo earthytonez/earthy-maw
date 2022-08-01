@@ -5,30 +5,29 @@ import { makeObservable, action, computed } from "mobx";
 
 import { SequencerLoader } from "./SequencerLoader/index";
 
-import IPlayParams from "../Types/IPlayParams";
-import ISequencerParameters from "./SequencerRunner/ISequencerParameters";
-import { debug, info } from "../Util/logger";
+import IPlayParams from "../../Types/IPlayParams";
+import { debug, info } from "../../Util/logger";
 import SequencerType from "./SequencerType";
+
 import PlayEveryX from "./SequencerRunner/PlayEveryX";
 import RandomTrigger from "./SequencerRunner/RandomTrigger";
-import MusicFeaturesStore from "../stores/MusicFeatures.store";
-
 import SequencerGate from "./SequencerRunner/ISequencerGate";
+import ISequencerParameters from "./SequencerRunner/ISequencerParameters";
 
-import { BeatMarker } from "../stores/MusicFeatures/BeatMarker";
+import MusicFeaturesStore from "../../stores/MusicFeatures.store";
+import { BeatMarker } from "../../stores/MusicFeatures/BeatMarker";
 
-import Synthesizer from "./Synthesizer";
-import { Gate } from "tone";
+import Synthesizer from "../Synthesizer";
 
 const TOMLFiles = {
-  OneTwo: require("./Sequencer/Definitions/OneTwo"),
-  SimpleArpeggiator: require("./Sequencer/Definitions/SimpleArpeggiator"),
-  ThreeFour: require("./Sequencer/Definitions/ThreeFour"),
-  FourOTFloor: require("./Sequencer/Definitions/FourOTFloor"),
-  OffBeatFour: require("./Sequencer/Definitions/OffBeatFour"),
-  HiHat: require("./Sequencer/Definitions/HiHat"),
-  SimpleDrone: require("./Sequencer/Definitions/SimpleDrone"),
-  Random: require("./Sequencer/Definitions/Random"),
+  OneTwo: require("./Definitions/OneTwo"),
+  SimpleArpeggiator: require("./Definitions/SimpleArpeggiator"),
+  ThreeFour: require("./Definitions/ThreeFour"),
+  FourOTFloor: require("./Definitions/FourOTFloor"),
+  OffBeatFour: require("./Definitions/OffBeatFour"),
+  HiHat: require("./Definitions/HiHat"),
+  SimpleDrone: require("./Definitions/SimpleDrone"),
+  Random: require("./Definitions/Random"),
 };
 
 export default class Sequencer extends SequencerType {
@@ -163,53 +162,6 @@ export default class Sequencer extends SequencerType {
         },
       }
     ]}
-    // return [
-    //   {
-    //     name: "TriggerSet",
-    //     field: "chosenTriggerParameterSet",
-    //     fieldType: "arraySelector",
-    //     fieldOptions: {
-    //       options: [0, 1, 2, 3, 4],
-    //       current: this.chosenTriggerParameterSet,
-    //     },
-    //   },
-    //   {
-    //     name: "Drone Length",
-    //     field: "droneLength",
-    //     fieldType: "slider",
-    //     fieldOptions: {
-    //       options: [3, 4, 5, 6, 7, 8],
-    //       current: this.droneLength,
-    //     },
-    //   },
-    //   {
-    //     name: "Drone Tail",
-    //     field: "droneTail",
-    //     fieldType: "slider",
-    //     fieldOptions: {
-    //       options: [3, 4, 5, 6, 7, 8],
-    //       current: this.droneTail,
-    //     },
-    //   },
-    //   {
-    //     name: "Drone Spacing High",
-    //     field: "droneSpacingHigh",
-    //     fieldType: "slider",
-    //     fieldOptions: {
-    //       options: [3, 4, 5, 6, 7, 8],
-    //       current: this.droneTail,
-    //     },
-    //   },
-    //   {
-    //     name: "Drone Spacing Low",
-    //     field: "droneSpacingLow",
-    //     fieldType: "slider",
-    //     fieldOptions: {
-    //       options: [3, 4, 5, 6, 7, 8],
-    //       current: this.droneTail,
-    //     },
-    //   }
-    // ];
   }
 
   async load() {
@@ -221,28 +173,26 @@ export default class Sequencer extends SequencerType {
     );
 
     this.sequencerLoader = await this.fetchTOML(TOMLFiles[this.type]);
-    this.playEveryXRunner = new PlayEveryX(this.sequencerLoader.rhythm_length);
-    this.randomTriggerRunner = new RandomTrigger(
-      this.sequencerLoader.rhythm_length
-      );
+    this.setRunners();
   }
+
+setRunners() {
+  this.playEveryXRunner = new PlayEveryX(
+    this.sequencerLoader.rhythm_length
+  );
+  this.randomTriggerRunner = new RandomTrigger(
+    this.sequencerLoader.rhythm_length
+  );
+
+}
 
   /*
    * This is a simple step sequencer, that enables you to sequence based on either a list or a mathematical formula.
    * This is only for triggers/gates it does not determine what note to play.
    */
   playEveryX(beatMarker: number, parameters: IPlayParameters): SequencerGate {
-    if (!parameters) {
-      throw new Error("parameters for playEveryX sequencer must be defined");
-    }
     try {
-      let val = this.playEveryXRunner.run(beatMarker, parameters);
-      debug(
-        "PLAY_EVERY_X",
-        `sequencer Type: ${this.sequencerType()}, val: ${val}`,
-        parameters
-      );
-      return val;
+      return this.playEveryXRunner.run(beatMarker, parameters);
     } catch (err) {
       console.error(err, parameters);
     }
@@ -252,14 +202,9 @@ export default class Sequencer extends SequencerType {
    * This is a simple step sequencer, that enables you to sequence based on either a list or a mathematical formula.
    * This is only for triggers/gates it does not determine what note to play.
    */
-  randomTrigger(beatMarker: number, parameters: PlayParameters): SequencerGate {
-    if (!parameters) {
-      throw new Error("parameters for random sequencer must be defined");
-    }
+  randomTrigger(beatMarker: number, parameters: IPlayParameters): SequencerGate {
     try {
-      console.log(`getRandomFloat: ${this.minInterval}`);
-      console.log(`getRandomFloat: ${this.maxInterval}`);
-        let val = this.randomTriggerRunner.run(
+        return this.randomTriggerRunner.run(
         beatMarker, 
         this.beatsSinceLastNote, 
         this.resetBeatsSinceLastNote, 
@@ -269,12 +214,6 @@ export default class Sequencer extends SequencerType {
         this.minInterval,
         this.maxInterval  
       );
-      debug(
-        "PLAY_EVERY_X",
-        `sequencer Type: ${this.sequencerType()}, val: ${val}`,
-        parameters
-      );
-      return val;
     } catch (err) {
       console.error(err, parameters);
     }
@@ -301,16 +240,22 @@ export default class Sequencer extends SequencerType {
       };
     }
 
+    let parameters = this.triggerWhen.parameterSets[this.chosenTriggerParameterSet]
+
+    if (!parameters) {
+      throw new Error("parameters for random sequencer must be defined");
+    }
+
     switch (this.triggerWhen.type) {
       case "random":
         return this.randomTrigger(
           beatMarker.num,
-          this.triggerWhen.parameterSets[this.chosenTriggerParameterSet]
+          parameters
         );
       case "everyX":
         return this.playEveryX(
           beatMarker.num,
-          this.triggerWhen.parameterSets[this.chosenTriggerParameterSet]
+          parameters
         );
       default:
         return {
@@ -582,3 +527,51 @@ export default class Sequencer extends SequencerType {
 //     ]);
 //   }
 // }
+
+    // return [
+    //   {
+    //     name: "TriggerSet",
+    //     field: "chosenTriggerParameterSet",
+    //     fieldType: "arraySelector",
+    //     fieldOptions: {
+    //       options: [0, 1, 2, 3, 4],
+    //       current: this.chosenTriggerParameterSet,
+    //     },
+    //   },
+    //   {
+    //     name: "Drone Length",
+    //     field: "droneLength",
+    //     fieldType: "slider",
+    //     fieldOptions: {
+    //       options: [3, 4, 5, 6, 7, 8],
+    //       current: this.droneLength,
+    //     },
+    //   },
+    //   {
+    //     name: "Drone Tail",
+    //     field: "droneTail",
+    //     fieldType: "slider",
+    //     fieldOptions: {
+    //       options: [3, 4, 5, 6, 7, 8],
+    //       current: this.droneTail,
+    //     },
+    //   },
+    //   {
+    //     name: "Drone Spacing High",
+    //     field: "droneSpacingHigh",
+    //     fieldType: "slider",
+    //     fieldOptions: {
+    //       options: [3, 4, 5, 6, 7, 8],
+    //       current: this.droneTail,
+    //     },
+    //   },
+    //   {
+    //     name: "Drone Spacing Low",
+    //     field: "droneSpacingLow",
+    //     fieldType: "slider",
+    //     fieldOptions: {
+    //       options: [3, 4, 5, 6, 7, 8],
+    //       current: this.droneTail,
+    //     },
+    //   }
+    // ];

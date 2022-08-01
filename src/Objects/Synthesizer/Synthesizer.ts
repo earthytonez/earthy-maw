@@ -1,11 +1,13 @@
-import Placeable from "./Placeable.ts";
+import * as Tone from 'tone';   
 
-export default abstract class Synthesizer extends Placeable {
+export default abstract class Synthesizer {
     machineType: string = "Synthesizer";
     loading: boolean = true;
+    slug: string;
 
     abstract play(SequencerGate, IPlayParams);
-    
+    abstract attachVolume(vol: Tone.Volume);
+
     setLoading(loading: boolean) {
         this.loading = loading;
       }
@@ -14,7 +16,7 @@ export default abstract class Synthesizer extends Placeable {
         return true;
     }
 
-    bindSynth(synth: Synthesizer) {
+    bindSynth(_synth: Synthesizer) {
         console.log("Can't bind a Synthesizer to a Synthesizer");
     }
 }

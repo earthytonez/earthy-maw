@@ -16,7 +16,7 @@ interface IUniqueColorsProps {
   name: string;
 }
 
-const UniqueColors = observer(({ name }: IUniqueColorsProps) => {
+const UniqueColors = observer(({ name }: IUniqueColorsProps): React.ReactElement => {
   let murmurHash = murmur(name);
   let uniqueVal = murmurHash % Math.pow(NUM_COLORS, NUM_CIRCLES);
   let digits: number[] = [];

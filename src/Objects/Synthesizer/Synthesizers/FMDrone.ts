@@ -1,11 +1,11 @@
 import Synthesizer from "../Synthesizer";
 
 import * as Tone from "tone";
-import IPlayParams from "../../Types/IPlayParams";
+import IPlayParams from "src/Types/IPlayParams";
 import { Frequency } from "tone/build/esm/core/type/Units";
 
-import { debug } from "../../Util/logger";
-import SequencerGate from "../SequencerRunner/ISequencerGate";
+import { debug } from "../../../Util/logger";
+import SequencerGate from "src/Objects/Sequencer/SequencerRunner/ISequencerGate";
 
 import { action, makeObservable } from 'mobx';
 

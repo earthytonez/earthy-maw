@@ -1,9 +1,9 @@
 import NoteIntervalCalculator from "./NoteIntervalCalculator";
-import { debug, info, warn } from '../../Util/logger';
+import { debug, info, warn } from '../../../Util/logger';
 
 import { Scale } from '@tonaljs/tonal';
 
-import { BeatMarker } from "../../stores/MusicFeatures/BeatMarker";
+import { BeatMarker } from "../../../stores/MusicFeatures/BeatMarker";
 
 export interface INoteToPlayDefinition {
     note: string

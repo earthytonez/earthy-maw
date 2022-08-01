@@ -1,15 +1,20 @@
 import { makeObservable, computed, observable, action } from "mobx";
 import * as Tone from "tone";
 
-import Arranger from "./Arranger";
+import Arranger from "./Arranger/Arranger";
 import Sequencer from "./Sequencer";
 import Synthesizer from "./Synthesizer";
-import { getSynthesizer } from "./SynthesizerFactory";
+import { getSynthesizer } from "./Synthesizer/SynthesizerFactory";
 
 import MusicFeaturesStore from "../stores/MusicFeatures.store";
 import TrackStore from "../stores/Track.store";
 
 import { debug, error } from "../Util/logger";
+
+import {
+  SYNTH_TYPE_FROM_STRING,
+} from "../config/constants";
+
 
 interface ITrackFeatures {
   octaves: number[]
@@ -18,9 +23,9 @@ interface ITrackFeatures {
 }
 
 export default class Track {
-  arranger: Arranger;
-  sequencer: Sequencer;
-  synthesizer: Synthesizer;
+  arranger?: Arranger;
+  sequencer?: Sequencer;
+  synthesizer?: Synthesizer;
 
   trackFeatures: ITrackFeatures = {
     octaves: [1, 2, 3, 4, 5, 6, 7, 8],
@@ -106,7 +111,7 @@ export default class Track {
   async tick(beatMarker, time) {
     if (!this.sequencer) return;
     if (!this.musicFeaturesStore) {
-      return error("this.musicFeaturesStore is not set");
+      return error("Track", "this.musicFeaturesStore is not set");
     }
 
     await this.sequencer.play(
@@ -118,16 +123,50 @@ export default class Track {
     );
   }
 
-  async assignMachine(machineType: string, machine: any) {
+  audioContext() {
+    return Tone.getContext();
+  }
+
+  synthFromSlug(synthSlug: string) {
+    const SynthType = SYNTH_TYPE_FROM_STRING[synthSlug];
+    return new SynthType('', Tone.context);
+  }
+  
+  sequencerFromSlug(sequencerSlug: string) {
+    return new Sequencer(sequencerSlug, this.audioContext, this.musicFeaturesStore, this.octaves);
+  }
+  
+  arrangerFromSlug(arrangerSlug: string) {
+    return new Arranger(arrangerSlug);
+  }
+  
+  newMachine(machineType: string, machineSlug: string) {
+    if (machineType === "synthesizer") {
+      return this.synthFromSlug(machineSlug);
+    }
+  
+    if (machineType === "sequencer") {
+      return this.sequencerFromSlug(machineSlug);
+    }
+  
+    if (machineType === "arranger") {
+      return this.arrangerFromSlug(machineSlug);
+    }
+  }
+
+  async assignMachine(machineType: string, machineSlug: any) {
+    let machine = this.newMachine(machineType, machineSlug);
+
     this[machineType] = machine;
+    
     if (this.sequencer && this.synthesizer) {
       this.sequencer.bindSynth(this.synthesizer);
     }
     if (machineType === "sequencer") {
-      await this.sequencer.load();
+      await this.sequencer?.load();
     }
     if (machineType === "synthesizer") {
-      this.synthesizer.attachVolume(this.vol);
+      this.synthesizer?.attachVolume(this.vol);
     }
   }
 
@@ -204,7 +243,7 @@ export default class Track {
         );
         if (this.sequencer) this.sequencer.bindSynth(this.synthesizer);
         debug("TRACK_LOADED_SEQUENCER", this.sequencer.toJSON());
-        this.synthesizer.attachVolume(this.vol);
+        this.synthesizer?.attachVolume(this.vol);
       }
       this.setLoading(false);
     } catch (err) {
@@ -219,6 +258,7 @@ export default class Track {
     trackStore: TrackStore
   ) {
     Tone.setContext(audioContext);
+
     if (!musicFeaturesStore) {
       throw(new Error("musicFeaturesStore must be set"));
     }
