@@ -8,7 +8,7 @@ import { debug } from "../../../Util/logger";
 
 import { action, makeObservable } from 'mobx';
 
-import ISequencerGate from "../../Sequencer/SequencerRunner/ISequencerGate";
+import { ISequencerGate } from "../../Sequencer/SequencerRunner/SequencerGate";
 
 type OscillatorType = "sine" | "square" | "triangle" | "sawtooth";
 const OSCILLATOR_TYPES: OscillatorType[] = [

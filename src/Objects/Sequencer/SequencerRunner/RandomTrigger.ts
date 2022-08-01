@@ -1,7 +1,7 @@
 import { debug } from "../../../Util/logger";
 
 import { ITriggerParameters } from "../SequencerLoader/TriggerWhen";
-import SequencerGate from "./ISequencerGate";
+import SequencerGate from "./SequencerGate";
 /*
  * Play Every X is used to calculate whether or not a trigger should occur, usually
  * playing every x notes.
