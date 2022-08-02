@@ -1,9 +1,8 @@
 import * as Tone from "tone";
-import { Frequency } from "tone/build/esm/core/type/Units";
 
 import Synthesizer from "../Synthesizer";
 
-import SequencerGate from "../../../Objects/Sequencer/SequencerRunner/SequencerGate";
+import { ISequencerGate } from "../../../Objects/Sequencer/SequencerRunner/SequencerGate";
 import IPlayParams from "../../../Types/IPlayParams";
 
 
@@ -47,8 +46,7 @@ export default class FMBells extends Synthesizer {
     );
   }
 
-  play(_gate: SequencerGate, params: IPlayParams) {
-    // fmDrone(notes, lengthSeconds, tailSeconds);
+  play(_gate: ISequencerGate, params: IPlayParams) {
     const { lengthSeconds, tailSeconds, notes } = params;
 
     // this.delay.delayTime = lengthSeconds! / 8;

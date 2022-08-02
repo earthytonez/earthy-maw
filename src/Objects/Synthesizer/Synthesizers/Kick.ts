@@ -17,7 +17,7 @@ export default class Kick extends Synthesizer {
     }
   }
 
-  play(_gate: SequencerGate, params: IPlayParams) {
+  play(_gate: ISequencerGate, params: IPlayParams) {
     this.synth.triggerAttackRelease("C2", "8n", params.time);
     debug("Kick Context: ", this.synth);
   }

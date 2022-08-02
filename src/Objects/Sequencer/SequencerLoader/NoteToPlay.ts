@@ -1,3 +1,5 @@
+import * as Tone from 'tone';
+
 import NoteIntervalCalculator from "./NoteIntervalCalculator";
 import { debug, warn } from '../../../Util/logger';
 
@@ -10,9 +12,9 @@ export interface INoteToPlayDefinition {
 
 export default class NoteToPlay {
     noteNotInterval: boolean = false;
-    note: string;
+    note?: string;
 
-    noteChooser: "random" | "interval" | "single"
+    noteChooser: "random" | "interval" | "single" = "single"
 
     getRandomNote(
         key: IMusicKey,
@@ -28,7 +30,7 @@ export default class NoteToPlay {
         let octave = octaves[Math.floor(Math.random()*octaves.length)];
         let note = notes[Math.floor(Math.random()*notes.length)];
 
-        return `${note}${octave}`;
+        return Tone.Frequency(`${note}${octave}`);
     }
 
     get(
@@ -39,7 +41,7 @@ export default class NoteToPlay {
         measureBeat: number,
         intervalToPlay: any,
         intervalsToPlay: any
-      ): IToneJSNote {
+      ): Tone.FrequencyClass {
         switch(this.noteChooser) {
             case "random":
                 return this.getRandomNote(key, scale, chord, octaves, measureBeat);
@@ -48,38 +50,38 @@ export default class NoteToPlay {
         let noteIntervalCalculator = new NoteIntervalCalculator(key, scale);
     
         if (this.noteNotInterval) {
-          return startNote;
+          return Tone.Frequency(startNote);
         }
     
         let interval = intervalToPlay.get(measureBeat, chord);
         if (!interval) {
-          return startNote;
+          return Tone.Frequency(startNote);
         }
     
-        return noteIntervalCalculator.getNote(startNote, interval);
+        return Tone.Frequency(noteIntervalCalculator.getNote(startNote, interval));
     }
     
     isLetterNumberNote(line: string): boolean {
-        return /[A-G][0-9]/.test(line);
+        return /[A-G]\d/.test(line);
     }
     
     isHzNote(line: string): boolean {
-        return /[0-9]+Hz/.test(line);    
+        return /\d+Hz/.test(line);    
     }
     
     isIntNote(line: string): boolean {
-        return /[0-9][0-9]/.test(line);
+        return /\d\d/.test(line);
     }
 
-    intNoteToMidi(line: string): number {
+    intNoteToMidi(_line: string): number {
         return 64;
     }
 
-    hzNoteToMidi(line: string): number {
+    hzNoteToMidi(_line: string): number {
         return 64;
     }
 
-    letterNumberNoteToMidi(line: string): number {
+    letterNumberNoteToMidi(_line: string): number {
         return 64;
     }
 
@@ -91,10 +93,10 @@ export default class NoteToPlay {
 
     }
 
-    parse(noteToPlayDefinition:INoteToPlayDefinition) {
+    parse(noteToPlayDefinition:INoteToPlayDefinition): Tone.FrequencyClass | undefined {
         if (!noteToPlayDefinition) {
             warn("NOTE_TO_PLAY", "NoteToPlay is not set.");
-            return;
+            return undefined;
         }
 
         let note = noteToPlayDefinition.note;
@@ -103,15 +105,17 @@ export default class NoteToPlay {
             this.noteChooser = "random";
         }
         if (this.isLetterNumberNote(note)) {
-            return this.letterNumberNoteToMidi(note);
+            return Tone.Frequency(this.letterNumberNoteToMidi(note));
         }
 
         if (this.isHzNote(note)) {
-            return this.hzNoteToMidi(note);
+            return Tone.Frequency(this.hzNoteToMidi(note));
         }
 
         if (this.isIntNote(note)) {
-            return this.intNoteToMidi(note);
+            return Tone.Frequency(this.intNoteToMidi(note));
         }
+
+        return undefined;
     }
 }

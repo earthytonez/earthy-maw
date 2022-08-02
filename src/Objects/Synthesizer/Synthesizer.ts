@@ -1,6 +1,6 @@
 import * as Tone from 'tone';   
 
-import SequencerGate from '../../Objects/Sequencer/SequencerRunner/SequencerGate';
+import { ISequencerGate } from '../../Objects/Sequencer/SequencerRunner/SequencerGate';
 import IPlayParams from '../../Types/IPlayParams';
 
 export default abstract class Synthesizer {
@@ -9,7 +9,7 @@ export default abstract class Synthesizer {
     abstract name: string;
     abstract slug: string;
 
-    abstract play(sequencerGate: SequencerGate, params: IPlayParams): void;
+    abstract play(sequencerGate: ISequencerGate, params: IPlayParams): void;
     abstract attachVolume(vol: Tone.Volume): void;
 
     setLoading(loading: boolean) {

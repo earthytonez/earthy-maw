@@ -79,7 +79,7 @@ export default class FMDrone extends Synthesizer {
 
     let delay = new Tone.FeedbackDelay({
       context: this.toneContext,
-      delayTime: 3 / 16, // lenghtSeconds / 16;
+      delayTime: 3 / 16, 
       feedback: 0.33,
       wet: 0.66,
     });
@@ -95,7 +95,7 @@ export default class FMDrone extends Synthesizer {
     });
   }
 
-  play(_gate: SequencerGate, params: IPlayParams) {
+  play(_gate: ISequencerGate, params: IPlayParams) {
     let { lengthSeconds, tailSeconds, notes } = params;
 
     // if (lengthSeconds == undefined) { lengthSeconds = 3};

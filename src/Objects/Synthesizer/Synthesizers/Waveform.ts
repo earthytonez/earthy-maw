@@ -2,7 +2,6 @@ import Synthesizer from "../Synthesizer";
 
 import * as Tone from "tone";
 import IPlayParams from "../../../Types/IPlayParams";
-import { Frequency } from "tone/build/esm/core/type/Units";
 
 import { debug } from "../../../Util/logger";
 
@@ -113,7 +112,7 @@ export default class Waveform extends Synthesizer {
     });
 
     console.log(`WaveForm triggerAttackRelase ${gate.length}`);
-    this.synth.triggerAttackRelease(params.note as Frequency, Tone.Time(gate.length).toNotation());
+    this.synth.triggerAttackRelease(params.note as typeof Tone.Frequency, Tone.Time(gate.length).toNotation());
     // this.synth.triggerAttackRelease(params.note as Frequency, 1000);
   }
 }

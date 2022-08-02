@@ -39,7 +39,7 @@ function generateSequencerTypes() {
 }
 
 function generateArrangerTypes() {
-  return ARRANGER_TYPES.map((type, i) => new Arranger(type, i));
+  return ARRANGER_TYPES.map((type, _i) => new Arranger(type, Tone.getContext()));
 }
 
 const ARRANGER_TYPE_INITIAL_STATE = generateArrangerTypes();

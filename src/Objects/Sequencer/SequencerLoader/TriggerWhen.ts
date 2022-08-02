@@ -10,7 +10,6 @@ export interface ITriggerParameters {
   octaves: number
   minSkip: number
   maxSkip: number
-
 }
 
 export default class TriggerWhen {
@@ -58,9 +57,9 @@ export default class TriggerWhen {
           maxSkip: 64,
         }
         break;
-      case trimmedLine.match(/every [0-9]{1,2} steps on [0-9]+/)?.input:
+      case trimmedLine.match(/every \d{1,2} steps on \d+/)?.input:
         this.type = "everyX";
-        var rx = /every ([0-9]{1,2}) steps on ([0-9]+)/;
+        var rx = /every (\d{1,2}) steps on (\d+)/;
         var arr = rx.exec(trimmedLine);
 
         if (arr && arr[1] && arr[2]) {
@@ -72,9 +71,9 @@ export default class TriggerWhen {
         }
         break;
 
-      case trimmedLine.match(/every [0-9]{1,2} steps/)?.input:
+      case trimmedLine.match(/every \d{1,2} steps/)?.input:
         this.type = "everyX";
-        var rx = /every ([0-9]{1,2}) steps/;
+        var rx = /every (\d{1,2}) steps/;
         var arr = rx.exec(trimmedLine);
         if (arr && arr[1]) {
           this.parameterSets[0] = {

@@ -72,10 +72,6 @@ export default class SequencerType {
     return this.sequencerLoader?.code();
   }
 
-  volume(beatMarker: number): number | undefined{
-    return this.sequencerLoader?.volume(beatMarker);
-  }
-
   sequencerType(): string | undefined {
     return this.sequencerLoader?.type;
   }

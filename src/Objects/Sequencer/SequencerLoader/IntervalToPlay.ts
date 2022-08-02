@@ -1,21 +1,24 @@
 import { debug } from "../../../Util/logger";
 
 export default class IntervalToPlay {
-    intervalArray: Array<number>
+    intervalArray: Array<number> = [];
     intervalLength: number = 1;
     intervalType: string | undefined = undefined;
     intervalArp: string = "up";
 
     /* This code needs to be fixed */
-    getChordLength(chord): number {
-        let chordLengths = {
+    getChordLength(chord: string): number {
+        interface IChordLength {
+            [chord: string]: number
+        }
+        let chordLengths: IChordLength = {
             "major": 3,
             "maj7": 4,
             "maj9": 5
         }
 
         if (chordLengths[chord]) {
-            return chordLengths[chord]
+            return chordLengths[chord]!
         }
         return 3;
     }
@@ -35,40 +38,20 @@ export default class IntervalToPlay {
         debug("IntervalsToPlay", `Beat Number ${measureBeat}, interval Array: ${this.intervalArray}, interval Length: ${this.intervalLength}`);
         debug("IntervalsToPlay", `Beat Number interval Array position: ${Math.floor(measureBeat / this.intervalLength)}`);
         
-        
         if (this.intervalArray) {
             return this.intervalArray[Math.floor(measureBeat / this.intervalLength)];
         }
+        
+        return 0;
     }
-
-    // getNumberVariable(name: string, line: string) {
-    //     return parseInt(line.split("=")[1]);
-    // }
-
-    // getStringVariable(name: string, line: string) {
-    //     return line.split("=")[1].trim().replace("\"", "").replace("\"", "");
-    // }
 
     parse(line: any) {
         if (!line) {
             return;
         }
         this.intervalType = line.interval_type;
+        this.intervalArray = line.interval_array;
         this.intervalArp = line.list[0];
         return;
-        // let trimmedLine = line.trim();
-        // let replacedLine = trimmedLine.replace(/[\[\]]/g, '');
-
-        // debug("IntervalsToPlay", `intervalType: ${trimmedLine}`);
-
-        // if (trimmedLine.startsWith('interval_length = ')) {
-        //     return this.intervalLength = this.getNumberVariable('interval_length', line);
-        // }
-
-        // if (trimmedLine.startsWith('interval_type = ')) {
-        //     return this.intervalType = this.getStringVariable('interval_type', line);
-        // }
-
-        // this.intervalArray = replacedLine.split(",").map((interval: string): number => { return parseFloat(interval)});
     }
 }

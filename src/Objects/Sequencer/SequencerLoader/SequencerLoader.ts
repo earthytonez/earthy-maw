@@ -1,13 +1,13 @@
-// import { isIntersectionTypeNode } from "typescript";
-// import {
-//     NOTE_LETTERS, OCTAVE_MIN, OCTAVE_MAX, INT_NOTE_MIN, INT_NOTE_MAX } from "../config/constants.ts";
+import * as Tone from 'tone';
+
 import TriggerWhen from "./TriggerWhen";
-import NoteToPlay from "./NoteToPlay";
+import NoteToPlay, { INoteToPlayDefinition } from "./NoteToPlay";
 import VolumeToPlay from "./VolumeToPlay";
-import IntervalsToPlay from "./IntervalsToPlay";
+import IntervalToPlay from "./IntervalToPlay";
 
 import { BeatMarker } from  "../../../stores/MusicFeatures/BeatMarker";
 
+import IMusicChord from "../../../Types/IMusicChord";
 import IMusicScale from "../../../Types/IMusicScale";
 import IMusicKey from "../../../Types/IMusicKey";
 import IToneJSDuration from "../../../Types/IToneJSDuration";
@@ -18,6 +18,15 @@ import toml from "toml";
 import { makeObservable, action, computed } from "mobx";
 
 type ISequencerType = "drone" | "step" | "randomStep" | "arpeggiator";
+
+interface IIntervalsToPlay {
+  interval_length: number
+  list: number[]
+  
+  type: string
+  type_list: string[]
+}
+
 interface IParsedSequencerCodeFormat {
   name: string;
   description: string;
@@ -25,21 +34,21 @@ interface IParsedSequencerCodeFormat {
   tags: string[];
   total_length: number;
   type: ISequencerType
-  LengthOfNote: ILengthOfNote;
-  NoteToPlay: INoteToPlay;
-  TriggerWhen: ITriggerWhen;
-  IntervalsToPlay: IIntervalsToPlay;
+  NoteToPlay: INoteToPlayDefinition;
+  TriggerWhen: TriggerWhen;
+  IntervalsToPlay: IntervalToPlay;
 }
 
 class SequencerLoaderHolder {
-  name: string;
-  type: ISequencerType
+  name?: string;
+  type?: ISequencerType;
+  tags?: string[];
   description?: string = "";
   rhythm_length?: number = undefined;
   total_length?: number = undefined;
   triggerWhen: TriggerWhen = new TriggerWhen();
-  intervalToPlay: IntervalsToPlay = new IntervalsToPlay();
-  intervalsToPlay: IIntervalsToPlay;
+  intervalToPlay: IntervalToPlay = new IntervalToPlay();
+  intervalsToPlay?: IIntervalsToPlay;
   noteToPlay: NoteToPlay = new NoteToPlay();
   volumeToPlay: VolumeToPlay = new VolumeToPlay();
 
@@ -51,7 +60,7 @@ class SequencerLoaderHolder {
     chord: IMusicChord,
     octaves: number[],
     measureBeat: number
-  ): IToneJSNote {
+  ): Tone.FrequencyClass {
     return this.noteToPlay.get(
       key, 
       scale, 
@@ -89,11 +98,11 @@ export default class SequencerLoader {
     return beatMarker.num % this.total_length;
   }
 
-  duration(beatMarker: number): IToneJSDuration {
+  duration(_beatMarker: BeatMarker): IToneJSDuration {
     return "8n";
   }
 
-  volume(beatMarker: number): number {
+  volume(beatMarker: BeatMarker): number {
     return this.sequencerHolder.volume(this.measureBeat(beatMarker));
   }
 
@@ -103,7 +112,7 @@ export default class SequencerLoader {
     chord: IMusicChord,
     octaves: number[],
     beatMarker: BeatMarker
-  ): IToneJSNote {
+  ): Tone.FrequencyClass {
     return this.sequencerHolder.note(
       key,
       scale,
@@ -177,7 +186,7 @@ export default class SequencerLoader {
 
       this.sequencerHolder.name = data.name;
       this.sequencerHolder.description = data.description;
-      this.sequencerHolder.outputs = data.outputs;
+      // this.sequencerHolder.outputs = data.outputs;
       this.sequencerHolder.total_length = data.total_length;
       this.sequencerHolder.tags = data.tags;
       this.sequencerHolder.type = data.type;
@@ -189,46 +198,6 @@ export default class SequencerLoader {
       console.error(err);
     }
 
-    // let inFunction = false;
-    // let functionIn = "";
-
-    // for (const line of this.lines()) {
-    //     if (inFunction) {
-    //         if (line === "end") {
-    //             inFunction = false;
-    //             functionIn = "";
-    //         } else {
-    //             this.parseLineForFunction(functionIn, line);
-    //         }
-    //     }
-
-    //     if (line.startsWith('name = ')) {
-    //         this.sequencerHolder.name = this.getVariable('name', line);
-    //     }
-
-    //     if (line.startsWith('description = ')) {
-    //         this.sequencerHolder.description = this.getVariable('description', line);
-    //     }
-
-    //     if (line.startsWith('length = ')) {
-    //         this.sequencerHolder.total_length = this.getNumberVariable('length', line);
-    //     }
-    //     if (line.startsWith('total_length = ')) {
-    //         this.sequencerHolder.total_length = this.getNumberVariable('total_length', line);
-    //     }
-    //     if (line.startsWith('rhythm_length = ')) {
-    //         this.sequencerHolder.rhythm_length = this.getNumberVariable('rhythm_length', line);
-    //     }
-
-    //     if (line.startsWith('type = ') || line.startsWith('type=')) {
-    //         this.sequencerHolder.type = this.getVariable('type', line);
-    //     }
-
-    //     if (line.startsWith('def ')) {
-    //         inFunction = true;
-    //         functionIn = this.functionNameFromLine(line);
-    //     }
-    // }
   }
 
   constructor(sequencerCode: string) {

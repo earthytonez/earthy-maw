@@ -14,7 +14,7 @@ export default class HiHat extends Synthesizer {
 
   // }
 
-  play(_gate: SequencerGate, params: IPlayParams) {
+  play(_gate: ISequencerGate, params: IPlayParams) {
     this.player.start(params.time);
 
     // this.hiHat.harmonicity = 3;

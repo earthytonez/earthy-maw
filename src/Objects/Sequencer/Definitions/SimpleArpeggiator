@@ -9,7 +9,7 @@ type = "arpeggiator"
 
 [IntervalsToPlay]
 interval_type = "arpeggiator"
-list = [
+type_list = [
     "up",
     "down",
     "updown",
