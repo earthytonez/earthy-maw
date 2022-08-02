@@ -172,11 +172,15 @@ export default class Track {
 
       /* Load Track Features */
       if (trackData.trackFeatures) {
-        if (trackData.trackFeatures.volume.vol.volume.value) {
-          this.trackFeatures.volume.setVolume(trackData.trackFeatures.volume.volume);
+        if (trackData.trackFeatures.volume) {
+          if (trackData.trackFeatures.volume && trackData.trackFeatures.volume.vol.volume.value) {
+            this.trackFeatures.volume.setVolume(trackData.trackFeatures.volume.vol.volume.value);
+          }
+          this.trackFeatures.volume.muted = !!trackData.trackFeatures.volume.muted;
         }
-        this.trackFeatures.octaves = trackData.trackFeatures.octaves;
-        this.trackFeatures.volume.muted = !!trackData.trackFeatures.volume.muted;
+        if (trackData.trackFeatures.octaves) {
+          this.trackFeatures.octaves = trackData.trackFeatures.octaves;
+        }
       }
       console.log(this.trackFeatures);
 

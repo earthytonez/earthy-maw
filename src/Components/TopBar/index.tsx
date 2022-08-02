@@ -17,11 +17,32 @@ import { PaletteMode } from "@mui/material";
 // Icons import
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
-// import FindInPageRoundedIcon from "@mui/icons-material/FindInPageRounded";
-// import MenuIcon from "@mui/icons-material/Menu";
-
 
 import { useStore } from "../../stores/useStore";
+
+function PlayButtonToggle({
+  play,
+  playPause,
+}: {
+  play: boolean;
+  playPause: Function;
+}) {
+
+  let onClick: React.MouseEventHandler<HTMLButtonElement> = () => {
+    playPause();
+  }
+
+  return (
+    <IconButton
+      id="toggle-mode"
+      size="small"
+      // variant="outlined"
+      onClick={onClick}
+    >
+      {play ? <PauseIcon /> : <PlayArrowIcon />}
+    </IconButton>
+  );
+}
 
 const TopBar = observer(() => {
   const store = useStore();
@@ -40,30 +61,6 @@ const TopBar = observer(() => {
 
   const onChangeSectionLength = (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSectionLength(parseInt(ev.currentTarget.value));
-  }
-
-  function PlayButtonToggle({
-    play,
-    playPause,
-  }: {
-    play: boolean;
-    playPause: Function;
-  }) {
-
-    let onClick: React.MouseEventHandler<HTMLButtonElement> = () => {
-      playPause();
-    }
-
-    return (
-      <IconButton
-        id="toggle-mode"
-        size="small"
-        // variant="outlined"
-        onClick={onClick}
-      >
-        {play ? <PauseIcon /> : <PlayArrowIcon />}
-      </IconButton>
-    );
   }
 
   function ColorSchemeToggle() {
