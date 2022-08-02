@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Box, { BoxProps } from '@mui/material/Box';
 
-const Root = (props: BoxProps) => (
+const Root = (props: BoxProps): React.ReactElement => (
   <Box
     {...props}
     sx={[

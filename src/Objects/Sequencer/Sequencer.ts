@@ -9,7 +9,7 @@ import SequencerType from "./SequencerType";
 
 import PlayEveryX from "./SequencerRunner/PlayEveryX";
 import RandomTrigger from "./SequencerRunner/RandomTrigger";
-import SequencerGate, { ISequencerGate } from "./SequencerRunner/SequencerGate";
+import { ISequencerGate } from "./SequencerRunner/SequencerGate";
 import ISequencerParameters from "./SequencerRunner/ISequencerParameters";
 
 import MusicFeaturesStore from "../../stores/MusicFeatures.store";
@@ -76,10 +76,11 @@ export default class Sequencer extends SequencerType {
 
     let filteredObject = Object.keys(this)
       .filter((key) => !excludedKeys.includes(key))
-      .reduce((obj, key) => {
-        obj[key] = this[key];
-        return obj;
-      }, {});
+      // .reduce((obj, key) => {
+      //   obj[key] = this[key];
+      //   return obj;
+      // }, {});
+      
     return JSON.stringify(filteredObject);
   }
 
@@ -314,8 +315,11 @@ export default class Sequencer extends SequencerType {
     );
   }
 
-  getChord(key: IMusicKey, chord: string): string[] {
-    let chordDef = Chord.getChord(chord.toLowerCase(), key);
+  /*
+   * TODO: Interesting that here we get Chord with a key.  Should we be doing this earlier?
+   */
+  getChord(key: IMusicKey, chord: IMusicChord): string[] {
+    let chordDef = Chord.getChord(chord.name.toLowerCase(), key);
 
     return chordDef.notes;
   }
@@ -354,8 +358,9 @@ export default class Sequencer extends SequencerType {
     let toneFrequencyChord = chordNotes.map((note: string) => {
       return Tone.Frequency(`${note}${octave}`);
     });
-    toneFrequencyChord.sort(() => Math.random() - 0.5)[0]; // What is this doing?
-    let toneFrequencyChords = toneFrequencyChord;
+    
+    let toneFrequencyChords = [...toneFrequencyChord].sort(() => Math.random() - 0.5)[0]; // What is this doing?
+  
     console.log(toneFrequencyChords);
     playParams.notes = toneFrequencyChord;
 

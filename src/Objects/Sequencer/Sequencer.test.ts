@@ -1,12 +1,18 @@
 import Sequencer from './Sequencer';
 import { SequencerLoader } from './SequencerLoader';
 
+import * as Tone from 'tone';
+import RootStore from 'stores/Root.store';
+import { ITriggerParameters } from './SequencerLoader/TriggerWhen';
+
 test('test Drone Settings', async() => {
-    let sequencer = new Sequencer("SimpleDrone", undefined);
+    let octaves = [0, 1, 2, 3]
+    let rootStore = new RootStore();
+    let sequencer = new Sequencer("SimpleDrone", Tone.getContext(), rootStore.musicFeaturesStore, octaves);
     sequencer.sequencerLoader = new SequencerLoader("rhythm_length=64");
     await sequencer.setRunners();
     
-    let parameters = {
+    let parameters: ITriggerParameters = {
         on: 0,
         stepInterval: 64,
         triggerType: "stepInterval"

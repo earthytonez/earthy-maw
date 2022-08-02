@@ -1,4 +1,3 @@
-import { render, screen } from '@testing-library/react';
 import SequencerLoader from './SequencerLoader';
 
 test('find name from toml', async() => {

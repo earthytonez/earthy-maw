@@ -7,9 +7,9 @@ export interface ITriggerParameters {
   stepList?: number[];
 
   // random parameters
-  octaves: number
-  minSkip: number
-  maxSkip: number
+  octaves?: number
+  minSkip?: number
+  maxSkip?: number
 }
 
 export default class TriggerWhen {
@@ -59,26 +59,26 @@ export default class TriggerWhen {
         break;
       case trimmedLine.match(/every \d{1,2} steps on \d+/)?.input:
         this.type = "everyX";
-        var rx = /every (\d{1,2}) steps on (\d+)/;
-        var arr = rx.exec(trimmedLine);
+        const rxa = /every (\d{1,2}) steps on (\d+)/;
+        const arra = rxa.exec(trimmedLine);
 
-        if (arr && arr[1] && arr[2]) {
+        if (arra && arra[1] && arra[2]) {
           this.parameterSets[0] = {
             triggerType: "stepInterval",
-            stepInterval: parseInt(arr[1]),
-            on: parseInt(arr[2]),
+            stepInterval: parseInt(arra[1]),
+            on: parseInt(arra[2]),
           };
         }
         break;
 
       case trimmedLine.match(/every \d{1,2} steps/)?.input:
         this.type = "everyX";
-        var rx = /every (\d{1,2}) steps/;
-        var arr = rx.exec(trimmedLine);
-        if (arr && arr[1]) {
+        const rxb = /every (\d{1,2}) steps/;
+        const arrb = rxb.exec(trimmedLine);
+        if (arrb && arrb[1]) {
           this.parameterSets[0] = {
             triggerType: "stepInterval",
-            stepInterval: parseInt(arr[1]),
+            stepInterval: parseInt(arrb[1]),
             on: 0,
           };
         }

@@ -6,7 +6,7 @@ import Chip from "@mui/material/Chip";
 
 interface OctaveComponentProps {
   octaves: number[];
-  toggleOctave: (a: number) => null;
+  toggleOctave: (a: number) => void;
 }
 
 const OctaveComponent = observer(

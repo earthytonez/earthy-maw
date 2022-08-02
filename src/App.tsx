@@ -88,7 +88,10 @@ const App = observer(() => {
       const machineType = trackInfo[2];
       const machineToAssign = props.draggableId;
     try {
-      await tracks[trackID].assignMachine(
+      if (!tracks || !tracks[trackID]) {
+        throw new Error("Track not found");
+      }
+      await tracks[trackID]!.assignMachine(
         machineType, machineToAssign
       );
     } catch (err) {
@@ -108,7 +111,7 @@ const App = observer(() => {
     >
       <TopBar />
       <Box sx={{marginTop: '82px'}}>
-        <TrackList tracks={tracks} />
+        <TrackList/>
       </Box>
       <BottomBar
         arrangerTypes={arrangerTypes}

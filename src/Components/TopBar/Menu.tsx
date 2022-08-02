@@ -1,51 +1,51 @@
-import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import MenuUnstyled, { MenuUnstyledActions } from '@mui/base/MenuUnstyled';
-import MenuItemUnstyled from '@mui/base/MenuItemUnstyled';
-import PopperUnstyled from '@mui/base/PopperUnstyled';
+import * as React from "react";
+import { styled } from "@mui/material/styles";
+import MenuUnstyled, { MenuUnstyledActions } from "@mui/base/MenuUnstyled";
+import MenuItemUnstyled from "@mui/base/MenuItemUnstyled";
+import PopperUnstyled from "@mui/base/PopperUnstyled";
 
 const Popper = styled(PopperUnstyled)({
   zIndex: 1500,
 });
 
-const Listbox = styled('ul')(({ theme }) => ({
-  ...theme.variants.outlined.neutral,
-  marginBlock: '0.25rem',
-  padding: '0.45rem',
-  borderRadius: theme.vars.radius.sm,
-  boxShadow: theme.vars.shadow.md,
-  backgroundColor: theme.vars.palette.background.componentBg,
+const Listbox = styled("ul")(({ theme }) => ({
+  // ...theme.variants.outlined.neutral,
+  marginBlock: "0.25rem",
+  padding: "0.45rem",
+  // borderRadius: theme.vars.radius.sm,
+  // boxShadow: theme.vars.shadow.md,
+  // backgroundColor: theme.vars.palette.background.componentBg,
   gap: theme.spacing(1),
-  display: 'flex',
-  flexDirection: 'column',
-  listStyle: 'none',
+  display: "flex",
+  flexDirection: "column",
+  listStyle: "none",
 }));
 
 const MenuItem = styled(MenuItemUnstyled, {
-  shouldForwardProp: (prop) => prop !== 'active',
-})<{ active?: boolean }>(({ theme, active }) => ({
-  listStyle: 'none',
-  fontFamily: theme.vars.fontFamily.body,
-  fontSize: theme.vars.fontSize.sm,
-  padding: '0.45rem 0.75rem',
-  borderRadius: theme.vars.radius.xs,
+  shouldForwardProp: (prop) => prop !== "active",
+})<{ active?: boolean }>(({ active }) => ({
+  listStyle: "none",
+  // fontFamily: theme.vars.fontFamily.body,
+  // fontSize: theme.vars.fontSize.sm,
+  padding: "0.45rem 0.75rem",
+  // borderRadius: theme.vars.radius.xs,
   minWidth: 120,
-  textDecoration: 'none',
-  display: 'flex',
-  ...theme.variants.plain.neutral,
+  textDecoration: "none",
+  display: "flex",
+  // ...theme.variants.plain.neutral,
   ...(active
     ? {
-        ...theme.variants.soft.primary,
-        cursor: 'default',
+        // ...theme.variants.soft.primary,
+        cursor: "default",
       }
     : {
-        '&:hover': {
-          ...theme.variants.softHover.neutral,
-          cursor: 'pointer',
+        "&:hover": {
+          // ...theme.variants.softHover.neutral,
+          cursor: "pointer",
         },
-        '&:active': theme.variants.outlinedHover.neutral,
+        // '&:active': theme.variants.outlinedHover.neutral,
       }),
-  [theme.focus.selector]: theme.focus.default,
+  // [theme.focus.selector]: theme.focus.default,
 }));
 
 const Menu = ({
@@ -56,8 +56,10 @@ const Menu = ({
   control: React.ReactElement;
   id: string;
   menus: Array<{ label: string } & { [k: string]: any }>;
-}) => {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+}): React.ReactElement => {
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null
+  );
   const isOpen = Boolean(anchorEl);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
   const menuActions = React.useRef<MenuUnstyledActions>(null);
@@ -70,11 +72,13 @@ const Menu = ({
     }
   };
 
-  const handleButtonKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+  const handleButtonKeyDown = (
+    event: React.KeyboardEvent<HTMLButtonElement>
+  ) => {
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault();
       setAnchorEl(event.currentTarget);
-      if (event.key === 'ArrowUp') {
+      if (event.key === "ArrowUp") {
         menuActions.current?.highlightLastItem();
       }
     }
@@ -88,13 +92,13 @@ const Menu = ({
   return (
     <React.Fragment>
       {React.cloneElement(control, {
-        type: 'button',
+        type: "button",
         onClick: handleButtonClick,
         onKeyDown: handleButtonKeyDown,
         ref: buttonRef,
-        'aria-controls': isOpen ? id : undefined,
-        'aria-expanded': isOpen || undefined,
-        'aria-haspopup': 'menu',
+        "aria-controls": isOpen ? id : undefined,
+        "aria-expanded": isOpen || undefined,
+        "aria-haspopup": "menu",
       })}
       <MenuUnstyled
         actions={menuActions}
@@ -102,7 +106,7 @@ const Menu = ({
         onClose={close}
         anchorEl={anchorEl}
         components={{ Root: Popper, Listbox }}
-        componentsProps={{ root: { placement: 'bottom-end' }, listbox: { id } }}
+        componentsProps={{ root: { placement: "bottom-end" }, listbox: { id } }}
       >
         {menus.map(({ label, active, ...item }) => {
           const menuItem = (
@@ -113,7 +117,7 @@ const Menu = ({
           if (item.href) {
             return (
               <li key={label} role="none">
-                {React.cloneElement(menuItem, { component: 'a' })}
+                {React.cloneElement(menuItem, { component: "a" })}
               </li>
             );
           }

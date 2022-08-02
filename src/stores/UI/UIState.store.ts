@@ -5,10 +5,10 @@ type MachineType = 'sequencer' | 'modulator' | 'synthesizer' | 'arranger' | unde
 export default class UIStateStore {
     objectEditIsOpen: boolean = false;
     objectEditing: string | undefined = '';
-    objectEditType: 'sequencer' | 'modulator' | 'synthesizer' | 'arranger' | undefined;
-    objectEditTrack: number | undefined;
+    objectEditType: 'sequencer' | 'modulator' | 'synthesizer' | 'arranger' | "musicFeature" | undefined;
+    objectEditTrack: number | "musicFeature" |  undefined;
 
-  toggleObjectEdit(open: boolean, machineTrack?: number, machineType?: MachineType, machineSlug?: string) {
+  toggleObjectEdit(open: boolean, machineTrack?: number | "musicFeature", machineType?: MachineType | "musicFeature", machineSlug?: string) {
     if (!open) {
       this.objectEditIsOpen = false;
       return;

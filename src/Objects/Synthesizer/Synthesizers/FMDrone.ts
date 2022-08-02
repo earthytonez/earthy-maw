@@ -1,11 +1,13 @@
 import * as Tone from "tone";
 import Synthesizer from "../Synthesizer";
 
-import SequencerGate from "../../Sequencer/SequencerRunner/SequencerGate";
+import { ISequencerGate } from '../../../Objects/Sequencer/SequencerRunner/SequencerGate';
 import IPlayParams from "../../../Types/IPlayParams";
 import { debug } from "../../../Util/logger";
 
 import { action, makeObservable } from "mobx";
+
+import ISynthesizerEditableParams from '../ISynthEditableParams';
 
 type OscillatorType = "sine" | "square" | "triangle" | "sawtooth";
 const OSCILLATOR_TYPES: OscillatorType[] = [
@@ -29,7 +31,17 @@ export default class FMDrone extends Synthesizer {
     this[parameter as keyof this] = value;
   }
 
-  get editParameters() {
+  incrementParameter(_parameter: string): void {
+    /* TODO: Fix */
+    console.log(_parameter);
+  }
+  
+  decrementParameter(_parameter: string): void {
+    /* TODO: Fix */
+    console.log(_parameter);
+  }
+
+  get editParameters(): ISynthesizerEditableParams[] {
     return [
       {
         name: "Oscillator Type",

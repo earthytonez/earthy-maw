@@ -14,7 +14,7 @@ interface TrackComponentProps {
   track: Track;
 }
 
-const TrackComponent = observer(({ track }: TrackComponentProps) => {
+const TrackComponent = observer(({ track }: TrackComponentProps): React.ReactElement => {
   return (
     <Grid container direction="row" spacing={2} p={2} style={{backgroundColor: "#333", marginTop: '3px', padding: 0, paddingLeft: '1em', paddingTop: '0', maxHeight: "8rem"}}>
       <Grid

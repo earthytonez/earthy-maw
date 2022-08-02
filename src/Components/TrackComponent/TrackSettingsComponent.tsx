@@ -1,15 +1,11 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 
-import Button from "@mui/material/Button";
-
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import Slider from "@mui/material/Slider";
-import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
 import OctaveComponent from "./OctaveComponent";
@@ -17,74 +13,15 @@ import Track from "../../Objects/Track";
 
 import Menu from "./TrackSettingsMenu";
 
-interface VolumeComponentProps {
-  track: Track;
-  raiseVolume: () => null;
-  lowerVolume: () => null;
-  setVolume: () => null;
-  toggleMute: () => null;
-}
+import VolumeComponent from "./TrackVolumeComponent";
 
-const VolumeComponent = observer(({ track }: VolumeComponentProps) => {
-  // const store = useStore();
-  const { volume, setVolume, muted } = track;
-
-  const marks = [
-    {
-      value: 0,
-      label: "",
-    },
-    {
-      value: 6,
-      label: "6db",
-    },
-    {
-      value: -100,
-      label: "-60db",
-    },
-  ];
-
-  function valueText(value: number) {
-    return `${value}db`;
-  }
-
-  return (
-    <Box sx={{ width: "200px" }}>
-      <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
-        <Box style={{ border: '1px solid', width: '100%', height: '30px'}}>
-        <Slider
-          aria-label="Custom marks"
-          defaultValue={volume}
-          getAriaValueText={valueText}
-          step={1}
-          onChange={(ev, value) => setVolume(value)}
-          valueLabelDisplay="auto"
-          min={-100}
-          max={6}
-          // marks={marks}
-        />
-         </Box>
-         <Box style={{height: '30px', width: '20px', marginLeft: 0}}>
-        <Button
-          variant={muted ? "contained" : "outlined"}
-          size="small"
-          style={{borderRadius: '0', minWidth: 0, marginLeft: 0}}
-          onClick={track.toggleMute}
-        >
-          M
-        </Button>
-        </Box>
-      </Stack>
-    </Box>
-  );
-});
 
 interface ITrackSettingsComponentProps {
   track: Track;
 }
 
 const TrackSettingsComponent = observer(
-  ({ track }: ITrackSettingsComponentProps) => {
+  ({ track }: ITrackSettingsComponentProps): React.ReactElement => {
 
     return (
       <Card sx={{ height: "100%", padding: '8px', paddingBottom: '0px' }}>
@@ -113,8 +50,7 @@ const TrackSettingsComponent = observer(
             id="app-selector"
             control={
               <IconButton
-                size="sm"
-                variant="outlined"
+                size="small"
                 aria-label="Apps"
               >
                 <MenuIcon />
@@ -133,9 +69,7 @@ const TrackSettingsComponent = observer(
         </Box>
         <Box>
           <VolumeComponent
-            track={track}
-            raiseVolume={track.raiseVolume}
-            lowerVolume={track.lowerVolume}
+            trackVolume={track.trackFeatures.volume}
           />
         </Box>
         <Box>
@@ -201,7 +135,7 @@ export default TrackSettingsComponent;
 //                       <IconButton
 //                         aria-label={`edit ${machine.name}`}
 //                         variant="plain"
-//                         size="sm"
+//                         size="small"
 //                         sx={{
 //                           position: "absolute",
 //                           top: "1rem",
@@ -273,7 +207,7 @@ export default TrackSettingsComponent;
 //       <Box>
 //         <Box>{placeholder}</Box>
 //         <Box>
-//           <Button variant="outline">
+//           <Button variant="outlined">
 //             <OpenInBrowserOutlinedIcon />
 //           </Button>
 //         </Box>

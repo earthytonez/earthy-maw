@@ -12,14 +12,16 @@ import Typography from "@mui/material/Typography";
 
 import { observer } from "mobx-react-lite";
 
+import { PaletteMode } from "@mui/material";
+
 // Icons import
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
-import FindInPageRoundedIcon from "@mui/icons-material/FindInPageRounded";
-import MenuIcon from "@mui/icons-material/Menu";
+// import FindInPageRoundedIcon from "@mui/icons-material/FindInPageRounded";
+// import MenuIcon from "@mui/icons-material/Menu";
 
 
-import { useStore } from "../../stores/useStore.tsx";
+import { useStore } from "../../stores/useStore";
 
 const TopBar = observer(() => {
   const store = useStore();
@@ -32,6 +34,14 @@ const TopBar = observer(() => {
     setSectionLength,
   } = store.musicFeaturesStore;
 
+  const onChangeTempo = (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setTempo(parseInt(ev.currentTarget.value));
+  }
+
+  const onChangeSectionLength = (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSectionLength(parseInt(ev.currentTarget.value));
+  }
+
   function PlayButtonToggle({
     play,
     playPause,
@@ -39,12 +49,17 @@ const TopBar = observer(() => {
     play: boolean;
     playPause: Function;
   }) {
+
+    let onClick: React.MouseEventHandler<HTMLButtonElement> = () => {
+      playPause();
+    }
+
     return (
       <IconButton
         id="toggle-mode"
-        size="sm"
-        variant="outlined"
-        onClick={playPause}
+        size="small"
+        // variant="outlined"
+        onClick={onClick}
       >
         {play ? <PauseIcon /> : <PlayArrowIcon />}
       </IconButton>
@@ -71,13 +86,13 @@ const TopBar = observer(() => {
       setMounted(true);
     }, []);
     if (!mounted) {
-      return <IconButton size="sm" variant="outlined" color="primary" />;
+      return <IconButton size="small" color="primary" />;
     }
     return (
       <IconButton
         id="toggle-mode"
-        size="sm"
-        variant="outlined"
+        size="small"
+        // variant="outlined"
         onClick={() => {
           if (mode === "light") {
             colorMode.toggleColorMode();
@@ -106,21 +121,19 @@ const TopBar = observer(() => {
             gap: 1.5,
           }}
         >
-          <IconButton
-            variant="outlined"
-            size="sm"
+          {/* <IconButton
+            size="small"
             onClick={() => setDrawerOpen(true)}
             sx={{ display: { sm: "none" } }}
           >
             <MenuIcon />
-          </IconButton>
-          <IconButton
-            size="sm"
-            variant="solid"
+          </IconButton> */}
+          {/* <IconButton
+            size="small"
             sx={{ display: { xs: "none", sm: "inline-flex" } }}
           >
             <FindInPageRoundedIcon />
-          </IconButton>
+          </IconButton> */}
           <Typography component="h1" fontWeight="xl">
             Earthy MAW
           </Typography>
@@ -128,9 +141,9 @@ const TopBar = observer(() => {
         <PlayButtonToggle play={play} playPause={playPause} />
         <Box sx={{ display: "flex", flexDirection: "row", gap: 1.5 }}>
           <OutlinedInput
-            size="sm"
+            size="small"
             value={tempo}
-            onChange={setTempo}
+            onChange={onChangeTempo}
             endAdornment={
               <Typography
                 fontWeight="lg"
@@ -149,9 +162,9 @@ const TopBar = observer(() => {
             }}
           />
           <OutlinedInput
-            size="sm"
+            size="small"
             value={musicSectionLength}
-            onChange={setSectionLength}
+            onChange={onChangeSectionLength}
             endAdornment={
               <Typography
                 fontWeight="lg"

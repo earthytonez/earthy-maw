@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import MenuUnstyled, { MenuUnstyledActions } from '@mui/base/MenuUnstyled';
+import { MenuUnstyledActions } from '@mui/base/MenuUnstyled';
 
 const TrackSettingsMenu = ({
   control,
@@ -53,16 +53,16 @@ const TrackSettingsMenu = ({
         'aria-haspopup': 'menu',
       })}
       <Menu
-        actions={menuActions}
+        // actions={menuActions}
         open={isOpen}
         onClose={close}
         anchorEl={anchorEl}
         // components={{ Root: Popper, Listbox }}
-        componentsProps={{ root: { placement: 'bottom-end' }, listbox: { id } }}
+        // componentsProps={{ root: { placement: 'bottom-end' }, listbox: { id } }}
       >
         {menus.map(({ label, active, ...item }) => {
           const menuItem = (
-            <MenuItem active={active} {...item}>
+            <MenuItem classes={{selected: active}} {...item}>
               {label}
             </MenuItem>
           );

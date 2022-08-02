@@ -1,6 +1,5 @@
 import { MAJOR_SCALE_INTERVALS, MINOR_SCALE_INTERVALS } from "../../../config/constants";
 import { IMusicKey, IMusicScale } from "../../../Types/index"
-// C4 = 60;
 
 const SINGLE_OCTAVE_NOTES = ["A", "A#", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#"];
 
@@ -8,21 +7,21 @@ export default class NoteIntervalCalculator {
     key: IMusicKey
     scale: IMusicScale
 
-    getNoteName(noteNumber: number, halfStep: boolean): string {
+    getNoteName(noteNumber: number, halfStep?: boolean): string {
         let mod = 0;
-        if (halfStep) {
+        if (!!halfStep) {
             mod = 1;
         }
         let octave: string = (Math.floor((noteNumber / 12)) - 1).toString();
-        let name: string = SINGLE_OCTAVE_NOTES[(noteNumber - 9) % 12 + mod];
+        let name: string = SINGLE_OCTAVE_NOTES[(noteNumber - 9) % 12 + mod]!;
         return `${name}${octave}`;
     }
 
     octaveNumberFromNoteOctave(noteOctaveName: string): number {
         let octaveNumberRegEX = /([0-9]+)$/;
         let matchedExpression = noteOctaveName.match(octaveNumberRegEX);
-        if (!matchedExpression) {
-            throw("Invalid Note Octave Name");
+        if (!matchedExpression || !matchedExpression[0]) {
+            throw new Error("Invalid Note Octave Name");
         }
         let octaveNumber = parseInt(matchedExpression[0]);
         return octaveNumber;
@@ -44,7 +43,7 @@ export default class NoteIntervalCalculator {
         return ((octaveNumber + 1) * 12) + noteNumber
     }
 
-    octaveFromNoteNumber(noteNumber) {
+    octaveFromNoteNumber(noteNumber: number): number {
         return Math.floor((noteNumber / 12) - 1);
     }
 
@@ -67,11 +66,11 @@ export default class NoteIntervalCalculator {
         while (noteDiff > 0) {
             switch(this.scale) {
                 case "major":
-                    noteDiff -= MAJOR_SCALE_INTERVALS[iTmp];
+                    noteDiff -= MAJOR_SCALE_INTERVALS[iTmp]!;
                     iMod += 1;
                     break;
                 case "minor":
-                    noteDiff -= MAJOR_SCALE_INTERVALS[iTmp];
+                    noteDiff -= MINOR_SCALE_INTERVALS[iTmp]!;
                     iMod += 1;
                     break;
                 default:
@@ -87,13 +86,21 @@ export default class NoteIntervalCalculator {
             x++;
             switch(this.scale) {
                 case "major":
-                    retVal += MAJOR_SCALE_INTERVALS[i + iMod];
-                    y = y + MAJOR_SCALE_INTERVALS[i + iMod];
+                    let majorScaleInterval = MAJOR_SCALE_INTERVALS[i + iMod];
+                    if (!majorScaleInterval) {
+                        throw new Error("Invalid interval mod for minor scaleinterval in NoteIntervalCalculator.ts");
+                    }
+                    retVal += majorScaleInterval;
+                    y = y + majorScaleInterval;
                     break;
                 case "minor":
-                    console.log(`For Minor Scale, ${iMod} Adding ${MINOR_SCALE_INTERVALS[i + iMod]}`)
-                    retVal += MINOR_SCALE_INTERVALS[i + iMod];
-                    y = y + MINOR_SCALE_INTERVALS[i + iMod];
+                    let minorScaleInterval = MINOR_SCALE_INTERVALS[i + iMod];
+                    if (!minorScaleInterval) {
+                        throw new Error("Invalid interval mod for minor scaleinterval in NoteIntervalCalculator.ts");
+                    }
+                    console.log(`For Minor Scale, ${iMod} Adding ${minorScaleInterval}`)
+                    retVal += minorScaleInterval;
+                    y = y + minorScaleInterval;
                     break;
             }
         }
@@ -118,7 +125,7 @@ export default class NoteIntervalCalculator {
 
     constructor(key: IMusicKey, scale: IMusicScale) {
         this.key = key;
-        this.scale = scale.toLowerCase();
+        this.scale = scale.toLowerCase() as IMusicScale;
     }
 
 }

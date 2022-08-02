@@ -10,14 +10,15 @@ import { BeatMarker } from "../stores/MusicFeatures/BeatMarker";
 import MusicFeaturesStore from "../stores/MusicFeatures.store";
 import TrackStore from "../stores/Track.store";
 
+import TrackVolume from "./Track/TrackVolume";
+
 import { debug, error } from "../Util/logger";
 
 import { SYNTH_TYPE_FROM_STRING } from "../config/constants";
 
 interface ITrackFeatures {
   octaves: number[];
-  vol: Tone.Volume;
-  muted: boolean;
+  volume: TrackVolume;
 }
 
 export default class Track {
@@ -25,11 +26,7 @@ export default class Track {
   sequencer?: Sequencer;
   synthesizer?: Synthesizer;
 
-  trackFeatures: ITrackFeatures = {
-    octaves: [1, 2, 3, 4, 5, 6, 7, 8],
-    vol: new Tone.Volume(0),
-    muted: false,
-  };
+  trackFeatures: ITrackFeatures;
 
   musicFeaturesStore: MusicFeaturesStore;
   trackStore: TrackStore;
@@ -41,39 +38,9 @@ export default class Track {
     this.trackStore.removeTrack(this.id);
   };
 
-  raiseVolume = () => {
-    this.vol.volume.value = this.vol.volume.value + 1;
-  };
-
-  lowerVolume = () => {
-    this.vol.volume.value = this.vol.volume.value - 1;
-  };
-
-  setVolume(newValue: number) {
-    this.vol.volume.value = newValue;
-  }
-
-  set muted(val: boolean) {
-    this.trackFeatures.muted = val;
-    this.trackStore.saveTracks();
-  }
-
-  set vol(val: Tone.Volume) {
-    this.trackFeatures.vol = val;
-    this.trackStore.saveTracks();
-  }
-
   set octaves(val: number[]) {
     this.trackFeatures.octaves = val;
     this.trackStore.saveTracks();
-  }
-
-  get muted(): boolean {
-    return this.trackFeatures.muted;
-  }
-
-  get vol(): Tone.Volume {
-    return this.trackFeatures.vol;
   }
 
   get octaves(): number[] {
@@ -95,15 +62,6 @@ export default class Track {
       this.octaves.push(octave);
       this.setOctaves(this.octaves);
     }
-  }
-
-  toggleMute = () => {
-    this.vol.mute = !this.vol.mute;
-    this.muted = this.vol.mute;
-  };
-
-  get volume() {
-    return this.vol.volume.value;
   }
 
   async tick(beatMarker: BeatMarker, time: number) {
@@ -169,7 +127,7 @@ export default class Track {
       await this.sequencer?.load();
     }
     if (machineType === "synthesizer") {
-      this.synthesizer?.attachVolume(this.vol);
+      this.synthesizer?.attachVolume(this.trackFeatures.volume.vol);
     }
   }
 
@@ -214,11 +172,11 @@ export default class Track {
 
       /* Load Track Features */
       if (trackData.trackFeatures) {
-        if (trackData.trackFeatures.vol.volume.value) {
-          this.setVolume(trackData.trackFeatures.vol.volume.value);
+        if (trackData.trackFeatures.volume.vol.volume.value) {
+          this.trackFeatures.volume.setVolume(trackData.trackFeatures.volume.volume);
         }
         this.trackFeatures.octaves = trackData.trackFeatures.octaves;
-        this.trackFeatures.muted = !!trackData.trackFeatures.muted;
+        this.trackFeatures.volume.muted = !!trackData.trackFeatures.volume.muted;
       }
       console.log(this.trackFeatures);
 
@@ -239,13 +197,13 @@ export default class Track {
       if (trackData.synthesizer && trackData.synthesizer.slug) {
         this.synthesizer = getSynthesizer(
           trackData.synthesizer.slug,
-          this.vol,
+          this.trackFeatures.volume.vol,
           Tone.getContext()
         );
         if (this.sequencer && this.synthesizer) {
           this.sequencer.bindSynth(this.synthesizer);
           debug("TRACK_LOADED_SEQUENCER", this.sequencer.toJSON());
-          this.synthesizer.attachVolume(this.vol);
+          this.synthesizer.attachVolume(this.trackFeatures.volume.vol);
         }
       }
       this.setLoading(false);
@@ -269,9 +227,14 @@ export default class Track {
     this.musicFeaturesStore = musicFeaturesStore;
     this.trackStore = trackStore;
 
+    this.trackFeatures = {
+      octaves: [1, 2, 3, 4, 5, 6, 7, 8],
+      volume: new TrackVolume(this.trackStore.saveTracks),
+    };
+
     this.id = id;
     this.slug = `track-${id}`;
-    this.vol = new Tone.Volume(0).toDestination();
+    this.trackFeatures.volume.vol = new Tone.Volume(0).toDestination();
 
     this.arranger = undefined;
     this.sequencer = undefined;
@@ -285,13 +248,7 @@ export default class Track {
       synthesizer: observable,
       trackFeatures: observable,
       octaves: computed,
-      muted: computed,
-      vol: computed,
-      raiseVolume: action.bound,
-      setVolume: action.bound,
       setLoading: action.bound,
-      lowerVolume: action.bound,
-      toggleMute: action.bound,
       assignMachine: action.bound,
       toggleOctave: action.bound,
       // fetch: flow

@@ -1,9 +1,11 @@
 import Synthesizer from "../Synthesizer";
 
 import IPlayParams from "../../../Types/IPlayParams";
-import SequencerGate from '../../../Objects/Sequencer/SequencerRunner/SequencerGate';
+import { ISequencerGate } from '../../../Objects/Sequencer/SequencerRunner/SequencerGate';
 
 import * as Tone from "tone";
+
+import ISynthesizerEditableParams from '../ISynthEditableParams';
 
 export default class HiHat extends Synthesizer {
   name: string = "Hi Hat";
@@ -13,6 +15,25 @@ export default class HiHat extends Synthesizer {
   // editParameters(): ISynthParams {
 
   // }
+
+  changeParameter(parameter: string, value: any) {
+    this[parameter as keyof this] = value;
+  }
+
+  incrementParameter(_parameter: string): void {
+    /* TODO: Fix */
+    console.log(_parameter);
+  }
+  
+  decrementParameter(_parameter: string): void {
+    /* TODO: Fix */
+    console.log(_parameter);
+  }
+
+  get editParameters(): ISynthesizerEditableParams[] {
+    return [];
+    }
+
 
   play(_gate: ISequencerGate, params: IPlayParams) {
     this.player.start(params.time);

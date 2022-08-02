@@ -40,7 +40,6 @@ export default class NoteToPlay {
         octaves: number[],
         measureBeat: number,
         intervalToPlay: any,
-        intervalsToPlay: any
       ): Tone.FrequencyClass {
         switch(this.noteChooser) {
             case "random":

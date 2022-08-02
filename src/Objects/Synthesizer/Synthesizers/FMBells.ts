@@ -5,6 +5,8 @@ import Synthesizer from "../Synthesizer";
 import { ISequencerGate } from "../../../Objects/Sequencer/SequencerRunner/SequencerGate";
 import IPlayParams from "../../../Types/IPlayParams";
 
+import ISynthesizerEditableParams from '../ISynthEditableParams';
+
 
 export default class FMBells extends Synthesizer {
   name: string = "FM Bells";
@@ -13,6 +15,24 @@ export default class FMBells extends Synthesizer {
   toneContext: any;
   reverb: any;
   delay: any;
+
+  changeParameter(parameter: string, value: any) {
+    this[parameter as keyof this] = value;
+  }
+
+  incrementParameter(_parameter: string): void {
+    /* TODO: Fix */
+    console.log(_parameter);
+  }
+  
+  decrementParameter(_parameter: string): void {
+    /* TODO: Fix */
+    console.log(_parameter);
+  }
+
+  get editParameters(): ISynthesizerEditableParams[] {
+    return [];
+    }
 
   attachVolume(vol: Tone.Volume) {
     if (vol) this.synth.connect(vol);

@@ -15,7 +15,7 @@ import Radio from "@mui/material/Radio";
 
 import CloseIcon from "@mui/icons-material/Close";
 
-import ArraySelectorComponent from './ArraySelectorComponent';
+import ArraySelectorComponent from "./ArraySelectorComponent";
 
 import { useStore } from "../../stores/useStore";
 import { useUIStore } from "../../stores/UI/useUIStore";
@@ -51,7 +51,14 @@ const MachineEditDrawerRadioGroup = observer(
           }}
         >
           {options.map((option: any, i: number) => {
-            return (<FormControlLabel key={i} value={option} control={<Radio />} label={option} />);
+            return (
+              <FormControlLabel
+                key={i}
+                value={option}
+                control={<Radio />}
+                label={option}
+              />
+            );
           })}
         </RadioGroup>
       </Box>
@@ -76,7 +83,7 @@ const MachineEditDrawerDial = observer(
     }
 
     console.log(edit);
-    
+
     return (
       <Box sx={{ mt: 2 }}>
         <Typography>{name}</Typography>
@@ -86,7 +93,6 @@ const MachineEditDrawerDial = observer(
   }
 );
 
-
 const LoadParameter = observer(
   ({
     edit,
@@ -95,7 +101,7 @@ const LoadParameter = observer(
     fieldType,
     fieldOptions,
     increment,
-    decrement
+    decrement,
   }: {
     edit: Function;
     increment: Function;
@@ -124,7 +130,7 @@ const LoadParameter = observer(
             edit={edit}
           ></MachineEditDrawerDial>
         );
-        case "slider":
+      case "slider":
         return (
           <Box>
             <Typography id="track-false-slider" gutterBottom>
@@ -136,33 +142,34 @@ const LoadParameter = observer(
               getAriaValueText={() => fieldOptions.current}
               step={1}
               marks
-              onChange={(mouseEvent: any) => edit(field, mouseEvent.target.value)}
+              onChange={(mouseEvent: any) =>
+                edit(field, mouseEvent.target.value)
+              }
               min={fieldOptions.min}
               max={fieldOptions.max}
               valueLabelDisplay="auto"
             />
           </Box>
         );
-        case "arraySelector":
-          return (
-            <Box>
-              <Typography id="track-false-slider" gutterBottom>
-                {name}
-              </Typography>
-  
-              <ArraySelectorComponent
-                aria-label={name}
-                selectableValues={fieldOptions.options}
-                currentValue={fieldOptions.current}
-                setValue={(value) => edit(field, value)}
-                incrementValue={() => increment(field)}
-                decrementValue={() => decrement(field)}
-                
-              />
-            </Box>
-          );
-  
-        default:
+      case "arraySelector":
+        return (
+          <Box>
+            <Typography id="track-false-slider" gutterBottom>
+              {name}
+            </Typography>
+
+            <ArraySelectorComponent
+              aria-label={name}
+              selectableValues={fieldOptions.options}
+              currentValue={fieldOptions.current}
+              setValue={(value: any) => edit(field, value)}
+              incrementValue={() => increment(field)}
+              decrementValue={() => decrement(field)}
+            />
+          </Box>
+        );
+
+      default:
         return <Box></Box>;
     }
   }
@@ -186,16 +193,29 @@ const MachineEditDrawer = observer(() => {
   let incrementParameter: Function;
   let decrementParameter: Function;
 
-  if (objectEditIsOpen) {
-    editParameters =
-      store.trackStore.tracks[objectEditTrack][objectEditType].editParameters;
-    editParameter =
-      store.trackStore.tracks[objectEditTrack][objectEditType].changeParameter;
-    incrementParameter =
-      store.trackStore.tracks[objectEditTrack][objectEditType].incrementParameter;
-    decrementParameter =
-      store.trackStore.tracks[objectEditTrack][objectEditType].decrementParameter;
+  if (objectEditTrack && objectEditType && objectEditIsOpen) {
+    if (typeof objectEditTrack == "number") {
+      let trackMachine;
+      switch (objectEditType) {
+        case "sequencer":
+          trackMachine = store.trackStore.tracks[objectEditTrack]!.sequencer;
+          break;
+        case "synthesizer":
+          trackMachine = store.trackStore.tracks[objectEditTrack]!.synthesizer;
+          break;
+        case "arranger":
+          trackMachine = store.trackStore.tracks[objectEditTrack]!.arranger;
+          break;
+      }
+
+      if (trackMachine) {
+        editParameters = trackMachine.editParameters;
+        editParameter = trackMachine.changeParameter;
+        incrementParameter = trackMachine.incrementParameter;
+        decrementParameter = trackMachine.decrementParameter;
+      }
     }
+  }
 
   if (!editParameters) {
     return (

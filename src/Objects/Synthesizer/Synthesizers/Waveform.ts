@@ -8,6 +8,7 @@ import { debug } from "../../../Util/logger";
 import { action, makeObservable } from 'mobx';
 
 import { ISequencerGate } from "../../Sequencer/SequencerRunner/SequencerGate";
+import ISynthesizerEditableParams from '../ISynthEditableParams';
 
 type OscillatorType = "sine" | "square" | "triangle" | "sawtooth";
 const OSCILLATOR_TYPES: OscillatorType[] = [
@@ -34,7 +35,17 @@ export default class Waveform extends Synthesizer {
     this[parameter as keyof this] = value;
   }
 
-  get editParameters() {
+  incrementParameter(_parameter: string): void {
+    /* TODO: Fix */
+    this.filterCutoff++;
+  }
+  
+  decrementParameter(_parameter: string): void {
+    /* TODO: Fix */
+    this.filterCutoff--;
+  }
+
+  get editParameters(): ISynthesizerEditableParams[] {
     return [
       {
         name: "Oscillator Type",
@@ -112,7 +123,14 @@ export default class Waveform extends Synthesizer {
     });
 
     console.log(`WaveForm triggerAttackRelase ${gate.length}`);
-    this.synth.triggerAttackRelease(params.note as typeof Tone.Frequency, Tone.Time(gate.length).toNotation());
-    // this.synth.triggerAttackRelease(params.note as Frequency, 1000);
+
+    if (!params.note) {
+      throw new Error("No Note to play for synthesizer waveform");
+    }
+
+    this.synth.triggerAttackRelease(
+      params.note!.toFrequency(),
+      Tone.Time(gate.length).toNotation()
+    );
   }
 }

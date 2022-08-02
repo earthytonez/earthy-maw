@@ -22,19 +22,25 @@ import { useUIStore } from "../../stores/UI/useUIStore";
 
 interface DroppableTrackElementProps {
   title: string;
-  slug: string;
+  slug:
+    | "sequencer"
+    | "modulator"
+    | "synthesizer"
+    | "arranger"
+    | "musicFeature"
+    | undefined;
   placeholder: string;
   track_id: number;
   machine: any;
 }
 
 const MachinePlaceholder = observer(
-  ({ placeholder, title }: { placeholder: string; title: string }) => {
+  ({ placeholder }: { placeholder: string }): React.ReactElement => {
     return (
       <Box>
         <Box>{placeholder}</Box>
         <Box>
-          <Button variant="outline">
+          <Button variant="outlined">
             <OpenInBrowserOutlinedIcon />
           </Button>
         </Box>
@@ -45,7 +51,7 @@ const MachinePlaceholder = observer(
 
 interface PresetsProps {}
 
-const Presets = observer(({}: PresetsProps) => {
+const Presets = observer((_props: PresetsProps) => {
   return <div></div>;
 });
 
@@ -61,16 +67,16 @@ const DroppableTrackElement = observer(
     const { toggleObjectEdit } = uiStore;
     return (
       <Droppable
-        index={track_id + 11}
+        // index={track_id + 11}
         droppableId={`track-${track_id}-${slug}`}
       >
-        {(provided, snapshot) => (
+        {(provided, _snapshot) => (
           <Paper>
-            <Card style={{                padding: '8px'
-}}
+            <Card
+              style={{ padding: "8px" }}
               ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
+              // {...provided.draggableProps}
+              // {...provided.dragHandleProps}
               sx={{
                 minWidth: "90%",
                 minHeight: "100%",
@@ -88,24 +94,21 @@ const DroppableTrackElement = observer(
                     <Grid container spacing={2}>
                       <Grid item xs={10}>
                         <Typography
-            color="neutral.500"
-            fontWeight={700}
-            sx={{
-              fontSize: "12px",
-              textTransform: "uppercase",
-              letterSpacing: ".1rem",
-            }}
-          >
+                          color="neutral.500"
+                          fontWeight={700}
+                          sx={{
+                            fontSize: "12px",
+                            textTransform: "uppercase",
+                            letterSpacing: ".1rem",
+                          }}
+                        >
                           {machine.name}
-          </Typography>
-
-                        
+                        </Typography>
                       </Grid>
                       <Grid item xs={2}>
                         <IconButton
                           aria-label={`edit ${machine.name}`}
-                          variant="plain"
-                          size="sm"
+                          size="small"
                           onClick={() =>
                             toggleObjectEdit(true, track_id, slug, machine.slug)
                           }
@@ -119,7 +122,7 @@ const DroppableTrackElement = observer(
                   ) : (
                     <MachinePlaceholder
                       placeholder={placeholder}
-                      title={title}
+                      // title={title}
                     />
                   )}
 

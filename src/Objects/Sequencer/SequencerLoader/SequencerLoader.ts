@@ -11,7 +11,7 @@ import IMusicChord from "../../../Types/IMusicChord";
 import IMusicScale from "../../../Types/IMusicScale";
 import IMusicKey from "../../../Types/IMusicKey";
 import IToneJSDuration from "../../../Types/IToneJSDuration";
-import IToneJSNote from "../../../Types/IToneJSNote";
+// import IToneJSNote from "../../../Types/IToneJSNote";
 
 import toml from "toml";
 
@@ -67,8 +67,8 @@ class SequencerLoaderHolder {
       chord, 
       octaves,
       measureBeat,
-      this.intervalToPlay,
-      this.intervalsToPlay);
+      this.intervalToPlay
+    )
   }
 
   volume(beatMarker: number): number {

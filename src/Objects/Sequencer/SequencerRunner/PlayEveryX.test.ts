@@ -1,4 +1,3 @@
-import { SequencerLoader } from '../SequencerLoader';
 import PlayEveryX from './PlayEveryX';
 
 import { ITriggerParameters } from "../SequencerLoader/TriggerWhen";
