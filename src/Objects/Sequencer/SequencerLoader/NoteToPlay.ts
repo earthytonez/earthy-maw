@@ -1,10 +1,8 @@
 import NoteIntervalCalculator from "./NoteIntervalCalculator";
-import { debug, info, warn } from '../../../Util/logger';
+import { debug, warn } from '../../../Util/logger';
 
 import { Scale } from '@tonaljs/tonal';
 import { IMusicChord, IMusicKey, IMusicScale } from "Types";
-
-import { BeatMarker } from "../../../stores/MusicFeatures/BeatMarker";
 
 export interface INoteToPlayDefinition {
     note: string
@@ -86,7 +84,7 @@ export default class NoteToPlay {
     }
 
     isRandomNote(noteChooserString: string) {
-        return noteChooserString == "Rand()";
+        return noteChooserString === "Rand()";
     }
 
     randomNoteToMidi() {

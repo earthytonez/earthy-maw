@@ -10,7 +10,7 @@ import IMusicScale from '../Types/IMusicScale'; // Change to Tune.js
 import IMusicKey from '../Types/IMusicKey'; // Change to Tune.js
 
 export default class MusicFeaturesStore {
-  audioContext: AudioContext;
+  audioContext: Tone.BaseContext;
   rootStore: RootStore;
   musicKey: string = "C";
   musicScale: string = "Major";
@@ -116,7 +116,7 @@ export default class MusicFeaturesStore {
     }
   }
 
-  constructor(rootStore: RootStore, audioContext: AudioContext) {
+  constructor(rootStore: RootStore, audioContext: Tone.BaseContext) {
     let musicFeaturesRaw: null | string = localStorage.getItem("musicFeatures");
     if (musicFeaturesRaw) {
       let _musicFeatures = JSON.parse(musicFeaturesRaw);   

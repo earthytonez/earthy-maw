@@ -16,6 +16,7 @@ import MusicFeaturesStore from "../../stores/MusicFeatures.store";
 import { BeatMarker } from "../../stores/MusicFeatures/BeatMarker";
 
 import Synthesizer from "../Synthesizer";
+import { TOML_FILES } from "config/constants";
 
 
 export default class Sequencer extends SequencerType {
@@ -58,7 +59,7 @@ export default class Sequencer extends SequencerType {
   minInterval: number = 0;
   maxInterval: number = 1;
 
-  audioContext: AudioContext;
+  audioContext: Tone.BaseContext;
   musicFeaturesStore: MusicFeaturesStore;
 
   setLoading(loading: boolean) {
@@ -158,7 +159,7 @@ export default class Sequencer extends SequencerType {
       "font-weight:bold"
     );
 
-    this.sequencerLoader = await this.fetchTOML(TOMLFiles[this.type]);
+    this.sequencerLoader = await this.fetchTOML(TOML_FILES[this.type]);
     this.setRunners();
   }
 
@@ -313,11 +314,10 @@ setRunners() {
     };
   }
 
-  droneParams(key: any, chord: any, beatMarker: number, time: any): any {
+  droneParams(key: any, scale: any, chord: any, beatMarker: number, time: any): any {
     info("DRONE_SEQUENCER", "Starting Drone");
-    // this.setAwaitBuffers();
 
-    let playParams = this.playParams(key, chord, beatMarker, time);
+    let playParams = this.playParams(key, scale, chord, beatMarker, time);
     playParams.lengthSeconds = this.droneLength;
     playParams.tailSeconds = this.droneTail;
 
@@ -407,8 +407,8 @@ setRunners() {
     };
   }
 
-  sequencerType(): string {
-    return this.sequencerLoader.type;
+sequencerType(): string {
+    return this.sequencerLoader?.type;
   }
 
   /* This action is triggered externall to possibly play a sequencer */
@@ -416,7 +416,7 @@ setRunners() {
     key: string,
     scale: string,
     chord: string,
-    beatMarker: number,
+    beatMarker: BeatMarker,
     time: any
   ) {
     this.beatsSinceLastNote++;
@@ -433,7 +433,7 @@ setRunners() {
       if (this.sequencerType() === "drone") {
         console.log("sequencerType Drone");
         return this.boundSynthesizer.play(gate, 
-          this.droneParams(key, chord, beatMarker, time)
+          this.droneParams(key, scale, chord, beatMarker, time)
         );
       }
 
@@ -452,7 +452,7 @@ setRunners() {
 
   constructor(
     type: string,
-    audioContext: AudioContext,
+    audioContext: Tone.BaseContext,
     musicFeaturesStore: MusicFeaturesStore,
     octaves: number[]
   ) {

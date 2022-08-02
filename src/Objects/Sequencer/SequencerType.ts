@@ -53,7 +53,7 @@ export default class SequencerType {
       "font-weight:bold"
     );
 
-    if (TOML_FILES[this.type] == undefined) {
+    if (TOML_FILES[this.type] === undefined) {
       throw new Error(`Sequencer Type Not Found: ${this.type}`)
     }
 

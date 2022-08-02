@@ -1,12 +1,15 @@
+import * as Tone from "tone";
+import pMap from "p-map";
 import { makeObservable, action, observable, autorun } from "mobx";
+
 import Track from "../Objects/Track";
+import { debug, info } from '../Util/logger';
+
 import RootStore from "./Root.store";
 
-import { debug, info } from '../Util/logger';
-import pMap from "p-map";
 
 export default class TrackStore {
-  audioContext: AudioContext;
+  audioContext: Tone.BaseContext;
   tracks: Track[] = [];
   rootStore: RootStore;
 
@@ -89,7 +92,7 @@ export default class TrackStore {
     this.load(tracks);
   }
 
-  constructor(rootStore: RootStore, audioContext: AudioContext) {
+  constructor(rootStore: RootStore, audioContext: Tone.BaseContext) {
     this.audioContext = audioContext;
     this.rootStore = rootStore;
 

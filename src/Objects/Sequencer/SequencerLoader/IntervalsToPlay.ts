@@ -41,13 +41,13 @@ export default class IntervalToPlay {
         }
     }
 
-    getNumberVariable(name: string, line: string) {
-        return parseInt(line.split("=")[1]);
-    }
+    // getNumberVariable(name: string, line: string) {
+    //     return parseInt(line.split("=")[1]);
+    // }
 
-    getStringVariable(name: string, line: string) {
-        return line.split("=")[1].trim().replace("\"", "").replace("\"", "");
-    }
+    // getStringVariable(name: string, line: string) {
+    //     return line.split("=")[1].trim().replace("\"", "").replace("\"", "");
+    // }
 
     parse(line: any) {
         if (!line) {

@@ -1,34 +1,28 @@
+import * as Tone from "tone";
+
 import Synthesizer from "../Synthesizer";
 
+import SequencerGate from '../../../Objects/Sequencer/SequencerRunner/SequencerGate';
 import IPlayParams from "../../../Types/IPlayParams";
-import ISynthParams from "../../../Types/ISynthParams";
-import { Volume } from "tone";
-
 import { debug } from '../../../Util/logger';
-
-import * as Tone from "tone";
 
 export default class Kick extends Synthesizer {
   name: string = "Kick";
   slug: string = "kick";
   synth: any;
 
-  editParameters(): ISynthParams {
-
-  }
-
-  attachVolume(vol: Volume) {
+  attachVolume(vol: Tone.Volume) {
     if (vol) {
       this.synth.connect(vol);
     }
   }
 
-  play(params: IPlayParams) {
+  play(_gate: SequencerGate, params: IPlayParams) {
     this.synth.triggerAttackRelease("C2", "8n", params.time);
     debug("Kick Context: ", this.synth);
   }
 
-  constructor(vol: Volume) {
+  constructor(vol: Tone.Volume) {
     super();
     
     this.synth = new Tone.MembraneSynth();

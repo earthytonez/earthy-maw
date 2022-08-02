@@ -6,6 +6,7 @@ import Sequencer from "./Sequencer";
 import Synthesizer from "./Synthesizer";
 import { getSynthesizer } from "./Synthesizer/SynthesizerFactory";
 
+import { BeatMarker } from "../stores/MusicFeatures/BeatMarker";
 import MusicFeaturesStore from "../stores/MusicFeatures.store";
 import TrackStore from "../stores/Track.store";
 
@@ -105,7 +106,7 @@ export default class Track {
     return this.vol.volume.value;
   }
 
-  async tick(beatMarker, time) {
+  async tick(beatMarker: BeatMarker, time: number) {
     if (!this.sequencer) return;
     if (!this.musicFeaturesStore) {
       return error("Track", "this.musicFeaturesStore is not set");
@@ -132,7 +133,7 @@ export default class Track {
   sequencerFromSlug(sequencerSlug: string) {
     return new Sequencer(
       sequencerSlug,
-      this.audioContext,
+      this.audioContext(),
       this.musicFeaturesStore,
       this.octaves
     );
@@ -159,7 +160,7 @@ export default class Track {
   async assignMachine(machineType: string, machineSlug: any) {
     let machine = this.newMachine(machineType, machineSlug);
 
-    this[machineType] = machine;
+    this[machineType as keyof this] = machine;
 
     if (this.sequencer && this.synthesizer) {
       this.sequencer.bindSynth(this.synthesizer);
@@ -255,7 +256,7 @@ export default class Track {
 
   constructor(
     id: number,
-    audioContext: AudioContext,
+    audioContext: Tone.BaseContext,
     musicFeaturesStore: MusicFeaturesStore,
     trackStore: TrackStore
   ) {

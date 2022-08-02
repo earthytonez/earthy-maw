@@ -79,7 +79,7 @@ export default class Waveform extends Synthesizer {
     }
   }
 
-  constructor(_vol: typeof Tone.Volume, audioContext: AudioContext) {
+  constructor(_vol: typeof Tone.Volume, audioContext: Tone.BaseContext) {
     super();
     Tone.setContext(audioContext);
     this.synth = new Tone.PolySynth(Tone.FMSynth);

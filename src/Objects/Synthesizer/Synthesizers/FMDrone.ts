@@ -1,13 +1,11 @@
+import * as Tone from "tone";
 import Synthesizer from "../Synthesizer";
 
-import * as Tone from "tone";
-import IPlayParams from "src/Types/IPlayParams";
-import { Frequency } from "tone/build/esm/core/type/Units";
-
+import SequencerGate from "../../Sequencer/SequencerRunner/SequencerGate";
+import IPlayParams from "../../../Types/IPlayParams";
 import { debug } from "../../../Util/logger";
-import SequencerGate from "src/Objects/Sequencer/SequencerRunner/ISequencerGate";
 
-import { action, makeObservable } from 'mobx';
+import { action, makeObservable } from "mobx";
 
 type OscillatorType = "sine" | "square" | "triangle" | "sawtooth";
 const OSCILLATOR_TYPES: OscillatorType[] = [
@@ -28,7 +26,7 @@ export default class FMDrone extends Synthesizer {
   oscillatorType: OscillatorType = "sine";
 
   changeParameter(parameter: string, value: any) {
-    this[parameter] = value;
+    this[parameter as keyof this] = value;
   }
 
   get editParameters() {
@@ -39,7 +37,7 @@ export default class FMDrone extends Synthesizer {
         fieldType: "radio",
         fieldOptions: {
           options: OSCILLATOR_TYPES,
-          current: this.oscillatorType
+          current: this.oscillatorType,
         },
       },
     ];
@@ -49,7 +47,7 @@ export default class FMDrone extends Synthesizer {
     if (vol) {
       try {
         this.synth.connect(vol);
-      } catch (err) {
+      } catch (err: any) {
         debug("FMDRONE", err);
         debug("FMDRONE", err.message);
         debug("FMDRONE", JSON.stringify(err));
@@ -57,10 +55,11 @@ export default class FMDrone extends Synthesizer {
     }
   }
 
-  constructor(vol, audioContext) {
+  constructor(vol: Tone.Volume, audioContext: Tone.BaseContext) {
     super();
     Tone.setContext(audioContext);
     this.synth = new Tone.PolySynth(Tone.FMSynth);
+    this.synth.connect(vol);
 
     this.toneContext = this.synth.context;
     this.reverb = new Tone.Reverb({
@@ -77,7 +76,7 @@ export default class FMDrone extends Synthesizer {
       depth: 0.7,
       wet: 0.85,
     });
-    
+
     let delay = new Tone.FeedbackDelay({
       context: this.toneContext,
       delayTime: 3 / 16, // lenghtSeconds / 16;
@@ -92,11 +91,11 @@ export default class FMDrone extends Synthesizer {
     );
 
     makeObservable(this, {
-      changeParameter: action.bound
-    })
+      changeParameter: action.bound,
+    });
   }
 
-  play(gate: SequencerGate, params: IPlayParams) {
+  play(_gate: SequencerGate, params: IPlayParams) {
     let { lengthSeconds, tailSeconds, notes } = params;
 
     // if (lengthSeconds == undefined) { lengthSeconds = 3};
@@ -114,8 +113,8 @@ export default class FMDrone extends Synthesizer {
     }
 
     this.synth.set({
-      harmonicity: 0.5,
-      modulationIndex: 1,
+      // harmonicity: 0.5,
+      // modulationIndex: 1,
       oscillator: {
         type: this.oscillatorType,
       },
@@ -126,13 +125,13 @@ export default class FMDrone extends Synthesizer {
         attackCurve: "linear",
         releaseCurve: "linear",
       },
-      modulation: { type: "sine" },
-      modulationEnvelope: {
-        attack: lengthSeconds! * 2,
-        sustain: 1,
-        release: tailSeconds,
-        releaseCurve: "linear",
-      },
+      // modulation: { type: "sine" },
+      // modulationEnvelope: {
+      //   attack: lengthSeconds! * 2,
+      //   sustain: 1,
+      //   release: tailSeconds,
+      //   releaseCurve: "linear",
+      // },
       volume: 0,
     });
 
@@ -141,9 +140,16 @@ export default class FMDrone extends Synthesizer {
       `Starting FMDrone Play Trigger Attack Release of ${notes} with lengthSeconds ${lengthSeconds}`
     );
 
-      console.log(notes);
+    console.log(notes);
 
-    this.synth.triggerAttackRelease(notes as Frequency[], Tone.Time(lengthSeconds).toNotation());
+    if (!notes) {
+      throw new Error("No Notes");
+    }
+
+    this.synth.triggerAttackRelease(
+      notes.map((note: any) => note.toFrequency()),
+      Tone.Time(lengthSeconds).toNotation()
+    );
   }
 
   // play(params: IPlayParams) {

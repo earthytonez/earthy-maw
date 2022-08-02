@@ -3,16 +3,16 @@ interface IStringAnyHashMap {
 } 
 
 export const TOML_FILES: IStringAnyHashMap = {
-    "OneTwo": require("./Definitions/OneTwo"),
-    "OneFour": require("./Definitions/OneFour"),
-    "TwoFour": require("./Definitions/TwoFour"),
-    "SimpleArpeggiator": require("./Definitions/SimpleArpeggiator"),
-    "ThreeFour": require("./Definitions/ThreeFour"),
-    "FourOTFloor": require("./Definitions/FourOTFloor"),
-    "OffBeatFour": require("./Definitions/OffBeatFour"),
-    "HiHat": require("./Definitions/HiHat"),
-    "HouseHiHat": require("./Definitions/HouseHiHat"),
-    "SimpleDrone": require("./Definitions/SimpleDrone"),
-    "Random": require("./Definitions/Random")
+    "OneTwo": require("../../Objects/Sequencer/Definitions/OneTwo"),
+    "OneFour": require("../../Objects/Sequencer/Definitions/OneFour"),
+    "TwoFour": require("../../Objects/Sequencer/Definitions/TwoFour"),
+    "SimpleArpeggiator": require("../../Objects/Sequencer/Definitions/SimpleArpeggiator"),
+    "ThreeFour": require("../../Objects/Sequencer/Definitions/ThreeFour"),
+    "FourOTFloor": require("../../Objects/Sequencer/Definitions/FourOTFloor"),
+    "OffBeatFour": require("../../Objects/Sequencer/Definitions/OffBeatFour"),
+    "HiHat": require("../../Objects/Sequencer/Definitions/HiHat"),
+    "HouseHiHat": require("../../Objects/Sequencer/Definitions/HouseHiHat"),
+    "SimpleDrone": require("../../Objects/Sequencer/Definitions/SimpleDrone"),
+    "Random": require("../../Objects/Sequencer/Definitions/Random")
 }
   

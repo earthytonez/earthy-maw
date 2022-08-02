@@ -1,20 +1,20 @@
-import Synthesizer from "../Synthesizer.ts";
+import Synthesizer from "../Synthesizer";
 
-import IPlayParams from "../../Types/IPlayParams";
+import IPlayParams from "../../../Types/IPlayParams";
+import SequencerGate from '../../../Objects/Sequencer/SequencerRunner/SequencerGate';
 
 import * as Tone from "tone";
 
 export default class HiHat extends Synthesizer {
   name: string = "Hi Hat";
   slug: string = "hihat";
-  hiHat: Tone.MetalSynth;
-  filter: Tone.Filter;
+  // filter: Tone.Filter;
   player: any;
-  editParameters(): ISynthParams {
+  // editParameters(): ISynthParams {
 
-  }
+  // }
 
-  play(params: IPlayParams) {
+  play(_gate: SequencerGate, params: IPlayParams) {
     this.player.start(params.time);
 
     // this.hiHat.harmonicity = 3;
@@ -44,10 +44,10 @@ export default class HiHat extends Synthesizer {
   constructor(vol: Tone.Volume) {
     super();
     this.player = new Tone.Player("/samples/909/chh/HHCD0.WAV")
-    // this.hiHat = new Tone.MetalSynth();
-    // this.filter = new Tone.Filter(10000, "highpass");
-    // this.hiHat.connect(this.filter);
 
     this.attachVolume(vol);
   }
 }
+
+
+// Remember that before, this.hiHat was a new Tone.MetalSynth();

@@ -1,11 +1,10 @@
+import * as Tone from "tone";
+
 import Synthesizer from "../Synthesizer";
-
 import IPlayParams from "../../../Types/IPlayParams";
-import { Volume } from "tone";
-
 import { debug } from '../../../Util/logger';
 
-import * as Tone from "tone";
+
 
 export default class Bass extends Synthesizer {
   name: string = "Bass";
@@ -13,11 +12,7 @@ export default class Bass extends Synthesizer {
   synth: any;
   filter: any;
 
-  editParameters(): ISynthParams {
-
-  }
-
-  attachVolume(vol: Volume) {
+  attachVolume(vol: Tone.Volume) {
     if (vol) {
       this.filter.connect(vol);
     }
@@ -28,7 +23,7 @@ export default class Bass extends Synthesizer {
     debug("Bass Context: ", this.synth);
   }
 
-  constructor(vol: Volume) {
+  constructor(vol: Tone.Volume) {
     super();
     this.synth = new Tone.Synth({
       envelope: {

@@ -1,10 +1,11 @@
 import * as Tone from "tone";
-
-import Synthesizer from "../Synthesizer.ts";
-
-import IPlayParams from "../../Types/IPlayParams";
-
 import { Frequency } from "tone/build/esm/core/type/Units";
+
+import Synthesizer from "../Synthesizer";
+
+import SequencerGate from "../../../Objects/Sequencer/SequencerRunner/SequencerGate";
+import IPlayParams from "../../../Types/IPlayParams";
+
 
 export default class FMBells extends Synthesizer {
   name: string = "FM Bells";
@@ -46,15 +47,15 @@ export default class FMBells extends Synthesizer {
     );
   }
 
-  play(params: IPlayParams) {
+  play(_gate: SequencerGate, params: IPlayParams) {
     // fmDrone(notes, lengthSeconds, tailSeconds);
     const { lengthSeconds, tailSeconds, notes } = params;
 
     // this.delay.delayTime = lengthSeconds! / 8;
     this.reverb.decay = lengthSeconds! / 4;
     this.synth.set({
-      harmonicity: 1.4,
-      modulationIndex: 1,
+      // harmonicity: 1.4,
+      // modulationIndex: 1,
       oscillator: {
         type: "sine",
       },
@@ -64,15 +65,20 @@ export default class FMBells extends Synthesizer {
         sustain: 0.6,
         release: tailSeconds! - 1,
       },
-      modulation: { type: "triangle" },
-      modulationEnvelope: {
-        attack: 0.01,
-        decay: 0.3,
-        sustain: 0.6,
-        release: tailSeconds,
-      },
+      // modulation: { type: "triangle" },
+      // modulationEnvelope: {
+      //   attack: 0.01,
+      //   decay: 0.3,
+      //   sustain: 0.6,
+      //   release: tailSeconds,
+      // },
       volume: 0,
     });
-    this.synth.triggerAttackRelease(notes as Frequency[], lengthSeconds!);
+    
+    if (!notes) {
+      throw new Error("No Notes");
+    }
+
+    this.synth.triggerAttackRelease(notes.map((note: any) => note.toFrequency()), lengthSeconds!);
   }
 }

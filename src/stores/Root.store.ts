@@ -16,13 +16,13 @@ export default class RootStore {
     this.audioContext = new AudioContext();
     Tone.setContext(this.audioContext);
 
-    this.musicFeaturesStore = new MusicFeaturesStore(this, this.audioContext);
-    this.trackStore = new TrackStore(this, this.audioContext);
+    this.musicFeaturesStore = new MusicFeaturesStore(this, Tone.getContext());
+    this.trackStore = new TrackStore(this, Tone.getContext());
 
     this.startAudio();
   }
 
-  repeatLoop(time: any) {
+  repeatLoop(time: number) {
     this.musicFeaturesStore.changeFeatures();
     const tracks = this.trackStore.tracks;
 
