@@ -1,14 +1,73 @@
-import { makeObservable, action, observable } from 'mobx';
+import { makeObservable, action, observable } from "mobx";
 
-type MachineType = 'sequencer' | 'modulator' | 'synthesizer' | 'arranger' | undefined
+type MachineType =
+  | "sequencer"
+  | "modulator"
+  | "synthesizer"
+  | "arranger"
+  | undefined;
 
 export default class UIStateStore {
-    objectEditIsOpen: boolean = false;
-    objectEditing: string | undefined = '';
-    objectEditType: 'sequencer' | 'modulator' | 'synthesizer' | 'arranger' | "musicFeature" | undefined;
-    objectEditTrack: number | "musicFeature" |  undefined;
+  objectEditIsOpen: boolean = false;
+  objectEditing: string | undefined = "";
+  objectEditType:
+    | "sequencer"
+    | "modulator"
+    | "synthesizer"
+    | "arranger"
+    | "musicFeature"
+    | undefined;
+  objectEditTrack: number | "musicFeature" | undefined;
 
-  toggleObjectEdit(open: boolean, machineTrack?: number | "musicFeature", machineType?: MachineType | "musicFeature", machineSlug?: string) {
+  machineBrowserOpen: boolean = false;
+  machinesBrowsing:
+    | "sequencer"
+    | "modulator"
+    | "synthesizer"
+    | "arranger"
+    | "musicFeature"
+    | undefined = undefined;
+
+  closeMachineBrowser() {
+    this.machineBrowserOpen = false;
+    this.machinesBrowsing = undefined;
+  }
+
+  setMachinesBrowsing(
+    machineType:
+      | "sequencer"
+      | "modulator"
+      | "synthesizer"
+      | "arranger"
+      | "musicFeature"
+      | undefined
+  ) {
+    this.machinesBrowsing = machineType;
+  }
+
+  browseMachines(
+    machineType:
+      | "sequencer"
+      | "modulator"
+      | "synthesizer"
+      | "arranger"
+      | "musicFeature"
+      | undefined,
+    machineBrowserOpen?: boolean
+  ) {
+    this.machineBrowserOpen = true;
+    if (machineBrowserOpen == false) {
+      this.machineBrowserOpen = false;
+    }
+    this.machinesBrowsing = machineType;
+  }
+
+  toggleObjectEdit(
+    open: boolean,
+    machineTrack?: number | "musicFeature",
+    machineType?: MachineType | "musicFeature",
+    machineSlug?: string
+  ) {
     if (!open) {
       this.objectEditIsOpen = false;
       return;
@@ -19,13 +78,16 @@ export default class UIStateStore {
     this.objectEditType = machineType;
 
     this.objectEditIsOpen = !this.objectEditIsOpen;
-    console.log(`Edit Panel for ${this.objectEditing} ${this.objectEditType} is ${this.objectEditIsOpen}`);
   }
-    
+
   constructor() {
     makeObservable(this, {
       objectEditIsOpen: observable,
       objectEditing: observable,
+      machineBrowserOpen: observable,
+      machinesBrowsing: observable,
+      browseMachines: action.bound,
+      closeMachineBrowser: action.bound,
       toggleObjectEdit: action.bound,
     });
   }

@@ -166,54 +166,81 @@ export default class Track {
     if (this.synthesizer !== undefined) this.synthesizer.setLoading(loading);
   }
 
+  async loadTrackFeatures(trackData: any) {
+    if (trackData.trackFeatures) {
+      if (trackData.trackFeatures.volume) {
+        if (trackData.trackFeatures.volume?.vol?.volume?.value) { // trackData.trackFeatures.volume && trackData.trackFeatures.volume.vol && 
+          this.trackFeatures.volume.setVolume(trackData.trackFeatures.volume.vol.volume.value);
+        }
+        this.trackFeatures.volume.muted = !!trackData.trackFeatures.volume.muted;
+      }
+      if (trackData.trackFeatures.octaves) {
+        this.trackFeatures.octaves = trackData.trackFeatures.octaves;
+      }
+    }
+  }
+
+  async loadTrackArranger(trackData: any) {
+    if (trackData.arranger) {
+      this.arranger = new Arranger(trackData.arranger, Tone.getContext());
+    }
+  }
+
+  async loadTrackSequencer(trackData: any) {
+    if (trackData.sequencer?.type) {
+      debug("TRACK", `Sequencer Type: ${trackData.sequencer.type}`);
+      this.sequencer = new Sequencer(
+        trackData.sequencer.type,
+        Tone.getContext(),
+        this.musicFeaturesStore,
+        this.octaves
+      );
+      await this.sequencer.load();
+      debug("TRACK", "LOADED SEQUENCER", this.sequencer);
+    }
+  }
+
+  async loadTrackSynthesizer(trackData: any) {
+    if (trackData.synthesizer?.slug) {
+      this.synthesizer = getSynthesizer(
+        trackData.synthesizer.slug,
+        this.trackFeatures.volume.vol,
+        Tone.getContext()
+      );
+      if (this.sequencer && this.synthesizer) {
+        this.sequencer.bindSynth(this.synthesizer);
+        debug("TRACK_LOADED_SEQUENCER", this.sequencer.toJSON());
+        this.synthesizer.attachVolume(this.trackFeatures.volume.vol);
+      }
+    }
+
+  }
+
   async load(trackData: any) {
     try {
-      debug("TRACK", `Loading track from trackdata`, trackData);
-
-      /* Load Track Features */
-      if (trackData.trackFeatures) {
-        if (trackData.trackFeatures.volume) {
-          if (trackData.trackFeatures.volume && trackData.trackFeatures.volume.vol.volume.value) {
-            this.trackFeatures.volume.setVolume(trackData.trackFeatures.volume.vol.volume.value);
-          }
-          this.trackFeatures.volume.muted = !!trackData.trackFeatures.volume.muted;
-        }
-        if (trackData.trackFeatures.octaves) {
-          this.trackFeatures.octaves = trackData.trackFeatures.octaves;
-        }
-      }
-      console.log(this.trackFeatures);
-
-      if (trackData.arranger) {
-        this.arranger = new Arranger(trackData.arranger, Tone.getContext());
-      }
-      if (trackData.sequencer && trackData.sequencer.type) {
-        debug("TRACK", `Sequencer Type: ${trackData.sequencer.type}`);
-        this.sequencer = new Sequencer(
-          trackData.sequencer.type,
-          Tone.getContext(),
-          this.musicFeaturesStore,
-          this.octaves
-        );
-        await this.sequencer.load();
-        debug("TRACK", "LOADED SEQUENCER", this.sequencer);
-      }
-      if (trackData.synthesizer && trackData.synthesizer.slug) {
-        this.synthesizer = getSynthesizer(
-          trackData.synthesizer.slug,
-          this.trackFeatures.volume.vol,
-          Tone.getContext()
-        );
-        if (this.sequencer && this.synthesizer) {
-          this.sequencer.bindSynth(this.synthesizer);
-          debug("TRACK_LOADED_SEQUENCER", this.sequencer.toJSON());
-          this.synthesizer.attachVolume(this.trackFeatures.volume.vol);
-        }
-      }
-      this.setLoading(false);
-    } catch (err: any) {
-      error("TRACK_LOAD_ERROR", err);
+      await this.loadTrackFeatures(trackData);
+    } catch(err: any) {
+      error("TRACK_LOAD_FEATURES_ERROR", err);
     }
+    try {
+      await this.loadTrackArranger(trackData);
+    } catch(err: any) {
+      error("TRACK_LOAD_FEATURES_ERROR", err);
+    }
+    try {
+      await this.loadTrackSequencer(trackData);
+    } catch(err: any) {
+      error("TRACK_LOAD_FEATURES_ERROR", err);
+    }
+    try {
+      await this.loadTrackSynthesizer(trackData);
+    } catch(err: any) {
+      error("TRACK_LOAD_FEATURES_ERROR", err);
+    }
+
+    debug("TRACK_LOADER", `Loading track from trackdata`, trackData);
+
+    this.setLoading(false);
   }
 
   constructor(

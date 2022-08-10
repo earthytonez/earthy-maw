@@ -11,6 +11,26 @@ Sources/Docs:
 MMF (Minimum Marketable Features)
 Tech Debt: 1. Save more things (like Octaves)
 
+1. Youtube Video #1 -- The three/four.
+    1. Work out UI Quirks
+        1. ~~Add Track Button~~
+        2. ~~Center Synthesizer/Sequencer/Track~~
+        3. ERROR Error caught during track loop Error: parameters for random sequencer must be defined
+        4. Warning: Failed prop type: The prop `xs` of `Grid` can only be used together with the `item` prop
+        3. The Three/Four doesn't Run
+        3. Left Bar prettier
+        4. Chord doesn't show up in list.
+        5. Key/Scale/Chord show yellow when pending change
+        6. Key/scale/chord dropdowns more minimalist
+        7. Synthesizer/Sequencer Tabs don't work.
+        8. "Loading" after pulling in Sequencer.
+        9. Limit to one Sequencer and one Synthesizer (Waveform and 3/4).
+        10. Mute Button Doesn't Work
+2. Youtube Video #2 -- Basic House Track
+    1. 
+
+
+
 1. Random/Chaos Arpeggiator/bleeps and bloops
     1. Simple Waveform Synth with Changes.
     2. Continue tweak TrackComponent 
@@ -24,7 +44,10 @@ Tech Debt: 1. Save more things (like Octaves)
     Refactor Function Parameters to Types
     A Trigger should be a type that includes Gate.
 
-
+2. Make Synthesizers, Sequencers and Arrangers Browseable and Searchable.
+    1. Make the bar on the left.
+    2. Make bar opennable from unplaced Machines.
+    
 2. Basic House Track -- Kick, Hi Hat, Bass
     2. Finish Kick with fill.
     3. Finish Hi Hat with adjustements

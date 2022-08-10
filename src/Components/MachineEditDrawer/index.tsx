@@ -4,179 +4,21 @@ import { observer } from "mobx-react-lite";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Drawer from "@mui/material/Drawer";
-import Typography from "@mui/material/Typography";
-
-import FormControlLabel from "@mui/material/FormControlLabel";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import Slider from "@mui/material/Slider";
-import RadioGroup from "@mui/material/RadioGroup";
-import Radio from "@mui/material/Radio";
 
 import CloseIcon from "@mui/icons-material/Close";
 
-import ArraySelectorComponent from "./ArraySelectorComponent";
+import LoadParameter from "./LoadParameter"
+
 
 import { useStore } from "../../stores/useStore";
 import { useUIStore } from "../../stores/UI/useUIStore";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
-const MachineEditDrawerRadioGroup = observer(
-  ({
-    edit,
-    name,
-    field,
-    fieldOptions,
-  }: {
-    edit: Function;
-    name: string;
-    field: string;
-    fieldOptions: any;
-  }): React.ReactElement => {
-    if (!fieldOptions) {
-      return <Box sx={{ mt: 2 }}></Box>;
-    }
-
-    const { options, current } = fieldOptions;
-    return (
-      <Box sx={{ mt: 2 }}>
-        <Typography>{name}</Typography>
-        <RadioGroup
-          name={field}
-          defaultValue={current}
-          onChange={(event) => {
-            console.log((event.target as HTMLInputElement).value);
-            edit(field, (event.target as HTMLInputElement).value);
-          }}
-        >
-          {options.map((option: any, i: number) => {
-            return (
-              <FormControlLabel
-                key={i}
-                value={option}
-                control={<Radio />}
-                label={option}
-              />
-            );
-          })}
-        </RadioGroup>
-      </Box>
-    );
-  }
-);
-
-const MachineEditDrawerDial = observer(
-  ({
-    edit,
-    name,
-    field,
-    fieldOptions,
-  }: {
-    edit: Function;
-    name: string;
-    field: string;
-    fieldOptions: any;
-  }): React.ReactElement => {
-    if (!fieldOptions) {
-      return <Box sx={{ mt: 2 }}></Box>;
-    }
-
-    console.log(edit);
-
-    return (
-      <Box sx={{ mt: 2 }}>
-        <Typography>{name}</Typography>
-        <div id={`dial-${field}`} />
-      </Box>
-    );
-  }
-);
-
-const LoadParameter = observer(
-  ({
-    edit,
-    name,
-    field,
-    fieldType,
-    fieldOptions,
-    increment,
-    decrement,
-  }: {
-    edit: Function;
-    increment: Function;
-    decrement: Function;
-    name: string;
-    field: string;
-    fieldType: string;
-    fieldOptions: any;
-  }) => {
-    switch (fieldType) {
-      case "radio":
-        return (
-          <MachineEditDrawerRadioGroup
-            name={name}
-            field={field}
-            fieldOptions={fieldOptions}
-            edit={edit}
-          ></MachineEditDrawerRadioGroup>
-        );
-      case "dial":
-        return (
-          <MachineEditDrawerDial
-            name={name}
-            field={field}
-            fieldOptions={fieldOptions}
-            edit={edit}
-          ></MachineEditDrawerDial>
-        );
-      case "slider":
-        return (
-          <Box>
-            <Typography id="track-false-slider" gutterBottom>
-              {name}
-            </Typography>
-            <Slider
-              aria-label={name}
-              defaultValue={fieldOptions.current}
-              getAriaValueText={() => fieldOptions.current}
-              step={1}
-              marks
-              onChange={(mouseEvent: any) =>
-                edit(field, mouseEvent.target.value)
-              }
-              min={fieldOptions.min}
-              max={fieldOptions.max}
-              valueLabelDisplay="auto"
-            />
-          </Box>
-        );
-      case "arraySelector":
-        return (
-          <Box>
-            <Typography id="track-false-slider" gutterBottom>
-              {name}
-            </Typography>
-
-            <ArraySelectorComponent
-              aria-label={name}
-              selectableValues={fieldOptions.options}
-              currentValue={fieldOptions.current}
-              setValue={(value: any) => edit(field, value)}
-              incrementValue={() => increment(field)}
-              decrementValue={() => decrement(field)}
-            />
-          </Box>
-        );
-
-      default:
-        return <Box></Box>;
-    }
-  }
-);
-
-const MachineEditDrawer = observer(() => {
-  const store = useStore();
+const MachineEditDrawer = observer((): React.ReactElement => {
+  const store   = useStore();
   const uiStore = useUIStore();
 
   const {
@@ -193,7 +35,11 @@ const MachineEditDrawer = observer(() => {
   let incrementParameter: Function;
   let decrementParameter: Function;
 
-  if (objectEditTrack && objectEditType && objectEditIsOpen) {
+  console.log(objectEditTrack)
+  console.log(objectEditType)
+  console.log(objectEditIsOpen)
+  if (objectEditTrack !== undefined && objectEditType && objectEditIsOpen) {
+    console.log(typeof objectEditTrack);
     if (typeof objectEditTrack == "number") {
       let trackMachine;
       switch (objectEditType) {
@@ -208,6 +54,8 @@ const MachineEditDrawer = observer(() => {
           break;
       }
 
+      console.log(trackMachine);
+
       if (trackMachine) {
         editParameters = trackMachine.editParameters;
         editParameter = trackMachine.changeParameter;
@@ -216,7 +64,7 @@ const MachineEditDrawer = observer(() => {
       }
     }
   }
-
+  console.log(editParameters);
   if (!editParameters) {
     return (
       <Drawer anchor={anchor} open={uiStore.objectEditIsOpen} sx={{ p: 4 }}>
@@ -228,8 +76,6 @@ const MachineEditDrawer = observer(() => {
       </Drawer>
     );
   }
-
-  console.log(editParameters);
 
   return (
     <Drawer anchor={anchor} open={uiStore.objectEditIsOpen}>

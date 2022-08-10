@@ -55,10 +55,10 @@ export default class Sequencer extends SequencerType {
   /*
    * These variables are for random step sequencers.
    */
-  minGate: number = 0;
-  maxGate: number = 1;
-  minInterval: number = 0;
-  maxInterval: number = 1;
+  minGate: number = .1;
+  maxGate: number = 10;
+  minInterval: number = 5;
+  maxInterval: number = 10;
 
   audioContext: Tone.BaseContext;
   musicFeaturesStore: MusicFeaturesStore;
@@ -119,7 +119,11 @@ export default class Sequencer extends SequencerType {
     this[parameter as keyof this] = value;
   }
 
-  get editParameters(): ISequencerParameters {
+  get editParameters(): ISequencerParameters[] {
+    console.log("=================================");
+    console.log(this.sequencerLoader);
+    console.log(this.sequencerLoader?.sequencerHolder);
+    console.log(this.sequencerLoader?.sequencerHolder.type);
     if (this.sequencerLoader?.sequencerHolder.type === "randomStep") {
       return [
         {
@@ -127,8 +131,9 @@ export default class Sequencer extends SequencerType {
           field: "minGate",
           fieldType: "slider",
           fieldOptions: {
-            min: 0,
-            max: 10,
+            min: .1,
+            max: 20,
+            step: .1,
             current: this.minGate,
           },
         },
@@ -137,8 +142,9 @@ export default class Sequencer extends SequencerType {
           field: "maxGate",
           fieldType: "slider",
           fieldOptions: {
-            min: 0,
-            max: 100,
+            min: .1,
+            max: 20,
+            step: .1,
             current: this.maxGate,
           },
         },
@@ -148,7 +154,7 @@ export default class Sequencer extends SequencerType {
           fieldType: "slider",
           fieldOptions: {
             min: 0,
-            max: 1,
+            max: 100,
             current: this.minInterval,
           },
         },
@@ -158,7 +164,7 @@ export default class Sequencer extends SequencerType {
           fieldType: "slider",
           fieldOptions: {
             min: 0,
-            max: 10,
+            max: 100,
             current: this.maxInterval,
           },
         },

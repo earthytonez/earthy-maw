@@ -12,4 +12,3 @@ note = "C2"
 
 [TriggerWhen]
 trigger = "every 4 steps"
-

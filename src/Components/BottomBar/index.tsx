@@ -30,8 +30,6 @@ import {
   MUSIC_THEORY_CHORDS,
 } from "../../config/constants";
 
-type Anchor = "top" | "left" | "bottom" | "right";
-
 const flexContainer: CSS.Properties = {
   display: "flex",
   flexDirection: "row",
@@ -45,15 +43,15 @@ interface BottomBarProps {
 
 const BottomBar = observer((props: BottomBarProps) => {
   const store = useStore();
-
   const uiStore = useUIStore();
+
   const { toggleObjectEdit } = uiStore;
 
   const { musicChord, setChord, musicScale, setScale, musicKey, setKey } =
     store.musicFeaturesStore;
 
   const toggleDrawer =
-    (drawerAnchor: Anchor, open: boolean) =>
+    (open: boolean) =>
     (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
         event.type === "keydown" &&
@@ -63,15 +61,8 @@ const BottomBar = observer((props: BottomBarProps) => {
         return;
       }
 
-      setState({ ...state, [drawerAnchor]: open });
+      uiStore.browseMachines(undefined, open);
     };
-
-  const [state, setState] = React.useState({
-    top: false,
-    left: false,
-    bottom: false,
-    right: false,
-  });
 
   return (
     <React.Fragment>
@@ -80,7 +71,7 @@ const BottomBar = observer((props: BottomBarProps) => {
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={toggleDrawer("bottom", true)}
+            onClick={toggleDrawer(true)}
           >
             <MenuIcon />
           </IconButton>
@@ -173,8 +164,7 @@ const BottomBar = observer((props: BottomBarProps) => {
         <div></div>
       </AppBar>
       <BottomBarDrawer
-        anchor="bottom"
-        bottom={state.bottom}
+        anchor="left"
         sequencerTypes={props.sequencerTypes}
         synthTypes={props.synthTypes}
         arrangerTypes={props.arrangerTypes}

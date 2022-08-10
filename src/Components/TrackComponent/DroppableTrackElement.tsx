@@ -3,8 +3,6 @@ import React from "react";
 import { observer } from "mobx-react-lite";
 import { Droppable } from "react-beautiful-dnd";
 
-import Button from "@mui/material/Button";
-
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -13,15 +11,15 @@ import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-
-import OpenInBrowserOutlinedIcon from "@mui/icons-material/OpenInBrowserOutlined";
 import LaunchIcon from "@mui/icons-material/Launch";
+
+import MachinePlaceholder from "./MachinePlaceholder";
 
 import { UniqueColors } from "../Decorations";
 import { useUIStore } from "../../stores/UI/useUIStore";
 
 interface DroppableTrackElementProps {
-  title: string;
+  title: "Synthesizer" | "Sequencer" | "Arranger";
   slug:
     | "sequencer"
     | "modulator"
@@ -34,26 +32,35 @@ interface DroppableTrackElementProps {
   machine: any;
 }
 
-const MachinePlaceholder = observer(
-  ({ placeholder }: { placeholder: string }): React.ReactElement => {
-    return (
-      <Box>
-        <Box>{placeholder}</Box>
-        <Box>
-          <Button variant="outlined">
-            <OpenInBrowserOutlinedIcon />
-          </Button>
-        </Box>
-      </Box>
-    );
-  }
-);
-
 interface PresetsProps {}
 
 const Presets = observer((_props: PresetsProps) => {
   return <div></div>;
 });
+
+const LoadingPlaceHolder = observer(
+  ({
+    machine,
+    placeholder,
+    slug,
+  }: {
+    machine: any;
+    placeholder: any;
+    slug: 
+    | "sequencer"
+    | "modulator"
+    | "synthesizer"
+    | "arranger"
+    | "musicFeature"
+    | undefined;
+  }): React.ReactElement => {
+    return machine && machine.loading ? (
+      <Box>"Loading..."</Box>
+    ) : (
+      <MachinePlaceholder placeholder={placeholder} machineType={slug} />
+    );
+  }
+);
 
 const DroppableTrackElement = observer(
   ({
@@ -117,15 +124,13 @@ const DroppableTrackElement = observer(
                         </IconButton>
                       </Grid>
                     </Grid>
-                  ) : machine && machine.loading ? (
-                    "Loading..."
                   ) : (
-                    <MachinePlaceholder
+                    <LoadingPlaceHolder
+                      machine={machine}
                       placeholder={placeholder}
-                      // title={title}
+                      slug={slug}
                     />
                   )}
-
                   {provided.placeholder}
                 </Box>
                 {machine && machine.name !== "" ? (

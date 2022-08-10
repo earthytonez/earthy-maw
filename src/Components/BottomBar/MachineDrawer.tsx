@@ -1,11 +1,10 @@
 import React from "react";
-import Box from "@mui/material/Box";
-
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
+
+import Box from "@mui/material/Box";
+import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
+import { List, ListItemButton, ListItemText } from "@mui/material";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -13,7 +12,7 @@ interface TabPanelProps {
   value: number;
 }
 
-function TabPanel(props: TabPanelProps) {
+const TabPanel = styled((props: TabPanelProps) => {
   const { children, value, index, ...other } = props;
 
   return (
@@ -24,27 +23,10 @@ function TabPanel(props: TabPanelProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && <Box sx={{ p: 0 }}>{children}</Box>}
     </div>
   );
-}
-
-const MachineCard = ({ id, name }: { id: string; name: string }) => {
-  return (
-    <React.Fragment>
-      <CardContent>
-        <Typography
-          key={id}
-          sx={{ fontSize: 14 }}
-          color="text.secondary"
-          gutterBottom
-        >
-          {name}
-        </Typography>
-      </CardContent>
-    </React.Fragment>
-  );
-};
+})``;
 
 interface MachineDrawerProps {
   machines: Array<any>;
@@ -58,29 +40,35 @@ const grid = 8;
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   // some basic styles to make the items look a bit nicer
   userSelect: "none",
-  padding: grid * 2,
+  padding: grid,
   margin: `0 0 ${grid}px 0`,
   width: "100%",
+  borderBottom: '1px solid grey',
   // change background colour if dragging
-  background: isDragging ? "lightgreen" : "grey",
+  background: isDragging ? "lightgreen" : "inherit",
+  '&:hover': {
+    background: "lightgrey !important",
+    margin: `1px 0 ${grid}px 0`,
+  },
 
   // styles we need to apply on draggables
   ...draggableStyle,
 });
 
+// sx={{ padding: 0 }}
 export default function MachineDrawer(
   props: MachineDrawerProps
 ): React.ReactElement {
   return (
-    <TabPanel value={props.value} index={props.index}>
+    <TabPanel value={props.value} index={props.index} sx={{padding: 0, bgcolor: 'background.paper' }} > 
+      <Box><Typography>Drag {props.machines[0].type} to track</Typography></Box>
       <Droppable droppableId={`${props.slug}-drawer`}>
         {(provided, _snapshot) => (
-          <div
+          <List disablePadding
             ref={provided.innerRef}
             // {...provided.draggableProps}
             // {...provided.dragHandleProps}
           >
-            <Stack direction="row" spacing={2}>
               {props.machines.map((machine: any, i: number) => {
                 return (
                   <Draggable
@@ -89,7 +77,7 @@ export default function MachineDrawer(
                     index={machine.id}
                   >
                     {(draggableProvided, _draggableSnapshot) => (
-                      <div
+                      <ListItemButton
                         ref={draggableProvided.innerRef}
                         {...draggableProvided.draggableProps}
                         {...draggableProvided.dragHandleProps}
@@ -98,19 +86,14 @@ export default function MachineDrawer(
                           draggableProvided.draggableProps.style
                         )}
                       >
-                        <Box sx={{ minWidth: 275 }}>
-                          <Card variant="outlined">
-                            <MachineCard id={machine.id} name={machine.name} />
-                          </Card>
-                        </Box>
-                      </div>
+                        <ListItemText key={machine.id} primary={machine.name} />
+                      </ListItemButton>
                     )}
                   </Draggable>
                 );
               })}
-            </Stack>
             {provided.placeholder}
-          </div>
+          </List>
         )}
       </Droppable>
     </TabPanel>

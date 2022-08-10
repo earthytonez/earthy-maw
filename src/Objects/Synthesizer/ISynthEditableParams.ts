@@ -1,7 +1,7 @@
 export default interface ISynthEditableParams {
     name: string;
     field: string;
-    fieldType: string;
+    fieldType: "slider" | "arraySelector" | "radio" | "dial";
     fieldOptions: {
         max?: number;
         min?: number;

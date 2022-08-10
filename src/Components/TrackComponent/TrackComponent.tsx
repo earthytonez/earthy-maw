@@ -20,7 +20,7 @@ const TrackComponent = observer(({ track }: TrackComponentProps): React.ReactEle
       <Grid
         item
         p={0}
-        style={{paddingTop: '8px', height: '7rem', maxHeight: '7rem'}}
+        style={{paddingTop: '6px', paddingBottom: '6px', height: '7rem', maxHeight: '7rem'}}
         sx={{
           margin: 0,
           pt: 0,
@@ -54,7 +54,7 @@ const TrackComponent = observer(({ track }: TrackComponentProps): React.ReactEle
           </Grid> */}
       <Grid
         item
-        style={{paddingTop: '8px', height: '7rem', maxHeight: '7rem'}}
+        style={{paddingTop: '6px', paddingBottom: '6px', height: '7rem', maxHeight: '7rem'}}
         sx={{
           margin: 0,
           pt: 0,
@@ -76,7 +76,7 @@ const TrackComponent = observer(({ track }: TrackComponentProps): React.ReactEle
 
       <Grid
         item
-        style={{paddingTop: '8px', height: '7rem', maxHeight: '7rem'}}
+        style={{paddingTop: '6px', paddingBottom: '6px', height: '7rem', maxHeight: '7rem'}}
         sx={{
           margin: 0,
           pt: 0,

@@ -40,7 +40,7 @@ const VolumeComponent = observer(({ trackVolume }: VolumeComponentProps): React.
   return (
     <Box sx={{ width: "200px" }}>
       <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
-        <Box style={{ border: "1px solid", width: "100%", height: "30px" }}>
+        <Box style={{ border: 0, width: "100%", height: "30px" }}>
           <Slider
             aria-label="Custom marks"
             defaultValue={volume}
@@ -53,11 +53,11 @@ const VolumeComponent = observer(({ trackVolume }: VolumeComponentProps): React.
             // marks={marks}
           />
         </Box>
-        <Box style={{ height: "30px", width: "20px", marginLeft: 0 }}>
+        <Box style={{ height: "30px", width: "20px", marginLeft: 2 }}>
           <Button
             variant={muted ? "contained" : "outlined"}
             size="small"
-            style={{ borderRadius: "0", minWidth: 0, marginLeft: 0 }}
+            style={{ borderRadius: "0", minWidth: 0, marginLeft: 10 }}
             onClick={toggleMute}
           >
             <Typography>M</Typography>

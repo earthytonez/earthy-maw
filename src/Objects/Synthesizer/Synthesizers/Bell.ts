@@ -37,9 +37,9 @@ export default class Bell extends Synthesizer {
     }
   }
 
-  play(_gate: ISequencerGate, params: IPlayParams) {
-    console.log(`Bell is playing note ${params.note}`);
-    this.synth.triggerAttackRelease(params.note, "4n");
+  play(gate: ISequencerGate, params: IPlayParams) {
+    console.log(`Bell is playing note ${params.note} for length ${gate.length}`);
+    this.synth.triggerAttackRelease(params.note, gate.length);
     debug("Bell Context: ", this.synth);
   }
 
@@ -56,7 +56,7 @@ export default class Bell extends Synthesizer {
           modulationEnvelope: {
             attack: 0.002,
             decay: 0.998,
-            sustain: 0,
+            sustain: .2,
             release: 0
           },
           oscillator : {
@@ -65,7 +65,7 @@ export default class Bell extends Synthesizer {
           envelope: {
             attack: 0.002,
             decay: 0.998,
-            sustain: 0,
+            sustain: .2,
             release: 0
           }
         }

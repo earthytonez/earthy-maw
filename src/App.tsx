@@ -110,7 +110,7 @@ const App = observer(() => {
       onDragEnd={onDragEnd}
     >
       <TopBar />
-      <Box sx={{marginTop: '82px'}}>
+      <Box sx={{marginTop: '72px'}}>
         <TrackList/>
       </Box>
       <BottomBar

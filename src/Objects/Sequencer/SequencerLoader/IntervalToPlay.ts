@@ -51,7 +51,7 @@ export default class IntervalToPlay {
         }
         this.intervalType = line.interval_type;
         this.intervalArray = line.interval_array;
-        if (this.intervalType == "arpeggiator") {
+        if (this.intervalType === "arpeggiator") {
             this.intervalArp = line.type_list[0];
         }
         return;
