@@ -5,6 +5,7 @@ import { debug, warn } from '../../../Util/logger';
 
 import { Scale } from '@tonaljs/tonal';
 import { IMusicChord, IMusicKey, IMusicScale } from "Types";
+import IntervalToPlay from "./IntervalToPlay";
 
 export interface INoteToPlayDefinition {
     note: string
@@ -39,7 +40,7 @@ export default class NoteToPlay {
         chord: IMusicChord,
         octaves: number[],
         measureBeat: number,
-        intervalToPlay: any,
+        intervalToPlay: IntervalToPlay,
       ): Tone.FrequencyClass {
         switch(this.noteChooser) {
             case "random":
@@ -53,6 +54,7 @@ export default class NoteToPlay {
         }
     
         let interval = intervalToPlay.get(measureBeat, chord);
+        console.log(`INTERVAL_TO_PLAY: ${interval}`)
         if (!interval) {
           return Tone.Frequency(startNote);
         }

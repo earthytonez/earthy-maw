@@ -35,15 +35,15 @@ const trackNameStyle = {
   marginRight: "var(--CardOverflow-offset)",
   "--variant-borderWidth": "0px",
   color: "var(--joy-palette-primary-softColor)",
-  "background-color": "var(--joy-palette-primary-softBg)",
-  "padding-left": "1.6px",
-  "padding-right": "1.6px",
-  "-webkit-writing-mode": "vertical-rl",
-  "writing-mode": "vertical-rl",
-  "text-align": "center",
-  "font-size": "var(--joy-fontSize-xs2)",
-  "font-weight": "var(--joy-fontWeight-xl2)",
-  "letter-spacing": "1px",
+  paddingLeft: "1.6px",
+  paddingRight: "1.6px",
+  WebkitWritingMode: "vertical-rl",
+  writingMode: "vertical-rl",
+  textAlign: "center",
+  fontSize: "var(--joy-fontSize-xs2)",
+  fontWeight: "var(--joy-fontWeight-xl2)",
+  letterSpacing: "1px",
+  // backgroundColor: "var(--joy-palette-primary-softBg)",
   backgroundColor: "dark-grey",
   textTransform: "uppercase",
 };
@@ -67,7 +67,8 @@ const TrackSettingsComponent = observer(
                 Track {track.id + 1}
               </Typography>
             </Grid>
-            <Grid container xs={11}  sx={{pt: 1}}>
+            <Grid item xs={11}>
+            <Grid container  sx={{pt: 1}}>
             <Grid item xs={11}>
               <VolumeComponent trackVolume={track.trackFeatures.volume} />
             </Grid>
@@ -88,6 +89,7 @@ const TrackSettingsComponent = observer(
                   },
                 ]}
               />
+            </Grid>
             </Grid>
 
             <Grid item xs={11}>

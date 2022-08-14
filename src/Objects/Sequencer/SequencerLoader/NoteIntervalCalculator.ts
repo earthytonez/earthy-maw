@@ -34,7 +34,6 @@ export default class NoteIntervalCalculator {
             return 12 + noteNumber
         }
         return noteNumber;
-        
     }
 
     getNoteNumber(noteOctaveName: string): number {

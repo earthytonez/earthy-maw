@@ -32,6 +32,7 @@ export default class Sequencer extends SequencerType {
    * on the 2 or the three (1-2-4, 1-3-4).
    */
   chosenTriggerParameterSet: number = 0;
+  chosenGateParameterSet: number = 0;
 
   beatsSinceLastNote: number;
 
@@ -120,10 +121,34 @@ export default class Sequencer extends SequencerType {
   }
 
   get editParameters(): ISequencerParameters[] {
-    console.log("=================================");
-    console.log(this.sequencerLoader);
-    console.log(this.sequencerLoader?.sequencerHolder);
-    console.log(this.sequencerLoader?.sequencerHolder.type);
+    if (this.sequencerLoader?.sequencerHolder.type === "step") {
+      return [
+        {
+          name: "Trigger Set",
+          field: "chosenTriggerParameterSet",
+          fieldType: "slider",
+          fieldOptions: {
+            min: 0,
+            max: this.triggerWhen?.parameterSets.length! - 1,
+            step: 1,
+            current: this.chosenGateParameterSet,
+          },
+        },
+        {
+          name: "Gate Set",
+          field: "chosenGateParameterSet",
+          fieldType: "slider",
+          fieldOptions: {
+            min: 0,
+            max: this.gateLengths?.parameterSets.length! - 1,
+            step: 1,
+            current: this.chosenGateParameterSet,
+          },
+        },
+
+      ]
+    }
+
     if (this.sequencerLoader?.sequencerHolder.type === "randomStep") {
       return [
         {
@@ -182,10 +207,13 @@ export default class Sequencer extends SequencerType {
     );
 
     this.sequencerLoader = await this.fetchTOML(TOML_FILES[this.type]);
-    this.setRunners();
+    this.loadRunners();
   }
 
-  setRunners() {
+  /*
+   *
+   */
+  private loadRunners() {
     this.playEveryXRunner = new PlayEveryX(this.sequencerLoader!.rhythm_length);
     this.randomTriggerRunner = new RandomTrigger(
       this.sequencerLoader!.rhythm_length
@@ -261,16 +289,23 @@ export default class Sequencer extends SequencerType {
 
     let parameters =
       this.triggerWhen.parameterSets[this.chosenTriggerParameterSet];
+    if (parameters) {
+      parameters.gateList = this.gateLengths?.parameterSets[this.chosenGateParameterSet]?.gateList;
+    }
 
+    console.log(this.triggerWhen);
+    console.log(parameters);
+    console.log(this.gateLengths)
     if (!parameters) {
-      throw new Error("parameters for random sequencer must be defined");
+      throw new Error(`parameters for random sequencer ${this.chosenTriggerParameterSet} must be defined`);
     }
 
     switch (this.triggerWhen.type) {
       case "random":
         return this.randomTrigger(beatMarker.num, parameters);
       case "everyX":
-        return this.playEveryX(beatMarker.num, parameters);
+        let a = this.playEveryX(beatMarker.num, parameters);
+        return a;
       default:
         return {
           triggered: true,

@@ -1,7 +1,10 @@
 import * as Tone from 'tone';
+import toml from "toml";
+import { makeObservable, action, computed } from "mobx";
 
 import TriggerWhen from "./TriggerWhen";
-import NoteToPlay, { INoteToPlayDefinition } from "./NoteToPlay";
+import GateLengths from "./GateLengths";
+import NoteToPlay from "./NoteToPlay";
 import VolumeToPlay from "./VolumeToPlay";
 import IntervalToPlay from "./IntervalToPlay";
 
@@ -12,12 +15,8 @@ import IMusicScale from "../../../Types/IMusicScale";
 import IMusicKey from "../../../Types/IMusicKey";
 import IToneJSDuration from "../../../Types/IToneJSDuration";
 // import IToneJSNote from "../../../Types/IToneJSNote";
-
-import toml from "toml";
-
-import { makeObservable, action, computed } from "mobx";
-
-type ISequencerType = "drone" | "step" | "randomStep" | "arpeggiator";
+import IParsedSequencerTOML from "./IParsedSequencerTOML";
+import ISequencerType from "./ISequencerType";
 
 interface IIntervalsToPlay {
   interval_length: number
@@ -27,28 +26,18 @@ interface IIntervalsToPlay {
   type_list: string[]
 }
 
-interface IParsedSequencerCodeFormat {
-  name: string;
-  description: string;
-  outputs: number;
-  tags: string[];
-  total_length: number;
-  type: ISequencerType
-  NoteToPlay: INoteToPlayDefinition;
-  TriggerWhen: TriggerWhen;
-  IntervalsToPlay: IntervalToPlay;
-}
 
 class SequencerLoaderHolder {
   name?: string;
   type?: ISequencerType;
   tags?: string[];
   description?: string = "";
+  gateLengths: GateLengths = new GateLengths();
+  intervalToPlay: IntervalToPlay = new IntervalToPlay();
+  intervalsToPlay?: IIntervalsToPlay;
   rhythm_length?: number = undefined;
   total_length?: number = undefined;
   triggerWhen: TriggerWhen = new TriggerWhen();
-  intervalToPlay: IntervalToPlay = new IntervalToPlay();
-  intervalsToPlay?: IIntervalsToPlay;
   noteToPlay: NoteToPlay = new NoteToPlay();
   volumeToPlay: VolumeToPlay = new VolumeToPlay();
 
@@ -134,6 +123,10 @@ export default class SequencerLoader {
     return this.sequencerCode;
   }
 
+  gateLengths(): GateLengths {
+    return this.sequencerHolder.gateLengths;
+  }
+
   triggerWhen(): TriggerWhen {
     return this.sequencerHolder.triggerWhen;
   }
@@ -149,48 +142,29 @@ export default class SequencerLoader {
     return line.split(" ")[1];
   }
 
-  // getVariable(name: string, line: string) {
-  //     return line.split("=")[1].trim().replace(/['"]+/g, '');
-  // }
-
-  // getNumberVariable(name: string, line: string) {
-  //     return parseInt(line.split("=")[1]);
-  // }
-
-  // parseLineForFunction(functionIn: string, line: string) {
-  //     switch(functionIn) {
-  //         case "NoteToPlay":
-  //             this.sequencerHolder.noteNotInterval = true;
-  //             this.sequencerHolder.noteToPlay.parse(line);
-  //             break;
-  //         case "IntervalToPlay":
-  //             this.sequencerHolder.intervalToPlay.parse(line);
-  //             break;
-  //         case "IntervalsToPlay":
-  //             this.sequencerHolder.intervalToPlay.parse(line);
-  //             break;
-  //         case "TriggerWhen":
-  //             this.sequencerHolder.triggerWhen.parse(line);
-  //             break;
-  //         case "TriggerWhenList":
-  //             this.sequencerHolder.triggerWhen.parseList(line);
-  //             break;
-  //             default:
-  //             break;
-  //     }
-  // }
-
   async load() {
     try {
-      var data: IParsedSequencerCodeFormat = toml.parse(this.sequencerCode);
+      var data: IParsedSequencerTOML = toml.parse(this.sequencerCode);
 
       this.sequencerHolder.name = data.name;
       this.sequencerHolder.description = data.description;
       // this.sequencerHolder.outputs = data.outputs;
+      this.sequencerHolder.rhythm_length = data.rhythm_length;
       this.sequencerHolder.total_length = data.total_length;
       this.sequencerHolder.tags = data.tags;
       this.sequencerHolder.type = data.type;
-      this.sequencerHolder.triggerWhen.parse(data.TriggerWhen);
+      if (data.TriggerWhen) {
+        this.sequencerHolder.triggerWhen.parse(data.TriggerWhen);
+      }
+      if (data.TriggerWhenList) {
+        this.sequencerHolder.triggerWhen.parseList(data.TriggerWhenList.list);
+      }
+      if (data.GateLengths) {
+        this.sequencerHolder.gateLengths.parse(data.GateLengths);
+      }
+      if (data.GateLengthsList) {
+        this.sequencerHolder.gateLengths.parseList(data.GateLengthsList.list);
+      }
       this.sequencerHolder.noteToPlay.parse(data.NoteToPlay);
       this.sequencerHolder.intervalToPlay.parse(data.IntervalsToPlay);
     } catch (err) {

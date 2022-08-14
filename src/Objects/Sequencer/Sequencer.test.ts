@@ -10,7 +10,7 @@ test('test Drone Settings', async() => {
     let rootStore = new RootStore();
     let sequencer = new Sequencer("SimpleDrone", Tone.getContext(), rootStore.musicFeaturesStore, octaves);
     sequencer.sequencerLoader = new SequencerLoader("rhythm_length=64");
-    await sequencer.setRunners();
+    await sequencer.load();
     
     let parameters: ITriggerParameters = {
         on: 0,

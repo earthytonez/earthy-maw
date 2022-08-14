@@ -56,7 +56,7 @@ export default class UIStateStore {
     machineBrowserOpen?: boolean
   ) {
     this.machineBrowserOpen = true;
-    if (machineBrowserOpen == false) {
+    if (machineBrowserOpen === false) {
       this.machineBrowserOpen = false;
     }
     this.machinesBrowsing = machineType;
@@ -89,6 +89,7 @@ export default class UIStateStore {
       browseMachines: action.bound,
       closeMachineBrowser: action.bound,
       toggleObjectEdit: action.bound,
+      setMachinesBrowsing: action.bound
     });
   }
 }

@@ -15,19 +15,32 @@ Tech Debt: 1. Save more things (like Octaves)
     1. Work out UI Quirks
         1. ~~Add Track Button~~
         2. ~~Center Synthesizer/Sequencer/Track~~
-        3. ERROR Error caught during track loop Error: parameters for random sequencer must be defined
-        4. Warning: Failed prop type: The prop `xs` of `Grid` can only be used together with the `item` prop
-        3. The Three/Four doesn't Run
-        3. Left Bar prettier
-        4. Chord doesn't show up in list.
-        5. Key/Scale/Chord show yellow when pending change
-        6. Key/scale/chord dropdowns more minimalist
-        7. Synthesizer/Sequencer Tabs don't work.
-        8. "Loading" after pulling in Sequencer.
-        9. Limit to one Sequencer and one Synthesizer (Waveform and 3/4).
-        10. Mute Button Doesn't Work
+        3. ~~ERROR Error caught during track loop Error: parameters for random sequencer must be defined~~
+        4. ~~Warning: Failed prop type: The prop `xs` of `Grid` can only be used together with the `item` prop~~
+        5. ~~The Three/Four doesn't Run~~ 
+        6. ~~Synthesizer/Sequencer Tabs don't work.~~
+        7. ~~Sequencer Tab should be leftmost, than Synthesizer Tab~~
+        8. ~~Code Length of Interval List in~~.
+        8. Code Interval To Play in.
+        9. Octave should have single select and multi select choices.
+        9. The Three Four should use octave.
+        9. Add Cutoff to Waveform
+        9. Left Bar prettier
+        10. Chord doesn't show up in list.
+        11. Key/Scale/Chord show yellow when pending change
+        12. Key/scale/chord dropdowns more minimalist
+        13. "Loading" after pulling in Sequencer.
+        14. Limit to one Sequencer and one Synthesizer (Waveform and 3/4).
+        15. Help on Sequencer tab shows the first synth name not "Synthesizer"
 2. Youtube Video #2 -- Basic House Track
-    1. 
+    1. Four on the Floor
+    2. Bass
+    3. House Hi Hats
+    4. Lead?
+    UI Quirks/Tech Debt:
+        1. Day/Night Mode button should work
+        2. Mute Button Doesn't Work
+    
 
 
 

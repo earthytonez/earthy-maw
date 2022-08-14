@@ -13,8 +13,9 @@ export default class PlayEveryX implements ISequencerRunner {
 
   playEveryXStepInterval(beatMarker: number, parameters: ITriggerParameters): ISequencerGate {
     let stepCount = beatMarker % parameters.stepInterval!;
+
     debug("PLAY_EVERY_X",
-      `Playing steps: ${beatMarker} / ${stepCount} - ${parameters.stepInterval} on ${parameters.on}`
+    `Playing steps: ${beatMarker} / ${stepCount} - ${parameters.stepInterval} on ${parameters.on}`
     );
 
     if (stepCount === parameters.on) {
@@ -30,7 +31,14 @@ export default class PlayEveryX implements ISequencerRunner {
       `Playing from step list steps: ${this.rhythm_length} -- ${beatMarker} / ${stepCount} (${parameters.stepList}`
     );
 
-    return new SequencerGate(parameters?.stepList?.includes(stepCount));
+    let gateToPlay = stepCount % parameters.gateList!.length
+    debug("PLAY_EVERY_X",
+    `Playing from step list steps: ${gateToPlay} --  ${beatMarker} / ${stepCount} - ${parameters.stepInterval} on ${parameters.on}`
+    );
+    console.log(parameters.gateList);
+    console.log(gateToPlay);
+  
+    return new SequencerGate(parameters?.stepList?.includes(stepCount), (parameters.gateList![gateToPlay]! / 10));
   }
 
   run(beatMarker: number, parameters: ITriggerParameters): ISequencerGate {

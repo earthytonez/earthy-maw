@@ -7,7 +7,7 @@ import {
   observable,
 } from "mobx";
 
-import { SequencerLoader, TriggerWhen } from "./SequencerLoader/index";
+import { GateLengths, SequencerLoader, TriggerWhen } from "./SequencerLoader/index";
 
 import { info } from "../../Util/logger";
 
@@ -58,6 +58,10 @@ export default class SequencerType {
     }
 
     this.sequencerLoader = await this.fetchTOML(TOML_FILES[this.type]);
+  }
+
+  get gateLengths(): GateLengths | undefined {
+    return this.sequencerLoader?.gateLengths();
   }
 
   get triggerWhen(): TriggerWhen | undefined {

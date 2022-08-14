@@ -106,7 +106,8 @@ export default class TrackStore {
       tracks: observable,
       checkLocalStorage: action.bound,
       addTrack: action.bound,
-      saveTracks: action.bound
+      saveTracks: action.bound,
+      setTracks: action.bound
     });
   }
 }

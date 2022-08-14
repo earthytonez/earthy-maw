@@ -5,7 +5,7 @@ export interface ITriggerParameters {
   stepInterval?: number;
   on?: number;
   stepList?: number[];
-
+  gateList?: number[];
   // random parameters
   octaves?: number
   minSkip?: number
@@ -23,17 +23,24 @@ export default class TriggerWhen {
   }
 
   /* Adds to parameterSets */
-  parseList(line: string) {
-    let trimmedLine = this.trim(line);
-    if (trimmedLine.startsWith("[") && trimmedLine.endsWith("]")) {
+  parseList(lists: number[][]) {    
+    lists.forEach((list: number[]) => {
       this.parameterSets.push({
         triggerType: "stepList",
-        stepList: JSON.parse(trimmedLine),
+        stepList: list,
       });
-    }
-
+    });
     info("TRIGGER_WHEN", "Parsed List with parameter sets", this.parameterSets);
   }
+
+parseGates(line: any) {
+  console.log(line);
+
+}
+
+parseGatesList() {
+
+}
 
   /* Resets parameterSets */
   parse(line: any) {

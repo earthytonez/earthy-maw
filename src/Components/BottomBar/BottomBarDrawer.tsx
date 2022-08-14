@@ -55,6 +55,7 @@ export default observer((
     defaultIndex = machineIndex[machinesBrowsing as "sequencer" | "modulator" | "synthesizer" | "arranger"];
   }
 
+  // This isn't working
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setMachinesBrowsing(machineNameFromIndex[newValue] as "sequencer" | "modulator" | "synthesizer" | "arranger")
   };
@@ -86,8 +87,8 @@ export default observer((
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="Synthesizers" {...a11yProps(0)} />
           <Tab label="Sequencers" {...a11yProps(1)} />
+          <Tab label="Synthesizers" {...a11yProps(0)} />
           <Tab label="Arrangers" {...a11yProps(2)} />
         </Tabs>
       </Box>
