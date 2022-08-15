@@ -4,11 +4,16 @@ import { debug } from "../../../Util/logger";
  * IntervalToPlay parses an array or a type of an interval to determine what notes to play
  * in a sequence.  You can think of this as a melody, though often it is for something 
  * simpler than a lead melody.
+ * 
+ * There are two main types of intervals, 
+ * 
+ * list: A simple list of intervals, which can have lenghts associated with them so you don't change every beat.
+ * arpeggiator: Take a chord and play it's intervals.
  */
 export default class IntervalToPlay {
     intervalArray: Array<number> = [];
     intervalLength: number = 1;
-    intervalType: string | undefined = undefined;
+    intervalType: "list" | "arpeggiator" | undefined = undefined;
     intervalArp: string = "up";
     intervalList: number[] = [];
 

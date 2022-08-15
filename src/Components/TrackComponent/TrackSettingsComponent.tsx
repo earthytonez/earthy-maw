@@ -94,8 +94,7 @@ const TrackSettingsComponent = observer(
 
             <Grid item xs={11}>
               <OctaveComponent
-                octaves={track.octaves}
-                toggleOctave={track.toggleOctave}
+                trackOctave={track.trackFeatures.octaves}
               ></OctaveComponent>
             </Grid>
             </Grid>

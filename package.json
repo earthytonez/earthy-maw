@@ -2,6 +2,7 @@
   "name": "web-synth",
   "version": "0.1.0",
   "private": true,
+  "node": ">=18",
   "dependencies": {
     "@babel/core": "^7.18.2",
     "@babel/plugin-syntax-flow": "^7.17.12",
@@ -51,6 +52,7 @@
       "react-app/jest"
     ]
   },
+  "type": "module",
   "browserslist": {
     "production": [
       ">0.2%",

@@ -12,46 +12,45 @@ export interface ITriggerParameters {
   maxSkip?: number
 }
 
+/**
+ * TriggerWhen determines when a trigger/gate will happen.
+ * 
+ * Types:
+ * random
+ * everyX:   trigger on an interval - every beat, every 4 beats, etc.
+ * stepArray
+ * 
+ * @date 2022-08-14
+ * @param {any} line:string
+ * @returns {any}
+ */
 export default class TriggerWhen {
   type: "random" | "everyX" | "stepArray" = "everyX";
   parameterSets: ITriggerParameters[] = [];
 
-  trim(line: string): string {
-    const trimmedLine = line.trimStart().trimEnd();
-    info("TRIGGER_WHEN", "Parsing TriggerWhen", { trimmedLine });
-    return trimmedLine;
+  /* _trim is a utility function to return a trimmed string */
+  _trim(line: string): string {
+    return line.trimStart().trimEnd();
   }
 
   /* Adds to parameterSets */
-  parseList(lists: number[][]) {    
-    lists.forEach((list: number[]) => {
-      this.parameterSets.push({
+  parseList(lists: number[][]) {  
+    this.parameterSets = lists.map((list: any) => {
+      return {
         triggerType: "stepList",
-        stepList: list,
-      });
-    });
+        stepList: list
+      }
+    })  
     info("TRIGGER_WHEN", "Parsed List with parameter sets", this.parameterSets);
   }
-
-parseGates(line: any) {
-  console.log(line);
-
-}
-
-parseGatesList() {
-
-}
 
   /* Resets parameterSets */
   parse(line: any) {
     if (!line) {
       return;
     }
-    const trimmedLine = this.trim(line.trigger);
-
+    const trimmedLine = this._trim(line.trigger);
     if (!trimmedLine) return;
-
-    console.log(`TRIMMED_LINE: ${trimmedLine}`)
 
     switch (trimmedLine) {
       case trimmedLine.match(/Rand\(\)/)?.input:

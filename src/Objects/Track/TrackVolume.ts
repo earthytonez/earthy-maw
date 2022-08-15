@@ -7,6 +7,17 @@ export default class TrackVolume {
   _vol = new Tone.Volume(0);
   saveTracks: Function;
 
+  load(loadedVolume: any) {
+    if (loadedVolume?.vol?.volume?.value) {
+      this.setVolume(loadedVolume.vol.volume.value);
+    }
+    this.muted = !!loadedVolume.muted;
+  }
+
+  val() {
+    return this._vol.volume.value;
+  }
+
   set muted(val: boolean) {
     this._muted = val;
     this.saveTracks();

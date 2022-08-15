@@ -1,4 +1,4 @@
-import { makeObservable, computed, observable, action } from "mobx";
+import { makeObservable, observable, action } from "mobx";
 import * as Tone from "tone";
 
 import Arranger from "./Arranger/Arranger";
@@ -8,8 +8,9 @@ import { getSynthesizer } from "./Synthesizer/SynthesizerFactory";
 
 import { BeatMarker } from "../stores/MusicFeatures/BeatMarker";
 import MusicFeaturesStore from "../stores/MusicFeatures.store";
-import TrackStore from "../stores/Track.store";
 
+import TrackStore from "../stores/Track.store";
+import TrackOctaves from "./Track/TrackOctaves";
 import TrackVolume from "./Track/TrackVolume";
 
 import { debug, error } from "../Util/logger";
@@ -17,7 +18,7 @@ import { debug, error } from "../Util/logger";
 import { SYNTH_TYPE_FROM_STRING } from "../config/constants";
 
 interface ITrackFeatures {
-  octaves: number[];
+  octaves: TrackOctaves;
   volume: TrackVolume;
 }
 
@@ -38,31 +39,6 @@ export default class Track {
     this.trackStore.removeTrack(this.id);
   };
 
-  set octaves(val: number[]) {
-    this.trackFeatures.octaves = val;
-    this.trackStore.saveTracks();
-  }
-
-  get octaves(): number[] {
-    return this.trackFeatures.octaves;
-  }
-
-  setOctaves(octaves: number[]) {
-    this.octaves = octaves;
-  }
-
-  toggleOctave(octave: number) {
-    if (this.octaves.includes(octave)) {
-      const index = this.octaves.indexOf(octave, 0);
-      if (index > -1) {
-        this.octaves.splice(index, 1);
-      }
-      this.trackStore.saveTracks();
-    } else {
-      this.octaves.push(octave);
-      this.setOctaves(this.octaves);
-    }
-  }
 
   async tick(beatMarker: BeatMarker, time: number) {
     if (!this.sequencer) return;
@@ -93,7 +69,7 @@ export default class Track {
       sequencerSlug,
       this.audioContext(),
       this.musicFeaturesStore,
-      this.octaves
+      this.trackFeatures.octaves.val()
     );
   }
 
@@ -169,13 +145,10 @@ export default class Track {
   async loadTrackFeatures(trackData: any) {
     if (trackData.trackFeatures) {
       if (trackData.trackFeatures.volume) {
-        if (trackData.trackFeatures.volume?.vol?.volume?.value) { // trackData.trackFeatures.volume && trackData.trackFeatures.volume.vol && 
-          this.trackFeatures.volume.setVolume(trackData.trackFeatures.volume.vol.volume.value);
-        }
-        this.trackFeatures.volume.muted = !!trackData.trackFeatures.volume.muted;
+        this.trackFeatures.volume.load(trackData.trackFeatures.volume);
       }
       if (trackData.trackFeatures.octaves) {
-        this.trackFeatures.octaves = trackData.trackFeatures.octaves;
+        this.trackFeatures.octaves.load(trackData.trackFeatures.octaves);
       }
     }
   }
@@ -193,7 +166,7 @@ export default class Track {
         trackData.sequencer.type,
         Tone.getContext(),
         this.musicFeaturesStore,
-        this.octaves
+        this.trackFeatures.octaves.octaves
       );
       await this.sequencer.load();
       debug("TRACK", "LOADED SEQUENCER", this.sequencer);
@@ -259,7 +232,7 @@ export default class Track {
     this.trackStore = trackStore;
 
     this.trackFeatures = {
-      octaves: [1, 2, 3, 4, 5, 6, 7, 8],
+      octaves: new TrackOctaves(this.trackStore.saveTracks, this),
       volume: new TrackVolume(this.trackStore.saveTracks),
     };
 
@@ -278,11 +251,8 @@ export default class Track {
       sequencer: observable,
       synthesizer: observable,
       trackFeatures: observable,
-      octaves: computed,
       setLoading: action.bound,
       assignMachine: action.bound,
-      toggleOctave: action.bound,
-      // fetch: flow
     });
   }
 }
