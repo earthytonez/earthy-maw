@@ -23,6 +23,7 @@ Tech Debt: 1. Save more things (like Octaves)
         8. ~~Code Length of Interval List in~~.
         8. ~~Code Interval To Play in.~~
         9. ~~Octave should have single select and multi select choices.~~
+        9. Write Tests for TrackOctave.ts and ensure it is documented.
         9. The Three Four should use octave.
         9. Add Cutoff to Waveform
         9. Left Bar prettier

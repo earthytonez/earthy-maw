@@ -4,7 +4,7 @@ import * as Tone from "tone";
 
 export default class TrackVolume {
   _muted: boolean = false;
-  _vol = new Tone.Volume(0);
+  _vol: Tone.Volume;
   saveTracks: Function;
 
   load(loadedVolume: any) {
@@ -36,18 +36,6 @@ export default class TrackVolume {
     return this._vol;
   }
 
-  constructor(saveTracks: Function) {
-    this.saveTracks = saveTracks;
-
-    makeObservable(this, {
-      muted: computed,
-      vol: computed,
-      raiseVolume: action.bound,
-      setVolume: action.bound,
-      lowerVolume: action.bound,
-      toggleMute: action.bound,
-    });
-  }
   raiseVolume = () => {
     this._vol.volume.value = this._vol.volume.value + 1;
   };
@@ -67,5 +55,24 @@ export default class TrackVolume {
 
   get volume() {
     return this._vol.volume.value;
+  }
+
+  constructor(saveTracks: Function, toneVolume?: Tone.Volume) {
+    this.saveTracks = saveTracks;
+
+    if (toneVolume) {
+      this._vol = toneVolume;
+    } else {
+      this._vol = new Tone.Volume(0);
+    }
+
+    makeObservable(this, {
+      muted: computed,
+      vol: computed,
+      raiseVolume: action.bound,
+      setVolume: action.bound,
+      lowerVolume: action.bound,
+      toggleMute: action.bound,
+    });
   }
 }
