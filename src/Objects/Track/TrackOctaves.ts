@@ -76,7 +76,6 @@ export default class TrackOctaves {
     this._track = track;
 
     makeObservable(this, {
-      _octaves: observable,
       octaves: computed,
       _setOctaves: action.bound,
       toggleOctave: action.bound,

@@ -1,7 +1,7 @@
 import * as Tone from "tone";
 
+const bluebird = require("bluebird");
 
-import pMap from "p-map";
 import { makeObservable, action, observable, autorun } from "mobx";
 
 import Track from "../Objects/Track";
@@ -63,9 +63,8 @@ export default class TrackStore {
   load(tracksFromLocalStore: any[]) {
     const loadTracks = async () => {
       if (tracksFromLocalStore && tracksFromLocalStore.length > 0) {
-        let trackObjects: Track[] = await pMap(
-          tracksFromLocalStore,
-          async (trackData, i) => {
+        let trackObjects: Track[] = await bluebird.map(tracksFromLocalStore,
+          async (trackData: any, i: number) => {
             let t = new Track(
               i,
               this.audioContext,
