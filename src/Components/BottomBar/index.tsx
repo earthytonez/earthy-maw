@@ -144,7 +144,6 @@ const BottomBar = observer((props: BottomBarProps) => {
                   value={musicChord}
                   label="Chord"
                   onChange={(event) => {
-                    console.log(event.target.value);
                     setChord(event.target.value);
                   }}
                 >

@@ -18,6 +18,13 @@ export default class TrackOctaves {
     if (loadedOctaves) {
       this._octaves = loadedOctaves._octaves;
     }
+    if (!this._octaves) {
+      if (this._isMultiOctave()) {
+        this._octaves = [1, 2, 3, 4, 5, 6, 7, 8];
+      } else {
+        this._octaves = [4];
+      }
+    }
   }
 
   val() {

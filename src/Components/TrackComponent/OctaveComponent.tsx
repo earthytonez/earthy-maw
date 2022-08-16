@@ -16,7 +16,20 @@ const OctaveComponent = observer(
     function handleSelectionChanged(octave: number) {
         toggleOctave(octave);
     }
-    
+    if (!octaves) {
+      console.warn("octaves should never be undefined");
+      <React.Fragment>
+        {allOctaves.map((octave: number) => (
+          <Chip 
+            style={{borderRadius: 0, marginRight: 1, width: 32, height: 32}}
+            label={octave}
+            key={octave}
+            onClick={() => handleSelectionChanged(octave)}
+            variant="filled"
+          />
+        ))}
+      </React.Fragment>
+    }
     return (
       <React.Fragment>
         {allOctaves.map((octave: number) => (

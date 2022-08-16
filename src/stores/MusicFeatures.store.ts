@@ -16,7 +16,7 @@ export default class MusicFeaturesStore {
   rootStore: RootStore;
   musicKey: IMusicKey = "C";
   musicScale: IMusicScale = "major";
-  musicChord: IMusicChord = ChordType.get("major");
+  musicChord: IMusicChord = "major";
   musicChordProgression: string = "1";
 
   musicKeyOnDeck: IMusicKey | undefined = undefined;
