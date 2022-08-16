@@ -23,16 +23,16 @@ Tech Debt: 1. Save more things (like Octaves)
         8. ~~Code Length of Interval List in~~.
         8. ~~Code Interval To Play in.~~
         9. ~~Octave should have single select and multi select choices.~~
-        9. Write Tests for TrackOctave.ts and ensure it is documented.
-        9. The Three Four should use octave.
-        9. Add Cutoff to Waveform
-        9. Left Bar prettier
-        10. Chord doesn't show up in list.
-        11. Key/Scale/Chord show yellow when pending change
-        12. Key/scale/chord dropdowns more minimalist
-        13. "Loading" after pulling in Sequencer.
-        14. Limit to one Sequencer and one Synthesizer (Waveform and 3/4).
-        15. Help on Sequencer tab shows the first synth name not "Synthesizer"
+        10. ~~Write Tests for TrackOctave.ts and ensure it is documented.~~
+        11. The Three Four should use octave.
+        12. Add Cutoff to Waveform
+        13. Left Bar prettier
+        14. Chord doesn't show up in list.
+        15. Key/Scale/Chord show yellow when pending change
+        16. Key/scale/chord dropdowns more minimalist
+        17. "Loading" after pulling in Sequencer.
+        18. Limit to one Sequencer and one Synthesizer (Waveform and 3/4).
+        19. Help on Sequencer tab shows the first synth name not "Synthesizer"
 2. Youtube Video #2 -- Basic House Track
     1. Four on the Floor
     2. Bass

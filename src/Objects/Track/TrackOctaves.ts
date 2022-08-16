@@ -1,4 +1,4 @@
-import { makeObservable, computed, action, observable } from "mobx";
+import { makeObservable, computed, action } from "mobx";
 
 import Track from "../Track";
 
@@ -54,7 +54,6 @@ export default class TrackOctaves {
   }
 
   toggleOctave(octave: number) {
-    console.log(`toggleOctave ${this._isMultiOctave()}`);
     if (this._isMultiOctave()) {
       if (this._octaves.includes(octave)) {
         const index = this._octaves.indexOf(octave, 0);

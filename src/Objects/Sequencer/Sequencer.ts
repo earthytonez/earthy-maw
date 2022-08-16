@@ -48,7 +48,7 @@ export default class Sequencer extends SequencerType {
   /*
    * These variables are defined on the Track and come in through the constructor
    */
-  octaves: number[];
+  trackFeatures: any;
 
   droneSpacingHigh: number = 3;
   droneSpacingLow: number = 2;
@@ -274,14 +274,8 @@ export default class Sequencer extends SequencerType {
    * Euclidian Sequencer
    * Drone Sequencer?
    */
-  shouldPlay(beatMarker: BeatMarker): ISequencerGate {
-    if (!this.boundSynthesizer) {
-      return {
-        triggered: false,
-      };
-    }
-
-    if (!this.triggerWhen) {
+  gateAndNote(beatMarker: BeatMarker): ISequencerGate {
+    if (!this.boundSynthesizer || !this.triggerWhen) {
       return {
         triggered: false,
       };
@@ -293,9 +287,6 @@ export default class Sequencer extends SequencerType {
       parameters.gateList = this.gateLengths?.parameterSets[this.chosenGateParameterSet]?.gateList;
     }
 
-    console.log(this.triggerWhen);
-    console.log(parameters);
-    console.log(this.gateLengths)
     if (!parameters) {
       throw new Error(`parameters for random sequencer ${this.chosenTriggerParameterSet} must be defined`);
     }
@@ -304,8 +295,7 @@ export default class Sequencer extends SequencerType {
       case "random":
         return this.randomTrigger(beatMarker.num, parameters);
       case "everyX":
-        let a = this.playEveryX(beatMarker.num, parameters);
-        return a;
+        return this.playEveryX(beatMarker.num, parameters);
       default:
         return {
           triggered: true,
@@ -329,11 +319,16 @@ export default class Sequencer extends SequencerType {
     chord: IMusicChord,
     beatMarker: BeatMarker
   ): Tone.FrequencyClass {
+    console.log(this.trackFeatures);
+    console.log(this.trackFeatures);
+    console.log(this.trackFeatures);
+    console.log(this.trackFeatures);
+    console.log(this.trackFeatures);
     return this.sequencerLoader!.note(
       key,
       scale,
       chord,
-      this.octaves,
+      this.trackFeatures.octaves.val(),
       beatMarker
     );
   }
@@ -394,7 +389,10 @@ export default class Sequencer extends SequencerType {
 
     let chordNotes = this.getChord(key, chord);
 
-    let octave = this.octaves[Math.floor(Math.random() * this.octaves.length)];
+    let octave = 4;
+    if (this.trackFeatures.octaves) {
+      octave = this.trackFeatures.octaves.val()[Math.floor(Math.random() * this.trackFeatures.octaves.val().length)];
+    }
 
     let toneFrequencyChord = chordNotes.map((note: string) => {
       return Tone.Frequency(`${note}${octave}`);
@@ -498,9 +496,9 @@ export default class Sequencer extends SequencerType {
       return; // debug("SEQUENCER", "No Bound Synthesizer");
     }
 
-    debug("SEQUENCER", `shouldPlay? ${this.sequencerType()}`);
+    debug("SEQUENCER", `gateAndNote? ${this.sequencerType()}`);
 
-    let gate: ISequencerGate = this.shouldPlay(beatMarker);
+    let gate: ISequencerGate = this.gateAndNote(beatMarker);
 
     if (gate.triggered) {
       if (this.sequencerType() === "drone") {
@@ -530,7 +528,7 @@ export default class Sequencer extends SequencerType {
     type: string,
     audioContext: Tone.BaseContext,
     musicFeaturesStore: MusicFeaturesStore,
-    octaves: number[]
+    trackFeatures: any
   ) {
     super(type, 0);
 
@@ -538,7 +536,7 @@ export default class Sequencer extends SequencerType {
 
     this.audioContext = audioContext;
     this.musicFeaturesStore = musicFeaturesStore;
-    this.octaves = octaves;
+    this.trackFeatures = trackFeatures;
     this.slug = type;
     this.type = type;
 

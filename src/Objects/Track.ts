@@ -69,7 +69,7 @@ export default class Track {
       sequencerSlug,
       this.audioContext(),
       this.musicFeaturesStore,
-      this.trackFeatures.octaves.val()
+      this.trackFeatures
     );
   }
 
@@ -166,8 +166,8 @@ export default class Track {
         trackData.sequencer.type,
         Tone.getContext(),
         this.musicFeaturesStore,
-        this.trackFeatures.octaves.octaves
-      );
+        this.trackFeatures
+        );
       await this.sequencer.load();
       debug("TRACK", "LOADED SEQUENCER", this.sequencer);
     }

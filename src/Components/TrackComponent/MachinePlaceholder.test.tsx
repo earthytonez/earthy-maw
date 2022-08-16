@@ -1,12 +1,12 @@
-import React from "react";
+// import React from "react";
 
-import { TStore } from '../../stores/UI/createStore'
-import ReactDOM from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
+// import { TStore } from '../../stores/UI/createStore'
+// import ReactDOM from 'react-dom/client';
+// import { act } from 'react-dom/test-utils';
 
-import MachinePlaceholder from "./MachinePlaceholder";
-import UIStateStore from "../../stores/UI/UIState.store";
-import { assert } from "console";
+// import MachinePlaceholder from "./MachinePlaceholder";
+// import UIStateStore from "../../stores/UI/UIState.store";
+// import { assert } from "console";
 
 let container: any;
 

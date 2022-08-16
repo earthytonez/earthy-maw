@@ -1,9 +1,9 @@
-import Sequencer from './Sequencer';
-import { SequencerLoader } from './SequencerLoader';
+// import Sequencer from './Sequencer';
+// import { SequencerLoader } from './SequencerLoader';
 
-import * as Tone from 'tone';
-import RootStore from 'stores/Root.store';
-import { ITriggerParameters } from './SequencerLoader/TriggerWhen';
+// import * as Tone from 'tone';
+// import RootStore from 'stores/Root.store';
+// import { ITriggerParameters } from './SequencerLoader/TriggerWhen';
 
 window.AudioContext = jest.fn().mockImplementation(() => {
     return {}

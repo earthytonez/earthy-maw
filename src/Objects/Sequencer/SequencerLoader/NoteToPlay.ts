@@ -46,7 +46,13 @@ export default class NoteToPlay {
             case "random":
                 return this.getRandomNote(key, scale, chord, octaves, measureBeat);
         }
-        let startNote = `${key}4`;
+
+        let octaveToPlay = 4;
+        console.log("NOTE_TO_PLAY", octaveToPlay, octaves);
+        if (octaves[0]) {
+            octaveToPlay = octaves[0]
+        }
+        let startNote = `${key}${octaveToPlay}`;
         let noteIntervalCalculator = new NoteIntervalCalculator(key, scale);
     
         if (this.noteNotInterval) {
@@ -54,7 +60,7 @@ export default class NoteToPlay {
         }
     
         let interval = intervalToPlay.get(measureBeat, chord);
-        console.log(`INTERVAL_TO_PLAY: ${interval}`)
+
         if (!interval) {
           return Tone.Frequency(startNote);
         }
