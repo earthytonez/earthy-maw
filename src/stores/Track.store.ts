@@ -1,14 +1,14 @@
 import * as Tone from "tone";
 
-const bluebird = require("bluebird");
-
 import { makeObservable, action, observable, autorun } from "mobx";
 
 import Track from "../Objects/Track";
-import { debug, info } from '../Util/logger';
 
+import { debug, info } from '../Util/logger';
 import RootStore from "./Root.store";
 
+
+const bluebird = require("bluebird");
 
 export default class TrackStore {
   audioContext: Tone.BaseContext;
