@@ -1,5 +1,7 @@
 import { TOML_FILES } from './constants/sequencer';
 
+import { ChordType } from "@tonaljs/tonal";
+
 import Bell from "../Objects/Synthesizer/Synthesizers/Bell";
 import FMDrone from "../Objects/Synthesizer/Synthesizers/FMDrone";
 import FMBells from "../Objects/Synthesizer/Synthesizers/FMBells";
@@ -35,9 +37,12 @@ export const MUSIC_THEORY_KEYS = [
   "Gb",
   "G#",
 ];
-export const MUSIC_THEORY_SCALES = ["Major", "Minor"];
+// export const MUSIC_THEORY_SCALES = ScaleType.names();
+export const MUSIC_THEORY_SCALES = ["major", "minor"]
 
-export const MUSIC_THEORY_CHORDS = ["major", "maj7", "maj9", "maj13", "maj7#11", "minor"];
+// export const MUSIC_THEORY_CHORDS = ["major", "maj7", "maj9", "maj13", "maj7#11", "minor"];
+export const MUSIC_THEORY_CHORDS = ChordType.names() 
+
 
 export const MAJOR_SCALE_INTERVALS = [2, 2, 1, 2, 2, 2, 1];
 export const MINOR_SCALE_INTERVALS = [2, 1, 2, 2, 1, 2, 2];

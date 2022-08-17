@@ -25,6 +25,7 @@ Tech Debt: 1. Save more things (like Octaves)
         9. ~~Octave should have single select and multi select choices.~~
         10. ~~Write Tests for TrackOctave.ts and ensure it is documented.~~
         11. ~~The Three Four should use octave.~~
+        12. IMusicChord is incompatible with Chord string dropdown.
         12. Add Cutoff to Waveform
         13. Left Bar prettier
         14. Chord doesn't show up in list.

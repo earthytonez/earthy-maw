@@ -16,6 +16,7 @@ const OctaveComponent = observer(
     function handleSelectionChanged(octave: number) {
         toggleOctave(octave);
     }
+    
     if (!octaves) {
       console.warn("octaves should never be undefined");
       <React.Fragment>
@@ -30,6 +31,7 @@ const OctaveComponent = observer(
         ))}
       </React.Fragment>
     }
+
     return (
       <React.Fragment>
         {allOctaves.map((octave: number) => (
