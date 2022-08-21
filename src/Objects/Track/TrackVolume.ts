@@ -57,6 +57,12 @@ export default class TrackVolume {
     return this._vol.volume.value;
   }
 
+  toJSON() {
+    return {
+      vol: this._vol
+    }
+  }
+
   constructor(saveTracks: Function, toneVolume?: Tone.Volume) {
     this.saveTracks = saveTracks;
 

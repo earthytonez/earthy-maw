@@ -42,7 +42,7 @@ export default class TrackStore {
   }
 
   saveTracks() {
-    if (this.emptyTracks()) {
+    if (this.emptyTracks && this.emptyTracks()) {
       debug("LOADSAVETRACKS", "Tried to save empty 'tracks'");
       return;
     }
@@ -60,6 +60,26 @@ export default class TrackStore {
     this.tracks[1]!.setLoading(false);
   }
 
+  loadFromURL() {
+    let urlSearchParams = new URLSearchParams(window.location.search);
+
+    let track: any = {};
+
+    for (const [key, value] of urlSearchParams.entries()) {
+      track[key] = value;
+    }
+
+    for (let i = 0; i <= 100; i++) {
+      if (track[`synth[${i}]`] ||  track[`seq[${i}]`]) {
+        this.tracks.push(new Track(0, this.audioContext, this.rootStore.musicFeaturesStore, this, {
+          synth: track[`synth[${i}]`],
+          sequencer: track[`seq[${i}]`]
+        }))
+      }
+  
+    }
+  }
+  
   load(tracksFromLocalStore: any[]) {
     const loadTracks = async () => {
       if (tracksFromLocalStore && tracksFromLocalStore.length > 0) {
@@ -72,7 +92,6 @@ export default class TrackStore {
               this
             );
             await t.load(trackData);
-            console.log(t);
             return t;
           }
         );
@@ -82,13 +101,21 @@ export default class TrackStore {
       }
     };
 
-    loadTracks();
+    // http://localhost:3000/?synth=kick&seq=fouronthefloor
+    if (window.location.search.length > 0) {
+      this.loadFromURL();
+    } else {
+      loadTracks();
+    }
   }
 
   checkLocalStorage() {
     info("LOADSAVETRACKS", "Loading Tracks from Local Storage");
     let _tracks = localStorage.getItem("tracks");
-    let tracks = JSON.parse(_tracks!);
+    let tracks;
+    if (_tracks !== "undefined") {
+      tracks = JSON.parse(_tracks!);
+    }
     debug("LOADSAVETRACKS", `Tracks = ${JSON.stringify(tracks)}`)
     this.load(tracks);
   }

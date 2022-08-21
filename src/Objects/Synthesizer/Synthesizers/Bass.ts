@@ -2,6 +2,8 @@ import * as Tone from "tone";
 
 import Synthesizer from "../Synthesizer";
 import { ISequencerGate } from '../../../Objects/Sequencer/SequencerRunner/SequencerGate';
+import IOscillatorType from '../IOscillatorType';
+
 import IPlayParams from "../../../Types/IPlayParams";
 
 import { debug } from '../../../Util/logger';
@@ -14,23 +16,14 @@ export default class Bass extends Synthesizer {
   synth: any;
   filter: any;
 
-  changeParameter(parameter: string, value: any) {
-    this[parameter as keyof this] = value;
-  }
+  oscillatorType?: IOscillatorType = "square";
+  oscillatorTypeA?: IOscillatorType = undefined;
+  oscillatorTypeB?: IOscillatorType = undefined;
+  oscillatorTypeC?: IOscillatorType = undefined;
 
-  incrementParameter(_parameter: string): void {
-    /* TODO: Fix */
-    console.log(_parameter);
-  }
-  
-  decrementParameter(_parameter: string): void {
-    /* TODO: Fix */
-    console.log(_parameter);
-  }
-
-  get editParameters(): ISynthesizerEditableParams[] {
+  get _editParameters(): ISynthesizerEditableParams[] {
     return [];
-    }
+  }
 
   attachVolume(vol: Tone.Volume) {
     if (vol) {
@@ -53,7 +46,7 @@ export default class Bass extends Synthesizer {
       release: .2
     }});
     
-    this.synth.oscillator.type = "square"
+    this.synth.oscillator.type = this.oscillatorType;
 
     this.filter = new Tone.Filter(400, "lowpass");
     this.synth.connect(this.filter);

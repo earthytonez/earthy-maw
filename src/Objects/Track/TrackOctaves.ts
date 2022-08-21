@@ -2,10 +2,13 @@ import { makeObservable, computed, action } from "mobx";
 
 import Track from "../Track";
 
+const DEFAULT_OCTAVES = [3, 4, 5, 6]
+const DEFAULT_OCTAVE = [4]
+
 /* The TrackOctaves class is a class that contains a list of octaves.  TrackOctaves contains saveable
 data. */
 export default class TrackOctaves {
-  private _octaves = [1, 2, 3, 4, 5, 6, 7, 8];
+  private _octaves = DEFAULT_OCTAVES;
   private _saveTracks: Function;
   private _track?: Track;
 
@@ -20,10 +23,16 @@ export default class TrackOctaves {
     }
     if (!this._octaves) {
       if (this._isMultiOctave()) {
-        this._octaves = [1, 2, 3, 4, 5, 6, 7, 8];
+        this._octaves = DEFAULT_OCTAVES;
       } else {
-        this._octaves = [4];
+        this._octaves = DEFAULT_OCTAVE;
       }
+    }
+  }
+
+  toJSON() {
+    return {
+      _octaves: this._octaves
     }
   }
 

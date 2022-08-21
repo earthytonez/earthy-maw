@@ -7,15 +7,10 @@ import { debug } from "../../../Util/logger";
 
 import { action, makeObservable } from "mobx";
 
-import ISynthesizerEditableParams from '../ISynthEditableParams';
+import  ISynthEditableParams, { OSCILLATOR_TYPE_SYNTH_PARAM } from '../ISynthEditableParams';
 
-type OscillatorType = "sine" | "square" | "triangle" | "sawtooth";
-const OSCILLATOR_TYPES: OscillatorType[] = [
-  "sine",
-  "square",
-  "triangle",
-  "sawtooth",
-];
+import IOscillatorType from "../IOscillatorType";
+
 
 let reverbDecayMod = 4;
 
@@ -25,33 +20,14 @@ export default class FMDrone extends Synthesizer {
   synth: Tone.PolySynth;
   toneContext: any;
   reverb: any;
-  oscillatorType: OscillatorType = "sine";
+  oscillatorType?: IOscillatorType = "sine";
+  oscillatorTypeA?: IOscillatorType = undefined;
+  oscillatorTypeB?: IOscillatorType = undefined;
+  oscillatorTypeC?: IOscillatorType = undefined;
 
-  changeParameter(parameter: string, value: any) {
-    this[parameter as keyof this] = value;
-  }
-
-  incrementParameter(_parameter: string): void {
-    /* TODO: Fix */
-    console.log(_parameter);
-  }
-  
-  decrementParameter(_parameter: string): void {
-    /* TODO: Fix */
-    console.log(_parameter);
-  }
-
-  get editParameters(): ISynthesizerEditableParams[] {
+  get _editParameters(): ISynthEditableParams[] {
     return [
-      {
-        name: "Oscillator Type",
-        field: "oscillatorType",
-        fieldType: "radio",
-        fieldOptions: {
-          options: OSCILLATOR_TYPES,
-          current: this.oscillatorType,
-        },
-      },
+      OSCILLATOR_TYPE_SYNTH_PARAM(this.oscillatorType!)
     ];
   }
 

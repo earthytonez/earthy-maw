@@ -4,8 +4,8 @@ import Synthesizer from "../Synthesizer";
 
 import { ISequencerGate } from "../../../Objects/Sequencer/SequencerRunner/SequencerGate";
 import IPlayParams from "../../../Types/IPlayParams";
-
 import ISynthesizerEditableParams from '../ISynthEditableParams';
+import IOscillatorType from "../IOscillatorType";
 
 
 export default class FMBells extends Synthesizer {
@@ -16,21 +16,12 @@ export default class FMBells extends Synthesizer {
   reverb: any;
   delay: any;
 
-  changeParameter(parameter: string, value: any) {
-    this[parameter as keyof this] = value;
-  }
+  oscillatorType?: IOscillatorType = "sine";
+  oscillatorTypeA?: IOscillatorType = undefined;
+  oscillatorTypeB?: IOscillatorType = undefined;
+  oscillatorTypeC?: IOscillatorType = undefined;
 
-  incrementParameter(_parameter: string): void {
-    /* TODO: Fix */
-    console.log(_parameter);
-  }
-  
-  decrementParameter(_parameter: string): void {
-    /* TODO: Fix */
-    console.log(_parameter);
-  }
-
-  get editParameters(): ISynthesizerEditableParams[] {
+  get _editParameters(): ISynthesizerEditableParams[] {
     return [];
     }
 

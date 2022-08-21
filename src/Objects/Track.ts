@@ -77,7 +77,7 @@ export default class Track {
     return new Arranger(arrangerSlug, Tone.getContext());
   }
 
-  newMachine(machineType: string, machineSlug: string) {
+  newMachine(machineType: "synthesizer" | "sequencer" | "arranger", machineSlug: string) {
     if (machineType === "synthesizer") {
       return this.synthFromSlug(machineSlug);
     }
@@ -91,7 +91,8 @@ export default class Track {
     }
   }
 
-  async assignMachine(machineType: string, machineSlug: any) {
+  async assignMachine(machineType: "synthesizer" | "sequencer" | "arranger", machineSlug: any) {
+    
     let machine = this.newMachine(machineType, machineSlug);
 
     this[machineType as keyof this] = machine;
@@ -100,6 +101,9 @@ export default class Track {
       this.sequencer.bindSynth(this.synthesizer);
     }
     if (machineType === "sequencer") {
+      console.log("Loading Sequencer");
+      console.log("Loading Sequencer");
+      console.log("Loading Sequencer");
       await this.sequencer?.load();
     }
     if (machineType === "synthesizer") {
@@ -130,7 +134,10 @@ export default class Track {
       id: this.id,
       slug: this.slug,
       arranger: this.arranger,
-      trackFeatures: this.trackFeatures,
+      trackFeatures: {
+        volume: this.trackFeatures.volume.toJSON(),
+        octaves: this.trackFeatures.octaves.toJSON()
+      },
       sequencer: this.sequencerJSON(),
       synthesizer: this.synthesizerJSON(),
     };
@@ -220,7 +227,8 @@ export default class Track {
     id: number,
     audioContext: Tone.BaseContext,
     musicFeaturesStore: MusicFeaturesStore,
-    trackStore: TrackStore
+    trackStore: TrackStore,
+    trackMachines?: any
   ) {
     Tone.setContext(audioContext);
 
@@ -241,8 +249,18 @@ export default class Track {
     this.trackFeatures.volume.vol = new Tone.Volume(0).toDestination();
 
     this.arranger = undefined;
-    this.sequencer = undefined;
-    this.synthesizer = undefined;
+
+    if (trackMachines.sequencer) {
+      this.assignMachine("sequencer", trackMachines.sequencer);
+    } else {
+      this.sequencer = undefined;
+    }
+
+    if (trackMachines.synth) {
+      this.assignMachine("synthesizer", trackMachines.synth);
+    } else {
+      this.synthesizer = undefined;
+    }
 
     makeObservable(this, {
       arranger: observable,

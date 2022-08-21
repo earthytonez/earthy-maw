@@ -9,39 +9,25 @@ import IPlayParams from "../../../Types/IPlayParams";
 import { debug } from '../../../Util/logger';
 
 
-import ISynthesizerEditableParams from '../ISynthEditableParams';
+import ISynthEditableParams, { PITCH_SYNTH_PARAM } from '../ISynthEditableParams';
+import IOscillatorType from "../IOscillatorType";
 
 export default class Kick extends Synthesizer {
+
+  oscillatorType?: IOscillatorType = undefined;
+  oscillatorTypeA?: IOscillatorType = undefined;
+  oscillatorTypeB?: IOscillatorType = undefined;
+  oscillatorTypeC?: IOscillatorType = undefined;
+
   name: string = "Kick";
   slug: string = "kick";
   synth: any;
   pitch: number = Note.midi("C2")!;
 
-  changeParameter(parameter: string, value: any) {
-    this[parameter as keyof this] = value;
-  }
-
-  incrementParameter(_parameter: string): void {
-    /* TODO: Fix */
-    console.log(_parameter);
-  }
-  
-  decrementParameter(_parameter: string): void {
-    /* TODO: Fix */
-    console.log(_parameter);
-  }
-
-  get editParameters(): ISynthesizerEditableParams[] {
-    return [{
-      name: "Pitch",
-      field: "pitch",
-      fieldType: "slider",
-      fieldOptions: {
-        min: 0,
-        max: 48,
-        current: this.pitch
-      }
-    }];
+  get _editParameters(): ISynthEditableParams[] {
+    return [
+      PITCH_SYNTH_PARAM(this.pitch)
+    ];
   }
 
   attachVolume(vol: Tone.Volume) {

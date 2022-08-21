@@ -22,7 +22,7 @@ const OctaveComponent = observer(
       <React.Fragment>
         {allOctaves.map((octave: number) => (
           <Chip 
-            style={{borderRadius: 0, marginRight: 1, width: 32, height: 32}}
+            style={{borderRadius: 0, marginRight: 1, width: 30, height: 30}}
             label={octave}
             key={octave}
             onClick={() => handleSelectionChanged(octave)}
@@ -36,7 +36,7 @@ const OctaveComponent = observer(
       <React.Fragment>
         {allOctaves.map((octave: number) => (
           <Chip 
-            style={{borderRadius: 0, marginRight: 1, width: 32, height: 32}}
+            style={{borderRadius: 0, marginRight: 1, width: 30, height: 30}}
             label={octave}
             key={octave}
             onClick={() => handleSelectionChanged(octave)}

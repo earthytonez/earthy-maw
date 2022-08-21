@@ -1,36 +1,28 @@
-import Synthesizer from "../Synthesizer";
-
-import IPlayParams from "../../../Types/IPlayParams";
-import { ISequencerGate } from '../../../Objects/Sequencer/SequencerRunner/SequencerGate';
-
 import * as Tone from "tone";
 
+
+import Synthesizer from "../Synthesizer";
+import IPlayParams from "../../../Types/IPlayParams";
+import { ISequencerGate } from '../../../Objects/Sequencer/SequencerRunner/SequencerGate';
 import ISynthesizerEditableParams from '../ISynthEditableParams';
+import IOscillatorType from "../IOscillatorType";
 
 export default class HiHat extends Synthesizer {
   name: string = "Hi Hat";
   slug: string = "hihat";
+
+  oscillatorType?: IOscillatorType = "sine";
+  oscillatorTypeA?: IOscillatorType = undefined;
+  oscillatorTypeB?: IOscillatorType = undefined;
+  oscillatorTypeC?: IOscillatorType = undefined;
+
   // filter: Tone.Filter;
   player: any;
   // editParameters(): ISynthParams {
 
   // }
 
-  changeParameter(parameter: string, value: any) {
-    this[parameter as keyof this] = value;
-  }
-
-  incrementParameter(_parameter: string): void {
-    /* TODO: Fix */
-    console.log(_parameter);
-  }
-  
-  decrementParameter(_parameter: string): void {
-    /* TODO: Fix */
-    console.log(_parameter);
-  }
-
-  get editParameters(): ISynthesizerEditableParams[] {
+  get _editParameters(): ISynthesizerEditableParams[] {
     return [];
     }
 

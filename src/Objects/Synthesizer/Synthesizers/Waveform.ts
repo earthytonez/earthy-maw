@@ -8,15 +8,10 @@ import { debug } from "../../../Util/logger";
 import { action, makeObservable } from 'mobx';
 
 import { ISequencerGate } from "../../Sequencer/SequencerRunner/SequencerGate";
-import ISynthesizerEditableParams from '../ISynthEditableParams';
+import ISynthEditableParams, { OSCILLATOR_TYPE_SYNTH_PARAM } from '../ISynthEditableParams';
+import FilterFeature from "./Features/Filter";
 
-type OscillatorType = "sine" | "square" | "triangle" | "sawtooth";
-const OSCILLATOR_TYPES: OscillatorType[] = [
-  "sine",
-  "square",
-  "triangle",
-  "sawtooth",
-];
+import IOscillatorType from "../IOscillatorType";
 
 export default class Waveform extends Synthesizer {
   name: string = "Waveform";
@@ -24,72 +19,31 @@ export default class Waveform extends Synthesizer {
   synth: Tone.PolySynth;
   toneContext: any;
   reverb: any;
-  oscillatorType: OscillatorType = "sine";
-
+  filter: FilterFeature = new FilterFeature();
+  oscillatorType?: IOscillatorType = "sine";
+  oscillatorTypeA?: IOscillatorType = undefined;
+  oscillatorTypeB?: IOscillatorType = undefined;
+  oscillatorTypeC?: IOscillatorType = undefined;
 
   // Filter should be a Mixin.
-  filterCutoff: number = 10000;
-  filterResonance: number = 0;
 
-  changeParameter(parameter: string, value: any) {
-    this[parameter as keyof this] = value;
-  }
-
-  incrementParameter(_parameter: string): void {
-    /* TODO: Fix */
-    this.filterCutoff++;
-  }
-  
-  decrementParameter(_parameter: string): void {
-    /* TODO: Fix */
-    this.filterCutoff--;
-  }
-
-  get editParameters(): ISynthesizerEditableParams[] {
+  get _editParameters(): ISynthEditableParams[] {
     return [
-      {
-        name: "Oscillator Type",
-        field: "oscillatorType",
-        fieldType: "radio",
-        fieldOptions: {
-          options: OSCILLATOR_TYPES,
-          current: this.oscillatorType
-        },
-      },
-      {
-        name: "Filter Cutoff",
-        field: "filterCutoff",
-        fieldType: "dial",
-        fieldOptions: {
-          max: 100,
-          min: 0,
-          current: this.filterCutoff
-        },
-      },
-      {
-        name: "Filter Resonance",
-        field: "filterResonance",
-        fieldType: "dial",
-        fieldOptions: {
-          max: 100,
-          min: 0,
-          current: this.filterResonance
-        },
-      },
+      OSCILLATOR_TYPE_SYNTH_PARAM(this.oscillatorType!)
     ];
   }
 
   attachVolume(vol: Tone.Volume) {
     if (vol) {
       try {
-        this.synth.connect(vol);
+        this.synth.connect(this.filter.filter).connect(vol);
       } catch (err: any) {
         debug("SYNTHESIZER_WAVEFORM", err);
       }
     }
   }
 
-  constructor(_vol: typeof Tone.Volume, audioContext: Tone.BaseContext) {
+  constructor(_vol: Tone.Volume, audioContext: Tone.BaseContext) {
     super();
     Tone.setContext(audioContext);
     this.synth = new Tone.PolySynth(Tone.FMSynth);

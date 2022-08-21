@@ -13,12 +13,15 @@ export default class RootStore {
 
   constructor() {
     console.log("Constructing Root Store");
+    /* Initialize tone.js */
     this.audioContext = new AudioContext();
     Tone.setContext(this.audioContext);
 
+    /* Initialize Stores */
     this.musicFeaturesStore = new MusicFeaturesStore(this, Tone.getContext());
-    this.trackStore = new TrackStore(this, Tone.getContext());
+    this.trackStore         = new TrackStore(this, Tone.getContext());
 
+    /* Start */
     this.startAudio();
   }
 
