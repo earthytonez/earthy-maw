@@ -166,34 +166,37 @@ export default class Track {
     }
   }
 
-  async loadTrackSequencer(trackData: any) {
-    if (trackData.sequencer?.type) {
-      debug("TRACK", `Sequencer Type: ${trackData.sequencer.type}`);
-      this.sequencer = new Sequencer(
-        trackData.sequencer.type,
-        Tone.getContext(),
-        this.musicFeaturesStore,
-        this.trackFeatures
-        );
-      await this.sequencer.load();
-      debug("TRACK", "LOADED SEQUENCER", this.sequencer);
-    }
+  /*
+   * 
+   */
+
+  async loadTrackSequencer(sequencerType: any) {
+    if (!sequencerType) return;
+
+    debug("TRACK", `Sequencer Type: ${sequencerType}`);
+    this.sequencer = new Sequencer(
+      sequencerType,
+      Tone.getContext(),
+      this.musicFeaturesStore,
+      this.trackFeatures
+      );
+    await this.sequencer.load();
+    debug("TRACK", "LOADED SEQUENCER", this.sequencer);
   }
 
-  async loadTrackSynthesizer(trackData: any) {
-    if (trackData.synthesizer?.slug) {
-      this.synthesizer = getSynthesizer(
-        trackData.synthesizer.slug,
-        this.trackFeatures.volume.vol,
-        Tone.getContext()
-      );
-      if (this.sequencer && this.synthesizer) {
-        this.sequencer.bindSynth(this.synthesizer);
-        debug("TRACK_LOADED_SEQUENCER", this.sequencer.toJSON());
-        this.synthesizer.attachVolume(this.trackFeatures.volume.vol);
-      }
-    }
+  async loadTrackSynthesizer(synthesizerSlug: string) {
+    if (!synthesizerSlug) return;
 
+    this.synthesizer = getSynthesizer(
+      synthesizerSlug,
+      this.trackFeatures.volume.vol,
+      Tone.getContext()
+    );
+    if (this.sequencer && this.synthesizer) {
+      this.sequencer.bindSynth(this.synthesizer);
+      debug("TRACK_LOADED_SEQUENCER", this.sequencer.toJSON());
+      this.synthesizer.attachVolume(this.trackFeatures.volume.vol);
+    }
   }
 
   async load(trackData: any) {
@@ -208,12 +211,12 @@ export default class Track {
       error("TRACK_LOAD_FEATURES_ERROR", err);
     }
     try {
-      await this.loadTrackSequencer(trackData);
+      await this.loadTrackSequencer(trackData.sequencer?.type);
     } catch(err: any) {
       error("TRACK_LOAD_FEATURES_ERROR", err);
     }
     try {
-      await this.loadTrackSynthesizer(trackData);
+      await this.loadTrackSynthesizer(trackData.sythesizer?.slug);
     } catch(err: any) {
       error("TRACK_LOAD_FEATURES_ERROR", err);
     }
@@ -221,6 +224,21 @@ export default class Track {
     debug("TRACK_LOADER", `Loading track from trackdata`, trackData);
 
     this.setLoading(false);
+  }
+
+  private initializeMachines(trackMachines: any) {
+    this.arranger = undefined;
+    if (trackMachines.sequencer) {
+      this.loadTrackSequencer(trackMachines.sequencer)
+    } else {
+      this.sequencer = undefined;
+    }
+
+    if (trackMachines.synth) {
+      this.loadTrackSynthesizer(trackMachines.synth);
+    } else {
+      this.synthesizer = undefined;
+    }
   }
 
   constructor(
@@ -248,19 +266,7 @@ export default class Track {
     this.slug = `track-${id}`;
     this.trackFeatures.volume.vol = new Tone.Volume(0).toDestination();
 
-    this.arranger = undefined;
-
-    if (trackMachines.sequencer) {
-      this.assignMachine("sequencer", trackMachines.sequencer);
-    } else {
-      this.sequencer = undefined;
-    }
-
-    if (trackMachines.synth) {
-      this.assignMachine("synthesizer", trackMachines.synth);
-    } else {
-      this.synthesizer = undefined;
-    }
+    this.initializeMachines(trackMachines);
 
     makeObservable(this, {
       arranger: observable,

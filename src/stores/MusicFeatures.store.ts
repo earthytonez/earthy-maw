@@ -83,6 +83,7 @@ export default class MusicFeaturesStore {
   }
 
   setTempo(tempo: number) {
+    console.log("setTempo");
     this.tempo = tempo;
     Tone.Transport.bpm.value = this.tempo;
   }
@@ -155,11 +156,14 @@ export default class MusicFeaturesStore {
       musicScale: observable,
       play: observable,
       beatMarker: observable,
+      tempo: observable,
       rootStore: false,
       playPause: action.bound,
       setPlay: action.bound,
       setKey: action.bound,
       setChord: action.bound,
+      setTempo: action.bound,
+      setSectionLength: action.bound,
       setScale: action.bound,
       incrementBeatNumber: action.bound,
       changeFeatures: action.bound

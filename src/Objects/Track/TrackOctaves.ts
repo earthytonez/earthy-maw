@@ -22,11 +22,15 @@ export default class TrackOctaves {
       this._octaves = loadedOctaves._octaves;
     }
     if (!this._octaves) {
-      if (this._isMultiOctave()) {
-        this._octaves = DEFAULT_OCTAVES;
-      } else {
-        this._octaves = DEFAULT_OCTAVE;
-      }
+      this.initialize();
+    }
+  }
+
+  toggleOctave(octave: number) {
+    if (this._isMultiOctave()) {
+      this.toggleMultiOctave(octave);
+    } else {
+      this._setOctaves([octave]);
     }
   }
 
@@ -49,9 +53,15 @@ export default class TrackOctaves {
     return this._octaves;
   }
 
-  _setOctaves(octaves: number[]) {
-    console.log(`setOctaves ${octaves}`);
+  private initialize() {
+    if (this._isMultiOctave()) {
+      this._octaves = DEFAULT_OCTAVES;
+    } else {
+      this._octaves = DEFAULT_OCTAVE;
+    }
+  }
 
+  _setOctaves(octaves: number[]) {
     this._octaves = octaves;
   }
 
@@ -69,20 +79,24 @@ export default class TrackOctaves {
     return true;
   }
 
-  toggleOctave(octave: number) {
-    if (this._isMultiOctave()) {
-      if (this._octaves.includes(octave)) {
-        const index = this._octaves.indexOf(octave, 0);
-        if (index > -1) {
-          this._octaves.splice(index, 1);
-        }
-        this._saveTracks();
-      } else {
-        this._octaves.push(octave);
-        this._setOctaves(this._octaves);
-      }
+  private removeOctaveFromList(octave: number) {
+    const index = this._octaves.indexOf(octave, 0);
+    if (index > -1) {
+      this._octaves.splice(index, 1);
+    }
+    this._saveTracks();
+  }
+
+  private addOctaveToList(octave: number) {
+    this._octaves.push(octave);
+    this._setOctaves(this._octaves);
+  }
+
+  private toggleMultiOctave(octave: number) {
+    if (this._octaves.includes(octave)) {
+      this.removeOctaveFromList(octave);
     } else {
-      this._setOctaves([octave]);
+      this.addOctaveToList(octave);
     }
   }
 

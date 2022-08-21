@@ -20,29 +20,19 @@ import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 
 import { useStore } from "../../stores/useStore";
 
-function PlayButtonToggle({
-  play,
-  playPause,
-}: {
-  play: boolean;
-  playPause: Function;
-}) {
+const PlayButtonToggle = observer(
+  ({ play, playPause }: { play: boolean; playPause: Function }) => {
+    let onClick: React.MouseEventHandler<HTMLButtonElement> = () => {
+      playPause();
+    };
 
-  let onClick: React.MouseEventHandler<HTMLButtonElement> = () => {
-    playPause();
+    return (
+      <IconButton color="success" onClick={onClick} size="large">
+        {play ? <PauseIcon fontSize="large" /> : <PlayArrowIcon fontSize="large" />}
+      </IconButton>
+    );
   }
-
-  return (
-    <IconButton
-      id="toggle-mode"
-      size="small"
-      // variant="outlined"
-      onClick={onClick}
-    >
-      {play ? <PauseIcon /> : <PlayArrowIcon />}
-    </IconButton>
-  );
-}
+);
 
 const TopBar = observer(() => {
   const store = useStore();
@@ -55,13 +45,18 @@ const TopBar = observer(() => {
     setSectionLength,
   } = store.musicFeaturesStore;
 
-  const onChangeTempo = (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const onChangeTempo = (
+    ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    console.log("onChangeTempo");
     setTempo(parseInt(ev.currentTarget.value));
-  }
+  };
 
-  const onChangeSectionLength = (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const onChangeSectionLength = (
+    ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setSectionLength(parseInt(ev.currentTarget.value));
-  }
+  };
 
   function ColorSchemeToggle() {
     const [mode, setMode] = React.useState<PaletteMode>("light");
@@ -108,82 +103,60 @@ const TopBar = observer(() => {
   return (
     <React.Fragment>
       <AppBar>
-      <Toolbar>
-
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 1.5,
-          }}
-        >
-          {/* <IconButton
-            size="small"
-            onClick={() => setDrawerOpen(true)}
-            sx={{ display: { sm: "none" } }}
-          >
-            <MenuIcon />
-          </IconButton> */}
-          {/* <IconButton
-            size="small"
-            sx={{ display: { xs: "none", sm: "inline-flex" } }}
-          >
-            <FindInPageRoundedIcon />
-          </IconButton> */}
-          <Typography component="h1" fontWeight="xl">
-            Earthy MAW
-          </Typography>
-        </Box>
-        <PlayButtonToggle play={play} playPause={playPause} />
-        <Box sx={{ display: "flex", flexDirection: "row", gap: 1.5 }}>
-          <OutlinedInput
-            size="small"
-            value={tempo}
-            onChange={onChangeTempo}
-            endAdornment={
-              <Typography
-                fontWeight="lg"
-                fontSize="sm"
-                color="text.tertiary"
-              >
-                bpm
-              </Typography>
-            }
+        <Toolbar>
+          <Box
             sx={{
-              flexBasis: "100px",
-              display: {
-                xs: "none",
-                sm: "flex",
-              },
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 1.5,
             }}
-          />
-          <OutlinedInput
-            size="small"
-            value={musicSectionLength}
-            onChange={onChangeSectionLength}
-            endAdornment={
-              <Typography
-                fontWeight="lg"
-                fontSize="sm"
-                color="text.tertiary"
-              >
-                Section Length
-              </Typography>
-            }
-            sx={{
-              flexBasis: "140px",
-              display: {
-                xs: "none",
-                sm: "flex",
-              },
-            }}
-          />
-        </Box>
+          >
+            <Typography component="h1" fontWeight="xl">
+              Earthy MAW
+            </Typography>
+            <PlayButtonToggle play={play} playPause={playPause} />
+            <OutlinedInput
+              size="small"
+              value={tempo}
+              onChange={onChangeTempo}
+              type="number"
+              endAdornment={
+                <Typography fontWeight="lg" fontSize="sm" color="text.tertiary">
+                  bpm
+                </Typography>
+              }
+              sx={{
+                flexBasis: "120px",
+                display: {
+                  xs: "none",
+                  sm: "flex",
+                },
+              }}
+            />
+            <OutlinedInput
+              size="small"
+              value={musicSectionLength}
+              onChange={onChangeSectionLength}
+              type="number"
+              endAdornment={
+                <Typography fontWeight="lg" fontSize="sm" color="text.tertiary">
+                  Section Length
+                </Typography>
+              }
+              sx={{
+                flexBasis: "140px",
+                display: {
+                  xs: "none",
+                  sm: "flex",
+                },
+              }}
+            />
+          </Box>
 
-        <Box sx={{ display: "flex", flexDirection: "row", gap: 1.5 }}>
-          <ColorSchemeToggle />
-        </Box>
+          <Box sx={{ display: "flex", flexDirection: "row", gap: 1.5 }}>
+            <ColorSchemeToggle />
+          </Box>
         </Toolbar>
       </AppBar>
     </React.Fragment>
