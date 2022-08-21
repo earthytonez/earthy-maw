@@ -78,16 +78,13 @@ export default class Track {
   }
 
   newMachine(machineType: "synthesizer" | "sequencer" | "arranger", machineSlug: string) {
-    if (machineType === "synthesizer") {
-      return this.synthFromSlug(machineSlug);
-    }
-
-    if (machineType === "sequencer") {
-      return this.sequencerFromSlug(machineSlug);
-    }
-
-    if (machineType === "arranger") {
-      return this.arrangerFromSlug(machineSlug);
+    switch(machineType) {
+      case "synthesizer":
+        return this.synthFromSlug(machineSlug);
+      case "sequencer":
+        return this.sequencerFromSlug(machineSlug);
+      case "arranger":
+        return this.arrangerFromSlug(machineSlug);   
     }
   }
 
@@ -101,9 +98,6 @@ export default class Track {
       this.sequencer.bindSynth(this.synthesizer);
     }
     if (machineType === "sequencer") {
-      console.log("Loading Sequencer");
-      console.log("Loading Sequencer");
-      console.log("Loading Sequencer");
       await this.sequencer?.load();
     }
     if (machineType === "synthesizer") {
