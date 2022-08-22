@@ -35,11 +35,7 @@ const MachineEditDrawer = observer((): React.ReactElement => {
   let incrementParameter: Function;
   let decrementParameter: Function;
 
-  console.log(objectEditTrack)
-  console.log(objectEditType)
-  console.log(objectEditIsOpen)
   if (objectEditTrack !== undefined && objectEditType && objectEditIsOpen) {
-    console.log(typeof objectEditTrack);
     if (typeof objectEditTrack == "number") {
       let trackMachine;
       switch (objectEditType) {

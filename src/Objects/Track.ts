@@ -229,6 +229,7 @@ export default class Track {
     } else {
       this.synthesizer = undefined;
     }
+    this.setLoading(false);
   }
 
   constructor(

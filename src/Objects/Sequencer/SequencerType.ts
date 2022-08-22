@@ -28,12 +28,11 @@ export default class SequencerType {
   }
 
   async fetchTOML(fileName: any) {
+    if (fileName === undefined) return;
     let seq = await fetch(fileName);
     let seqText = await seq.text();
     
     if (!seqText.startsWith("name")) {
-      console.error(`FileName: ${fileName}`)
-      console.error(seqText);
       throw new Error("seqText did not start with name");
     }
     

@@ -55,7 +55,7 @@ const LoadingPlaceHolder = observer(
     | undefined;
   }): React.ReactElement => {
     return machine && machine.loading ? (
-      <Box>"Loading..."</Box>
+      <Box>Loading...</Box>
     ) : (
       <MachinePlaceholder placeholder={placeholder} machineType={slug} />
     );
@@ -72,6 +72,10 @@ const DroppableTrackElement = observer(
   }: DroppableTrackElementProps) => {
     const uiStore = useUIStore();
     const { toggleObjectEdit } = uiStore;
+
+    console.log(machine);
+    console.log(machine.name);
+    
     return (
       <Droppable
         // index={track_id + 11}

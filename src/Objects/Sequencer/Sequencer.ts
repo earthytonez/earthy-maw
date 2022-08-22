@@ -1,7 +1,7 @@
 import * as Tone from "tone";
 import { Chord } from "@tonaljs/tonal";
 
-import { makeObservable, action, computed } from "mobx";
+import { makeObservable, action, computed, observable } from "mobx";
 
 import IPlayParams from "../../Types/IPlayParams";
 import { debug, info } from "../../Util/logger";
@@ -40,7 +40,7 @@ export default class Sequencer extends SequencerType {
   machineType: string = "Sequencer";
   type: string = "";
   x = 0;
-  loading: boolean = true;
+  _loading: boolean = true;
 
   droneLength: number = 9;
   droneTail: number = 6;
@@ -65,7 +65,15 @@ export default class Sequencer extends SequencerType {
   musicFeaturesStore: MusicFeaturesStore;
 
   setLoading(loading: boolean) {
-    this.loading = loading;
+    this._loading = loading;
+  }
+
+  get loading() {
+    return this._loading;
+  }
+
+  get name() {
+    return this.sequencerLoader?.name;
   }
 
   resetBeatsSinceLastNote() {
@@ -206,6 +214,7 @@ export default class Sequencer extends SequencerType {
       "font-weight:bold"
     );
 
+    console.log(this.type);
     this.sequencerLoader = await this.fetchTOML(TOML_FILES[this.type]);
     this.loadRunners();
   }
@@ -213,7 +222,7 @@ export default class Sequencer extends SequencerType {
   /*
    *
    */
-  private loadRunners() {
+  private async loadRunners() {
     this.playEveryXRunner = new PlayEveryX(this.sequencerLoader!.rhythm_length);
     this.randomTriggerRunner = new RandomTrigger(
       this.sequencerLoader!.rhythm_length
@@ -541,6 +550,7 @@ export default class Sequencer extends SequencerType {
     this.type = type;
 
     makeObservable(this, {
+      sequencerLoader: observable,
       bindSynth: action,
       changeParameter: action.bound,
       decrementParameter: action.bound,

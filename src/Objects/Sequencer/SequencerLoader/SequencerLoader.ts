@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import toml from "toml";
-import { makeObservable, action, computed } from "mobx";
+import { makeObservable, action, computed, observable } from "mobx";
 
 import TriggerWhen from "./TriggerWhen";
 import GateLengths from "./GateLengths";
@@ -177,6 +177,8 @@ export default class SequencerLoader {
   constructor(sequencerCode: string) {
     this.sequencerCode = sequencerCode;
     makeObservable(this, {
+      sequencerHolder: observable,
+      sequencerCode: observable,
       name: computed,
       type: computed,
       load: action,

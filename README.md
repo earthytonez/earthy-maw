@@ -17,6 +17,7 @@ Tech Debt: 1. Save more things (like Octaves)
     3. Fix "Loading" on Sequencer
     3. Help Screen
     4. Contextual help for "Sequence Length", seq/synth, etc.
+    5. Modulatable Four on the Floor Sequencer (add Fills)
 
 
 1. Youtube Video #1 -- The three/four.
