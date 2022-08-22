@@ -5,18 +5,28 @@ let waveform: Waveform;
 
 jest.mock('tone', () => {
     return {
-      Volume: jest.fn(),
       PolySynth: jest.fn(),
       Filter: jest.fn().mockImplementation(() => {
         return { toDestination: jest.fn() }
       }),
-      setContext: jest.fn()
+      Volume: jest.fn().mockImplementation(() => {
+        return { toDestination: jest.fn() }
+      }),
+      setContext: jest.fn(),
+      getContext: jest.fn(),
+      connect: jest.fn()
     }
 });
+
+// const FakeTone = {
+//     Players: jest.fn(),
+//     context: { resume: jest.fn() }
+// };
+
   
 beforeEach(() => {
     const vol = new Tone.Volume();
-    const audioContext = new Tone.Context;
+    const audioContext = Tone.getContext();
     waveform = new Waveform(vol, audioContext);
 });
 

@@ -38,19 +38,20 @@ export default class Kick extends Synthesizer {
 
   play(_gate: ISequencerGate, params: IPlayParams) {
     this.synth.triggerAttackRelease(Note.fromMidi(this.pitch), "16n", params.time);
-    debug("Kick Context: ", this.synth);
+    debug("KICK", "Kick Context: ", this.synth);
+    debug("KICK", `pitch: ${this.pitch}`);
   }
 
-  constructor(vol: Tone.Volume) {
+  constructor(_vol: Tone.Volume) {
     super();
     
     this.synth = new Tone.MembraneSynth();
 
-    if (vol) {
-      this.synth.connect(vol);
-    } else {
-      this.synth.toDestination();
-    }
+    // if (vol) {
+    //   this.synth.connect(vol);
+    // } else {
+    //   this.synth.toDestination();
+    // }
 
     makeObservable(this, {
       pitch: observable,

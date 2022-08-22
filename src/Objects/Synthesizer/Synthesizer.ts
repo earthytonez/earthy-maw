@@ -3,10 +3,10 @@ import * as Tone from 'tone';
 import SequencerFilter from './Synthesizers/Features/Filter';
 
 import { ISequencerGate } from '../../Objects/Sequencer/SequencerRunner/SequencerGate';
+import IOscillatorType from "./IOscillatorType";
 import IPlayParams from '../../Types/IPlayParams';
 import ISynthEditableParams, { OSCILLATOR_TYPES } from './ISynthEditableParams';
 
-import IOscillatorType from "./IOscillatorType";
 
 export default abstract class Synthesizer {
     machineType: string = "Synthesizer";
@@ -18,10 +18,12 @@ export default abstract class Synthesizer {
     abstract attachVolume(vol: Tone.Volume): void;
 
     /* Synthesizer Parameters */
-    abstract oscillatorType?: IOscillatorType
-    abstract oscillatorTypeA?: IOscillatorType
-    abstract oscillatorTypeB?: IOscillatorType
-    abstract oscillatorTypeC?: IOscillatorType
+    abstract oscillatorType?: IOscillatorType;
+    abstract oscillatorTypeA?: IOscillatorType;
+    abstract oscillatorTypeB?: IOscillatorType;
+    abstract oscillatorTypeC?: IOscillatorType;
+
+    abstract pitch: number;
 
     /* Synthesizer Features */
     filter: SequencerFilter = new SequencerFilter();
@@ -47,7 +49,12 @@ export default abstract class Synthesizer {
                 if (!isNaN(value)) {
                     this.filter.resonance = value;
                 }
-            break;
+                break;
+            case("pitch"):
+                if (!isNaN(value)) {
+                    this.pitch = value;
+                }
+                break;
         }
       }
     

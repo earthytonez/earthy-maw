@@ -19,6 +19,9 @@ export default class Waveform extends Synthesizer {
   synth: Tone.PolySynth;
   toneContext: any;
   reverb: any;
+
+  pitch: number = 0;
+
   filter: FilterFeature = new FilterFeature();
   oscillatorType?: IOscillatorType = "sine";
   oscillatorTypeA?: IOscillatorType = undefined;

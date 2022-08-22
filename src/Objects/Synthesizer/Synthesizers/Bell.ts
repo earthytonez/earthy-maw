@@ -17,6 +17,8 @@ export default class Bell extends Synthesizer {
 
   name: string = "Bell";
   slug: string = "bell";
+  pitch: number = 0;
+
   synth: any;
 
   get _editParameters(): ISynthesizerEditableParams[] {

@@ -1,6 +1,8 @@
 import { MAJOR_SCALE_INTERVALS, MINOR_SCALE_INTERVALS } from "../../../config/constants";
 import { IMusicKey, IMusicScale } from "../../../Types/index"
 
+import { error } from "../../../Util/logger"
+
 const SINGLE_OCTAVE_NOTES = ["A", "A#", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#"];
 
 export default class NoteIntervalCalculator {
@@ -59,7 +61,7 @@ export default class NoteIntervalCalculator {
         let rootNoteOfScale = this.getNoteNumber(rootNote);
 
         let noteDiff = retVal - rootNoteOfScale;
-        console.log(`noteDiff is ${noteDiff} from retVal ${retVal} and rootNote(${rootNote}) rootNoteOfScale(${rootNoteOfScale}), octave ${octave} and key ${this.key}`);
+        // console.log(`noteDiff is ${noteDiff} from retVal ${retVal} and rootNote(${rootNote}) rootNoteOfScale(${rootNoteOfScale}), octave ${octave} and key ${this.key}`);
         let iMod = 0;
         let iTmp = 0;
         while (noteDiff > 0) {
@@ -74,15 +76,13 @@ export default class NoteIntervalCalculator {
                     break;
                 default:
                     noteDiff -= 1;
-                    console.debug("This shouldn't really happen");
+                    error("NOTE_INTERVAL_CALCULATOR", "This shouldn't really happen");
                     break;
             }
             iTmp++;
         }
-        let x = 0;
         let y = 0;
         for (let i = 0; i <= interval - 2; i++) {
-            x++;
             switch(this.scale) {
                 case "major":
                     let majorScaleInterval = MAJOR_SCALE_INTERVALS[i + iMod];
@@ -97,13 +97,11 @@ export default class NoteIntervalCalculator {
                     if (!minorScaleInterval) {
                         throw new Error("Invalid interval mod for minor scaleinterval in NoteIntervalCalculator.ts");
                     }
-                    console.log(`For Minor Scale, ${iMod} Adding ${minorScaleInterval}`)
                     retVal += minorScaleInterval;
                     y = y + minorScaleInterval;
                     break;
             }
         }
-        console.log(`Looped ${x} times and added ${y}`)
         return retVal;
     }
 
@@ -115,7 +113,7 @@ export default class NoteIntervalCalculator {
         if (interval % 1 === .5) {
             halfStep = true;
         }
-        console.log(`interval: ${interval}, halfStep: ${halfStep}`);
+        // console.log(`interval: ${interval}, halfStep: ${halfStep}`);
         
         let noteNumber = this.getNoteNumber(startNote);
         let addedInterval = this.addIntervalToNote(noteNumber, interval);

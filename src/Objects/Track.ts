@@ -160,10 +160,6 @@ export default class Track {
     }
   }
 
-  /*
-   * 
-   */
-
   async loadTrackSequencer(sequencerType: any) {
     if (!sequencerType) return;
 
@@ -222,13 +218,13 @@ export default class Track {
 
   private initializeMachines(trackMachines: any) {
     this.arranger = undefined;
-    if (trackMachines.sequencer) {
+    if (trackMachines?.sequencer) {
       this.loadTrackSequencer(trackMachines.sequencer)
     } else {
       this.sequencer = undefined;
     }
 
-    if (trackMachines.synth) {
+    if (trackMachines?.synth) {
       this.loadTrackSynthesizer(trackMachines.synth);
     } else {
       this.synthesizer = undefined;
@@ -258,7 +254,8 @@ export default class Track {
 
     this.id = id;
     this.slug = `track-${id}`;
-    this.trackFeatures.volume.vol = new Tone.Volume(0).toDestination();
+    const toneVolume = new Tone.Volume(0);
+    this.trackFeatures.volume.vol = toneVolume.toDestination();
 
     this.initializeMachines(trackMachines);
 

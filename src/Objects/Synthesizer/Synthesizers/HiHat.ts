@@ -11,6 +11,8 @@ export default class HiHat extends Synthesizer {
   name: string = "Hi Hat";
   slug: string = "hihat";
 
+  pitch: number = 0;
+
   oscillatorType?: IOscillatorType = "sine";
   oscillatorTypeA?: IOscillatorType = undefined;
   oscillatorTypeB?: IOscillatorType = undefined;

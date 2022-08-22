@@ -20,6 +20,9 @@ export default class FMDrone extends Synthesizer {
   synth: Tone.PolySynth;
   toneContext: any;
   reverb: any;
+
+  pitch: number = 0;
+
   oscillatorType?: IOscillatorType = "sine";
   oscillatorTypeA?: IOscillatorType = undefined;
   oscillatorTypeB?: IOscillatorType = undefined;

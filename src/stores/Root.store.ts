@@ -11,17 +11,16 @@ export default class RootStore {
   musicFeaturesStore: MusicFeaturesStore;
   audioContext: AudioContext;
 
-  constructor() {
-    console.log("Constructing Root Store");
+  constructor(audioContext: AudioContext) {
+    this.audioContext = audioContext;
     /* Initialize tone.js */
-    this.audioContext = new AudioContext();
     Tone.setContext(this.audioContext);
 
     /* Initialize Stores */
     this.musicFeaturesStore = new MusicFeaturesStore(this, Tone.getContext());
     this.trackStore         = new TrackStore(this, Tone.getContext());
 
-    /* Start */
+    /* Start Audio */
     this.startAudio();
   }
 
@@ -29,18 +28,19 @@ export default class RootStore {
     this.musicFeaturesStore.changeFeatures();
     const tracks = this.trackStore.tracks;
 
-      if (tracks.length <= 0) return;
-      tracks.forEach((track: Track, _i: number) => {
-        let p = track.tick(this.musicFeaturesStore.beatMarker, time);
-        p.catch ((err: any) => {
-          error("Error caught during track loop", err);
-        });
+    if (tracks.length <= 0) return;
+    
+    tracks.forEach((track: Track, _i: number) => {
+      let p = track.tick(this.musicFeaturesStore.beatMarker, time);
+      p.catch ((err: any) => {
+        error("Error caught during track loop", err);
       });
-      this.musicFeaturesStore.incrementBeatNumber();  
+    });
+    this.musicFeaturesStore.incrementBeatNumber();  
   }
 
   startAudio() {
-    debug("ROOTSTORE", "Starting Tone.Transport.scheduleRepeat");
+    debug("ROOT_STORE", "Starting Tone.Transport.scheduleRepeat");
     Tone.Transport.scheduleRepeat(this.repeatLoop.bind(this), "16n");
   }
 }

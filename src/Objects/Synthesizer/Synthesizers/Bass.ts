@@ -15,6 +15,7 @@ export default class Bass extends Synthesizer {
   slug: string = "bass";
   synth: any;
   filter: any;
+  pitch: number = 0;
 
   oscillatorType?: IOscillatorType = "square";
   oscillatorTypeA?: IOscillatorType = undefined;

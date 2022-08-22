@@ -38,7 +38,6 @@ test('set octave data when multiselect is enabled.', () => {
         _octaves: [3, 5, 7]
     })
 
-    console.log(trackOctaves.octaves);
     trackOctaves.toggleOctave(3);
     expect(trackOctaves.octaves.sort()).toEqual([5, 7].sort());
 

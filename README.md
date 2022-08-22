@@ -12,9 +12,9 @@ MMF (Minimum Marketable Features)
 Tech Debt: 1. Save more things (like Octaves)
 
 1. Share on Twitter.
-    1. Be able to load a kick drum sequencer
-    1. Load synth and sequencer via URL parameters.
-    2. Fix BPM Changer
+    1. ~~Load synth and sequencer via URL parameters.~~
+    2. ~~Fix BPM Changer~~
+    3. Fix "Loading" on Sequencer
     3. Help Screen
     4. Contextual help for "Sequence Length", seq/synth, etc.
 

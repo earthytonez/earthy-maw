@@ -15,6 +15,7 @@ export default class FMBells extends Synthesizer {
   toneContext: any;
   reverb: any;
   delay: any;
+  pitch: number = 0;
 
   oscillatorType?: IOscillatorType = "sine";
   oscillatorTypeA?: IOscillatorType = undefined;
