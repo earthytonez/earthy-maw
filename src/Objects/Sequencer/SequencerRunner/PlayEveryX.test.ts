@@ -28,6 +28,7 @@ test('test PlayEveryX stepList Trigger Type', async() => {
     let playEveryX = new PlayEveryX(rhythmLength);
 
     let parameters: ITriggerParameters = {
+        gateList: [1, 1, 1, 1, 1],
         stepList: [0, 3, 7, 13, 15],
         triggerType: "stepList",
         on: 0

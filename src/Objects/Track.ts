@@ -206,7 +206,7 @@ export default class Track {
       error("TRACK_LOAD_FEATURES_ERROR", err);
     }
     try {
-      await this.loadTrackSynthesizer(trackData.sythesizer?.slug);
+      await this.loadTrackSynthesizer(trackData.synthesizer?.slug);
     } catch(err: any) {
       error("TRACK_LOAD_FEATURES_ERROR", err);
     }

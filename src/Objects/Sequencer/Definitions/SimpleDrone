@@ -9,4 +9,4 @@ type = "drone"
 play = "C4" # This is the note
 
 [TriggerWhen]
-trigger = "every 64 steps"
+trigger = "every 64 steps on 1"

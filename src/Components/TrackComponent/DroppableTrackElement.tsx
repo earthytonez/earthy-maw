@@ -73,9 +73,6 @@ const DroppableTrackElement = observer(
     const uiStore = useUIStore();
     const { toggleObjectEdit } = uiStore;
 
-    console.log(machine);
-    console.log(machine.name);
-    
     return (
       <Droppable
         // index={track_id + 11}

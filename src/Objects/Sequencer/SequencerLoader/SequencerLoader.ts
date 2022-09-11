@@ -1,4 +1,4 @@
-import * as Tone from 'tone';
+import * as Tone from "tone";
 import toml from "toml";
 import { makeObservable, action, computed, observable } from "mobx";
 
@@ -8,7 +8,7 @@ import NoteToPlay from "./NoteToPlay";
 import VolumeToPlay from "./VolumeToPlay";
 import IntervalToPlay from "./IntervalToPlay";
 
-import { BeatMarker } from  "../../../stores/MusicFeatures/BeatMarker";
+import { BeatMarker } from "../../../stores/MusicFeatures/BeatMarker";
 
 import IMusicChord from "../../../Types/IMusicChord";
 import IMusicScale from "../../../Types/IMusicScale";
@@ -19,13 +19,12 @@ import IParsedSequencerTOML from "./IParsedSequencerTOML";
 import ISequencerType from "./ISequencerType";
 
 interface IIntervalsToPlay {
-  interval_length: number
-  list: number[]
-  
-  type: string
-  type_list: string[]
-}
+  interval_length: number;
+  list: number[];
 
+  type: string;
+  type_list: string[];
+}
 
 class SequencerLoaderHolder {
   name?: string;
@@ -51,13 +50,13 @@ class SequencerLoaderHolder {
     measureBeat: number
   ): Tone.FrequencyClass {
     return this.noteToPlay.get(
-      key, 
-      scale, 
-      chord, 
+      key,
+      scale,
+      chord,
       octaves,
       measureBeat,
       this.intervalToPlay
-    )
+    );
   }
 
   volume(beatMarker: number): number {
@@ -107,7 +106,7 @@ export default class SequencerLoader {
       scale,
       chord,
       octaves,
-      this.measureBeat(beatMarker),
+      this.measureBeat(beatMarker)
     );
   }
 
@@ -155,6 +154,14 @@ export default class SequencerLoader {
       this.sequencerHolder.type = data.type;
       if (data.TriggerWhen) {
         this.sequencerHolder.triggerWhen.parse(data.TriggerWhen);
+        if (data.TriggerWhen.fillWhen) {
+          this.sequencerHolder.triggerWhen.parseFill(data.TriggerWhen.fillWhen);
+        }
+        if (data.TriggerWhen.fillList) {
+          this.sequencerHolder.triggerWhen.parseFillList(
+            data.TriggerWhen.fillList
+          );
+        }
       }
       if (data.TriggerWhenList) {
         this.sequencerHolder.triggerWhen.parseList(data.TriggerWhenList.list);
@@ -171,7 +178,6 @@ export default class SequencerLoader {
       console.error(this.sequencerCode);
       console.error(err);
     }
-
   }
 
   constructor(sequencerCode: string) {

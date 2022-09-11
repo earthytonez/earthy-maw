@@ -9,28 +9,38 @@ import { action, makeObservable } from "mobx";
 
 import  ISynthEditableParams, { OSCILLATOR_TYPE_SYNTH_PARAM } from '../ISynthEditableParams';
 
-import IOscillatorType from "../IOscillatorType";
-
+import IOscillatorType, { IFMOscillatorType } from "../IOscillatorType";
 
 let reverbDecayMod = 4;
 
 export default class FMDrone extends Synthesizer {
   name: string = "FMDrone";
   slug: string = "fmdrone";
-  synth: Tone.PolySynth;
+  synth: Tone.PolySynth<Tone.FMSynth>;
   toneContext: any;
   reverb: any;
 
   pitch: number = 0;
 
-  oscillatorType?: IOscillatorType = "sine";
+  oscillatorType?: IFMOscillatorType = "fmsine1";
   oscillatorTypeA?: IOscillatorType = undefined;
   oscillatorTypeB?: IOscillatorType = undefined;
   oscillatorTypeC?: IOscillatorType = undefined;
 
+  modulationType: IOscillatorType = "sine";
+
   get _editParameters(): ISynthEditableParams[] {
     return [
-      OSCILLATOR_TYPE_SYNTH_PARAM(this.oscillatorType!)
+      OSCILLATOR_TYPE_SYNTH_PARAM(this.oscillatorType!),
+      OSCILLATOR_TYPE_SYNTH_PARAM(this.modulationType),
+      // modulation: { type: "sine" },
+      // modulationEnvelope: {
+      //   attack: lengthSeconds! * 2,
+      //   sustain: 1,
+      //   release: tailSeconds,
+      //   releaseCurve: "linear",
+      // },
+
     ];
   }
 
@@ -46,17 +56,27 @@ export default class FMDrone extends Synthesizer {
     }
   }
 
-  constructor(vol: Tone.Volume, audioContext: Tone.BaseContext) {
+  constructor() {
     super();
-    Tone.setContext(audioContext);
-    this.synth = new Tone.PolySynth(Tone.FMSynth);
-    this.synth.connect(vol);
+
+    this.synth = new Tone.PolySynth(Tone.FMSynth, {
+      modulation: { type: "sine" },
+      modulationIndex: 1,
+    
+      modulationEnvelope: {
+        attack: 90! * 2,
+        sustain: 1,
+        release: 90,
+        releaseCurve: "linear",
+      },
+    });
+    this.synth.set({"detune": -1200});
 
     this.toneContext = this.synth.context;
     this.reverb = new Tone.Reverb({
       context: this.toneContext,
-      decay: 1,
-      wet: 0.8,
+      decay: 2,
+      wet: 0.7,
     });
 
     this.reverb.generate(); // Risky not to wait but ¯\_(ツ)_/¯
@@ -104,33 +124,35 @@ export default class FMDrone extends Synthesizer {
     }
 
     this.synth.set({
-      // harmonicity: 0.5,
-      // modulationIndex: 1,
       oscillator: {
         type: this.oscillatorType,
+        harmonicity: 0.7,
       },
       envelope: {
-        attack: lengthSeconds! / 3,
+        attack: 50,
+        decay: 50,
         sustain: 1,
-        release: tailSeconds! - 1,
+        release: tailSeconds,
         attackCurve: "linear",
         releaseCurve: "linear",
       },
-      // modulation: { type: "sine" },
-      // modulationEnvelope: {
-      //   attack: lengthSeconds! * 2,
-      //   sustain: 1,
-      //   release: tailSeconds,
-      //   releaseCurve: "linear",
-      // },
+      modulation: { type: "sine" },
+      modulationIndex: 1,
+      modulationEnvelope: {
+        attack: lengthSeconds / 4,
+        sustain: 1,
+        release: tailSeconds,
+        releaseCurve: "linear",
+      },
       volume: 0,
     });
 
     debug(
       "FMDrone",
-      `Starting FMDrone Play Trigger Attack Release of ${notes} with lengthSeconds ${lengthSeconds}`
+      `Starting FMDrone Play Trigger Attack Release of ${notes} with lengthSeconds ${lengthSeconds}`, 
+      this.synth
     );
-
+  
     console.log(notes);
 
     if (!notes) {

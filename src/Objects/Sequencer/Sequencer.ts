@@ -129,8 +129,9 @@ export default class Sequencer extends SequencerType {
   }
 
   get editParameters(): ISequencerParameters[] {
+    let params:any = [];
     if (this.sequencerLoader?.sequencerHolder.type === "step") {
-      return [
+      params = params.concat([
         {
           name: "Trigger Set",
           field: "chosenTriggerParameterSet",
@@ -153,12 +154,59 @@ export default class Sequencer extends SequencerType {
             current: this.chosenGateParameterSet,
           },
         },
+      ])
+    };
 
-      ]
-    }
+
+    if (this.sequencerLoader?.sequencerHolder.type === "drone") {
+      params = params.concat([
+        {
+          name: "Minimum Gate",
+          field: "minGate",
+          fieldType: "slider",
+          fieldOptions: {
+            min: 10,
+            max: 60,
+            step: 1,
+            current: this.minGate,
+          },
+        },
+        {
+          name: "Maximum Gate",
+          field: "maxGate",
+          fieldType: "slider",
+          fieldOptions: {
+            min: 10,
+            max: 300,
+            step: 1,
+            current: this.maxGate,
+          },
+        },
+        {
+          name: "Minimum Interval",
+          field: "minInterval",
+          fieldType: "slider",
+          fieldOptions: {
+            min: 0,
+            max: 100,
+            current: this.minInterval,
+          },
+        },
+        {
+          name: "Maximum Interval",
+          field: "maxInterval",
+          fieldType: "slider",
+          fieldOptions: {
+            min: 0,
+            max: 100,
+            current: this.maxInterval,
+          },
+        },
+      ]);
+    };
 
     if (this.sequencerLoader?.sequencerHolder.type === "randomStep") {
-      return [
+      params = params.concat([
         {
           name: "Minimum Gate",
           field: "minGate",
@@ -201,9 +249,25 @@ export default class Sequencer extends SequencerType {
             current: this.maxInterval,
           },
         },
-      ];
+      ]);
+    };
+
+    if (this.sequencerLoader?.sequencerHolder?.triggerWhen?.fills && this.sequencerLoader?.sequencerHolder?.triggerWhen?.fills.length > 0) {
+      params = params.concat([{
+        name: "Fill",
+        field: "fills",
+        fieldType: "slider",
+        fieldOptions: {
+          min: 0,
+          max: this.sequencerLoader.sequencerHolder.triggerWhen.fills.length,
+          current: this.maxInterval,
+        }
+      }]);
     }
-    return [];
+
+    console.log("EDIT_PARAMS")
+    console.log(params);
+    return params;
   }
 
   async load() {

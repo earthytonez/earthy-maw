@@ -11,7 +11,6 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import LoadParameter from "./LoadParameter"
 
-
 import { useStore } from "../../stores/useStore";
 import { useUIStore } from "../../stores/UI/useUIStore";
 
@@ -83,7 +82,7 @@ const MachineEditDrawer = observer((): React.ReactElement => {
           sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
         >
           {editParameters.map((parameter: any, key: number) => {
-            console.log(parameter);
+            console.log(`MachinEditDrawer: ${parameter}`);
             return (
               <ListItem key={key}>
                 <LoadParameter

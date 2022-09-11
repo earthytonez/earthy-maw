@@ -12,3 +12,13 @@ note = "C2"
 
 [TriggerWhen]
 trigger = "every 4 steps"
+fillWhen = "last four of sixteen"
+fillList = [
+    [2],
+    [3],
+    [4],
+    [2, 3],
+    [3, 4],
+    [2, 4],
+    [2, 3, 4]
+]

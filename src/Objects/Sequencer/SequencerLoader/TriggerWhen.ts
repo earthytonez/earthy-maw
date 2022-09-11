@@ -10,6 +10,12 @@ export interface ITriggerParameters {
   octaves?: number
   minSkip?: number
   maxSkip?: number
+  fillStart?: number;
+  fillEnd?: number;
+  fillList?: number[][]
+
+  // From TOML
+  fillWhen?: string
 }
 
 /**
@@ -27,6 +33,11 @@ export interface ITriggerParameters {
 export default class TriggerWhen {
   type: "random" | "everyX" | "stepArray" = "everyX";
   parameterSets: ITriggerParameters[] = [];
+  fills?: any[];
+  fillStart: number = -1;
+  fillEnd: number = -1;
+  fillWhen?: string;
+  fillList?: number[][];
 
   /* _trim is a utility function to return a trimmed string */
   _trim(line: string): string {
@@ -42,6 +53,23 @@ export default class TriggerWhen {
       }
     })  
     info("TRIGGER_WHEN", "Parsed List with parameter sets", this.parameterSets);
+  }
+
+  parseFillList(lists: number[][]) {  
+    this.parameterSets[0]!.fillList = lists;
+    info("TRIGGER_WHEN", "Parsed List with parameter sets", this.parameterSets);
+  }
+
+  parseFill(fill: string) {
+    if (fill.endsWith("sixteen")) {
+      this.parameterSets[0]!.fillEnd = 16;
+    }
+
+    if (fill.startsWith("last four")) {
+      this.parameterSets[0]!.fillStart = 13;
+    } else if (fill.startsWith("last eight")) {
+      this.parameterSets[0]!.fillStart = 9
+    }
   }
 
   /* Resets parameterSets */
