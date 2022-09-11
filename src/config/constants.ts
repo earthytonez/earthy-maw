@@ -62,13 +62,13 @@ export const SEQUENCER_TYPES = [
 ];
 
 export const SYNTH_TYPES: ISynthesizerType[] = [
-  { id: 0, name: "Bell", slug: "bell" },
-  { id: 0, name: "Bass", slug: "bass" },
-  { id: 1, name: "HiHat", slug: "hihat" },
-  { id: 2, name: "Kick", slug: "kick" },
-  { id: 4, name: "FMBells", slug: "fmbells" },
-  { id: 5, name: "FMDrone", slug: "fmdrone" },
-  { id: 6, name: "Waveform", slug: "waveform" },
+  { id: 0, name: "Bell", slug: "bell", machineType: "Synthesizer" },
+  { id: 0, name: "Bass", slug: "bass", machineType: "Synthesizer" },
+  { id: 1, name: "HiHat", slug: "hihat", machineType: "Synthesizer" },
+  { id: 2, name: "Kick", slug: "kick", machineType: "Synthesizer" },
+  { id: 4, name: "FMBells", slug: "fmbells", machineType: "Synthesizer" },
+  { id: 5, name: "FMDrone", slug: "fmdrone", machineType: "Synthesizer" },
+  { id: 6, name: "Waveform", slug: "waveform", machineType: "Synthesizer" },
 ];
 
 export interface IHash {

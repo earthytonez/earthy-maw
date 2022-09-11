@@ -4,7 +4,7 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
-import { List, ListItemButton, ListItemText } from "@mui/material";
+import { List, ListItem, ListItemButton, ListItemText } from "@mui/material";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -43,10 +43,10 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   padding: grid,
   margin: `0 0 ${grid}px 0`,
   width: "100%",
-  borderBottom: '1px solid grey',
+  borderBottom: "1px solid grey",
   // change background colour if dragging
   background: isDragging ? "lightgreen" : "inherit",
-  '&:hover': {
+  "&:hover": {
     background: "lightgrey !important",
     margin: `1px 0 ${grid}px 0`,
   },
@@ -60,38 +60,51 @@ export default function MachineDrawer(
   props: MachineDrawerProps
 ): React.ReactElement {
   return (
-    <TabPanel value={props.value} index={props.index} sx={{padding: 0, bgcolor: 'background.paper' }} > 
-      <Box><Typography>Drag {props.machines[0].type} to track</Typography></Box>
+    <TabPanel
+      value={props.value}
+      index={props.index}
+      sx={{ padding: 0, bgcolor: "background.paper" }}
+    >
       <Droppable droppableId={`${props.slug}-drawer`}>
         {(provided, _snapshot) => (
-          <List disablePadding
+          <List
+            disablePadding
             ref={provided.innerRef}
             // {...provided.draggableProps}
             // {...provided.dragHandleProps}
           >
-              {props.machines.map((machine: any, i: number) => {
-                return (
-                  <Draggable
-                    key={i}
-                    draggableId={machine.slug}
-                    index={machine.id}
-                  >
-                    {(draggableProvided, _draggableSnapshot) => (
+            <ListItem style={{backgroundColor: "#333"}}>
+              <ListItemText>
+                <Typography>Drag {props.machines[0].machineType} from list below to track in main window.</Typography>
+              </ListItemText>
+            </ListItem>
+            {props.machines.map((machine: any, i: number) => {
+              return (
+                <Draggable
+                  key={i}
+                  draggableId={machine.slug}
+                  index={machine.id}
+                >
+                  {(draggableProvided, _draggableSnapshot) => (
+                    <ListItem
+                      ref={draggableProvided.innerRef}
+                      {...draggableProvided.draggableProps}
+                      {...draggableProvided.dragHandleProps}
+                      style={getItemStyle(
+                        _draggableSnapshot.isDragging,
+                        draggableProvided.draggableProps.style
+                      )}
+                    >
                       <ListItemButton
-                        ref={draggableProvided.innerRef}
-                        {...draggableProvided.draggableProps}
-                        {...draggableProvided.dragHandleProps}
-                        style={getItemStyle(
-                          _draggableSnapshot.isDragging,
-                          draggableProvided.draggableProps.style
-                        )}
+                        
                       >
                         <ListItemText key={machine.id} primary={machine.name} />
                       </ListItemButton>
-                    )}
-                  </Draggable>
-                );
-              })}
+                    </ListItem>
+                  )}
+                </Draggable>
+              );
+            })}
             {provided.placeholder}
           </List>
         )}

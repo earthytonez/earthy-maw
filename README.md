@@ -11,6 +11,10 @@ Sources/Docs:
 MMF (Minimum Marketable Features)
 Tech Debt: 1. Save more things (like Octaves)
 
+1. Help
+  1. 
+
+
 1. Share on Twitter.
     1. ~~Load synth and sequencer via URL parameters.~~
     2. ~~Fix BPM Changer~~

@@ -9,8 +9,8 @@ import ISynthEditableParams, { OSCILLATOR_TYPES } from './ISynthEditableParams';
 
 
 export default abstract class Synthesizer {
-    machineType: string = "Synthesizer";
     loading: boolean = true;
+    machineType: string = "Synthesizer";
     abstract name: string;
     abstract slug: string;
 

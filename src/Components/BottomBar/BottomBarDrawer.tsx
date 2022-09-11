@@ -18,6 +18,7 @@ import ISynthesizerType from "../../Objects/Synthesizer/ISynthesizerType";
 import { useUIStore } from "../../stores/UI/useUIStore";
 
 type Anchor = "top" | "left" | "bottom" | "right";
+const LEFT_DRAWER_WIDTH = 300;
 
 interface BottomBarDrawerProps {
   anchor: Anchor;
@@ -70,7 +71,7 @@ export default observer((
 
   const list = (anchor: Anchor) => (
     <Box
-      sx={{ width: 250 }}
+      sx={{ width: LEFT_DRAWER_WIDTH }}
       role="presentation"
       onKeyDown={props.toggleDrawer(anchor, false)}
     >
@@ -89,7 +90,7 @@ export default observer((
         >
           <Tab label="Synthesizers" {...a11yProps(0)} />
           <Tab label="Sequencers" {...a11yProps(1)} />
-          <Tab label="Arrangers" {...a11yProps(2)} />
+          {/* <Tab label="Arrangers" {...a11yProps(2)} /> */}
         </Tabs>
       </Box>
       <MachineDrawer

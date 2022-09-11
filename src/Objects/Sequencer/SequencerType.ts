@@ -17,6 +17,7 @@ export default class SequencerType {
   id: number;
   slug: string;
   boundSynthesizer?: Synthesizer = undefined;
+  machineType: string = "Sequencer";
   sequencerLoader?: SequencerLoader = undefined;
   type: string = "";
   x = 0;
