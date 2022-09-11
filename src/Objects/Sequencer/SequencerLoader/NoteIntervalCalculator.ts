@@ -3,6 +3,7 @@ import { IMusicKey, IMusicScale } from "../../../Types/index"
 
 import { error } from "../../../Util/logger"
 
+const { ScaleType } = require("@tonaljs/tonal");
 const SINGLE_OCTAVE_NOTES = ["A", "A#", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#"];
 
 export default class NoteIntervalCalculator {
@@ -65,7 +66,7 @@ export default class NoteIntervalCalculator {
         let iMod = 0;
         let iTmp = 0;
         while (noteDiff > 0) {
-            switch(this.scale) {
+            switch(this.scale.name) {
                 case "major":
                     noteDiff -= MAJOR_SCALE_INTERVALS[iTmp]!;
                     iMod += 1;
@@ -83,7 +84,7 @@ export default class NoteIntervalCalculator {
         }
         let y = 0;
         for (let i = 0; i <= interval - 2; i++) {
-            switch(this.scale) {
+            switch(this.scale.name) {
                 case "major":
                     let majorScaleInterval = MAJOR_SCALE_INTERVALS[i + iMod];
                     if (!majorScaleInterval) {
@@ -120,9 +121,13 @@ export default class NoteIntervalCalculator {
         return this.getNoteName(addedInterval, halfStep);
     }
 
-    constructor(key: IMusicKey, scale: IMusicScale) {
+    constructor(key: IMusicKey, scale: IMusicScale | string) {
         this.key = key;
-        this.scale = scale.toLowerCase() as IMusicScale;
+        if (typeof scale == "string") {
+            this.scale = ScaleType.get((scale as string).toLowerCase());
+        } else {
+            this.scale = scale;
+        }
     }
 
 }

@@ -264,9 +264,6 @@ export default class Sequencer extends SequencerType {
         }
       }]);
     }
-
-    console.log("EDIT_PARAMS")
-    console.log(params);
     return params;
   }
 
@@ -278,7 +275,6 @@ export default class Sequencer extends SequencerType {
       "font-weight:bold"
     );
 
-    console.log(this.type);
     this.sequencerLoader = await this.fetchTOML(TOML_FILES[this.type]);
     this.loadRunners();
   }
@@ -392,11 +388,6 @@ export default class Sequencer extends SequencerType {
     chord: IMusicChord,
     beatMarker: BeatMarker
   ): Tone.FrequencyClass {
-    console.log(this.trackFeatures);
-    console.log(this.trackFeatures);
-    console.log(this.trackFeatures);
-    console.log(this.trackFeatures);
-    console.log(this.trackFeatures);
     return this.sequencerLoader!.note(
       key,
       scale,

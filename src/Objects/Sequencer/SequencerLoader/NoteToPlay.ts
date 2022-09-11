@@ -24,7 +24,7 @@ export default class NoteToPlay {
         octaves: number[],
         _measureBeat: number
     ) {
-        let scaleName = `${key} ${scale.toLowerCase()}`;
+        let scaleName = `${key} ${scale.name}`;
         debug("NoteToPlay", `Getting notes from ${scaleName} scale.`);
         let notes = Scale.get(scaleName).notes;
         debug("NoteToPlay", `NOTES: `, notes);
