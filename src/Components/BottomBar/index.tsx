@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite";
 
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import FormControl from "@mui/material/FormControl";
 import FormGroup from "@mui/material/FormGroup";
@@ -21,6 +22,8 @@ import ISynthesizerType from "../../Objects/Synthesizer/ISynthesizerType";
 
 import { useStore } from "../../stores/useStore";
 import { useUIStore } from "../../stores/UI/useUIStore";
+
+import HelpModal from "../HelpModal";
 
 import {
   MUSIC_THEORY_KEYS,
@@ -42,6 +45,10 @@ interface BottomBarProps {
 const BottomBar = observer((props: BottomBarProps) => {
   const store = useStore();
   const uiStore = useUIStore();
+
+  const [openHelpModal, setOpenHelpModal] = React.useState(false);
+  const handleOpenHelpModal = () => setOpenHelpModal(true);
+  const handleCloseHelpModal = () => setOpenHelpModal(false);
 
   const { toggleObjectEdit } = uiStore;
 
@@ -104,6 +111,10 @@ const BottomBar = observer((props: BottomBarProps) => {
             </FormGroup>
           </Box>
           <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "row-reverse"}}>
+              <Button onClick={handleOpenHelpModal}>Help</Button>
+              <HelpModal open={openHelpModal} handleClose={handleCloseHelpModal} />
+            </Box>
         </Toolbar>
         <div></div>
       </AppBar>

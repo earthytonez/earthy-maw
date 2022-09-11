@@ -79,9 +79,9 @@ function ColorSchemeToggle() {
   );
 }
 const TopBar = observer(() => {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [openAboutModal, setOpenAboutModal] = React.useState(false);
+  const handleOpenAboutModal = () => setOpenAboutModal(true);
+  const handleCloseAboutModal = () => setOpenAboutModal(false);
 
   const store = useStore();
   const {
@@ -163,8 +163,8 @@ const TopBar = observer(() => {
               <ColorSchemeToggle />
             </Box>
             <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "row-reverse"}}>
-              <Button onClick={handleOpen}>About</Button>
-              <AboutModal open={open} handleClose={handleClose} />
+              <Button onClick={handleOpenAboutModal}>About</Button>
+              <AboutModal open={openAboutModal} handleClose={handleCloseAboutModal} />
             </Box>
         </Toolbar>
       </AppBar>
