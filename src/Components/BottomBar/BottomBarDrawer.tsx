@@ -63,7 +63,7 @@ export default observer((
 
   function a11yProps(index: number) {
     return {
-      id: `simple-tab-${index}`,
+      // id: `simple-tab-${index}`,
       "aria-controls": `simple-tabpanel-${index}`,
     };
   }
@@ -76,6 +76,7 @@ export default observer((
       onKeyDown={props.toggleDrawer(anchor, false)}
     >
         <IconButton
+          id="close-machine-drawer"
           color="inherit"
           aria-label="close drawer"
           onClick={closeMachineBrowser}
@@ -88,8 +89,8 @@ export default observer((
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="Synthesizers" {...a11yProps(0)} />
-          <Tab label="Sequencers" {...a11yProps(1)} />
+          <Tab id="synthesizers-tab" label="Synthesizers" {...a11yProps(0)} />
+          <Tab id="sequencers-tab" label="Sequencers" {...a11yProps(1)} />
           {/* <Tab label="Arrangers" {...a11yProps(2)} /> */}
         </Tabs>
       </Box>

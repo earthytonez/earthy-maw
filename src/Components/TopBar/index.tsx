@@ -30,7 +30,7 @@ const PlayButtonToggle = observer(
     };
 
     return (
-      <IconButton color="success" onClick={onClick} size="large">
+      <IconButton id="play-button" color="success" onClick={onClick} size="large">
         {play ? <PauseIcon fontSize="large" /> : <PlayArrowIcon fontSize="large" />}
       </IconButton>
     );

@@ -87,6 +87,7 @@ export default function MachineDrawer(
                 >
                   {(draggableProvided, _draggableSnapshot) => (
                     <ListItem
+                      id={`${machine.machineType.toLowerCase()}-${machine.slug}`}
                       ref={draggableProvided.innerRef}
                       {...draggableProvided.draggableProps}
                       {...draggableProvided.dragHandleProps}

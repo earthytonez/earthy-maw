@@ -75,7 +75,11 @@ export default class NoteIntervalCalculator {
                     noteDiff -= MINOR_SCALE_INTERVALS[iTmp]!;
                     iMod += 1;
                     break;
-                default:
+                case "aeolian":
+                    noteDiff -= MINOR_SCALE_INTERVALS[iTmp]!;
+                    iMod += 1;
+                    break;
+                    default:
                     noteDiff -= 1;
                     error("NOTE_INTERVAL_CALCULATOR", "This shouldn't really happen");
                     break;
@@ -101,7 +105,15 @@ export default class NoteIntervalCalculator {
                     retVal += minorScaleInterval;
                     y = y + minorScaleInterval;
                     break;
-            }
+                case "aeolian":
+                    let aeolianScaleInterval = MINOR_SCALE_INTERVALS[i + iMod];
+                    if (!aeolianScaleInterval) {
+                        throw new Error("Invalid interval mod for aeolian scaleinterval in NoteIntervalCalculator.ts");
+                    }
+                    retVal += aeolianScaleInterval;
+                    y = y + aeolianScaleInterval;
+                    break;
+                }
         }
         return retVal;
     }
@@ -128,6 +140,8 @@ export default class NoteIntervalCalculator {
         } else {
             this.scale = scale;
         }
+
+        console.log(this.scale.name);
     }
 
 }

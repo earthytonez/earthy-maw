@@ -24,7 +24,7 @@ import { useStore } from "../../stores/useStore";
 import { useUIStore } from "../../stores/UI/useUIStore";
 
 import HelpModal from "../HelpModal";
-
+import Tutorials from "../HelpModal/TutorialsComponent";
 import {
   MUSIC_THEORY_KEYS,
   MUSIC_THEORY_SCALES,
@@ -56,8 +56,7 @@ const BottomBar = observer((props: BottomBarProps) => {
     store.musicFeaturesStore;
 
   const toggleDrawer =
-    (open: boolean) =>
-    (event: React.KeyboardEvent | React.MouseEvent) => {
+    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
         event.type === "keydown" &&
         ((event as React.KeyboardEvent).key === "Tab" ||
@@ -74,6 +73,7 @@ const BottomBar = observer((props: BottomBarProps) => {
       <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
         <Toolbar>
           <IconButton
+            id="open-machine-drawer"
             color="inherit"
             aria-label="open drawer"
             onClick={toggleDrawer(true)}
@@ -83,7 +83,13 @@ const BottomBar = observer((props: BottomBarProps) => {
           <Box sx={{ flexGrow: 1 }}>
             <FormGroup style={flexContainer}>
               <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-              <FeatureSelect title="Keys" slug="keys" value={musicKey} change={setKey} options={MUSIC_THEORY_KEYS} />
+                <FeatureSelect
+                  title="Keys"
+                  slug="keys"
+                  value={musicKey}
+                  change={setKey}
+                  options={MUSIC_THEORY_KEYS}
+                />
               </FormControl>
               <FormControl>
                 <IconButton
@@ -103,18 +109,40 @@ const BottomBar = observer((props: BottomBarProps) => {
               </FormControl>
 
               <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-                <FeatureSelect title="Scale" slug="scale" value={musicScale.name} change={setScale} options={MUSIC_THEORY_SCALES} />
+                <FeatureSelect
+                  title="Scale"
+                  slug="scale"
+                  value={musicScale.name}
+                  change={setScale}
+                  options={MUSIC_THEORY_SCALES}
+                />
               </FormControl>
               <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-                <FeatureSelect title="Chord" slug="chord" value={musicChord.name} change={setChord} options={MUSIC_THEORY_CHORDS} />
+                <FeatureSelect
+                  title="Chord"
+                  slug="chord"
+                  value={musicChord.name}
+                  change={setChord}
+                  options={MUSIC_THEORY_CHORDS}
+                />
               </FormControl>
             </FormGroup>
           </Box>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "row-reverse"}}>
-              <Button onClick={handleOpenHelpModal}>Help</Button>
-              <HelpModal open={openHelpModal} handleClose={handleCloseHelpModal} />
-            </Box>
+          <Box
+            sx={{ flexGrow: 1, display: "flex", flexDirection: "row-reverse" }}
+          >
+            <Tutorials />
+          </Box>
+          <Box
+            sx={{ flexGrow: 1, display: "flex", flexDirection: "row-reverse" }}
+          >
+            <Button onClick={handleOpenHelpModal}>Help</Button>
+            <HelpModal
+              open={openHelpModal}
+              handleClose={handleCloseHelpModal}
+            />
+          </Box>
         </Toolbar>
         <div></div>
       </AppBar>
