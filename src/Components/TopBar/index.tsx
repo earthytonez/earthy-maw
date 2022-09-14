@@ -2,7 +2,7 @@ import * as React from "react";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 
-import OutlinedInput from "@mui/material/OutlinedInput";
+import HeaderNumberField from "./HeaderNumberField";
 
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -30,8 +30,17 @@ const PlayButtonToggle = observer(
     };
 
     return (
-      <IconButton id="play-button" color="success" onClick={onClick} size="large">
-        {play ? <PauseIcon fontSize="large" /> : <PlayArrowIcon fontSize="large" />}
+      <IconButton
+        id="play-button"
+        color="success"
+        onClick={onClick}
+        size="large"
+      >
+        {play ? (
+          <PauseIcon fontSize="large" />
+        ) : (
+          <PlayArrowIcon fontSize="large" />
+        )}
       </IconButton>
     );
   }
@@ -109,63 +118,44 @@ const TopBar = observer(() => {
     <React.Fragment>
       <AppBar>
         <Toolbar>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 1.5,
-              }}
-            >
-              <Typography component="h1" fontWeight="xl">
-                Earthy MAW
-              </Typography>
-              <PlayButtonToggle play={play} playPause={playPause} />
-              <OutlinedInput
-                size="small"
-                value={tempo}
-                onChange={onChangeTempo}
-                type="number"
-                endAdornment={
-                  <Typography fontWeight="lg" fontSize="sm" color="text.tertiary">
-                    bpm
-                  </Typography>
-                }
-                sx={{
-                  flexBasis: "120px",
-                  display: {
-                    xs: "none",
-                    sm: "flex",
-                  },
-                }}
-              />
-              <OutlinedInput
-                size="small"
-                value={musicSectionLength}
-                onChange={onChangeSectionLength}
-                type="number"
-                endAdornment={
-                  <Typography fontWeight="lg" fontSize="sm" color="text.tertiary">
-                    Section Length
-                  </Typography>
-                }
-                sx={{
-                  flexBasis: "140px",
-                  display: {
-                    xs: "none",
-                    sm: "flex",
-                  },
-                }}
-              />
-            </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 1.5,
+            }}
+          >
+            <Typography component="h1" fontWeight="xl">
+              Earthy MAW
+            </Typography>
+            <PlayButtonToggle play={play} playPause={playPause} />
+            <HeaderNumberField
+              value={tempo}
+              onChange={onChangeTempo}
+              title="bpm"
+              width="120px"
+            />
+            <HeaderNumberField
+              value={musicSectionLength}
+              onChange={onChangeSectionLength}
+              title="Section Length"
+              width="140px"
+            />
+          </Box>
 
-            <Box sx={{ display: "flex", flexDirection: "row", gap: 1.5 }}>
-              <ColorSchemeToggle />
-            </Box>
-            <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "row-reverse"}}>
-              <Button onClick={handleOpenAboutModal}>About</Button>
-              <AboutModal open={openAboutModal} handleClose={handleCloseAboutModal} />
-            </Box>
+          <Box sx={{ display: "flex", flexDirection: "row", gap: 1.5 }}>
+            <ColorSchemeToggle />
+          </Box>
+          <Box
+            sx={{ flexGrow: 1, display: "flex", flexDirection: "row-reverse" }}
+          >
+            <Button onClick={handleOpenAboutModal}>About</Button>
+            <AboutModal
+              open={openAboutModal}
+              handleClose={handleCloseAboutModal}
+            />
+          </Box>
         </Toolbar>
       </AppBar>
     </React.Fragment>
