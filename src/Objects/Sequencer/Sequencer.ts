@@ -252,14 +252,14 @@ export default class Sequencer extends SequencerType {
       ]);
     };
 
-    if (this.sequencerLoader?.sequencerHolder?.triggerWhen?.fills && this.sequencerLoader?.sequencerHolder?.triggerWhen?.fills.length > 0) {
+    if (this.sequencerLoader?.sequencerHolder?.triggerWhen?.parameterSets[0]?.fillList && this.sequencerLoader?.sequencerHolder?.triggerWhen?.parameterSets[0]?.fillList.length > 0) {
       params = params.concat([{
         name: "Fill",
         field: "fills",
         fieldType: "slider",
         fieldOptions: {
           min: 0,
-          max: this.sequencerLoader.sequencerHolder.triggerWhen.fills.length,
+          max: this.sequencerLoader.sequencerHolder.triggerWhen.parameterSets[0].fillList.length,
           current: this.maxInterval,
         }
       }]);

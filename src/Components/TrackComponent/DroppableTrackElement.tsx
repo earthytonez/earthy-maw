@@ -6,13 +6,16 @@ import { Droppable } from "react-beautiful-dnd";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Chip from "@mui/material/Chip";
 import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
-import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import LaunchIcon from "@mui/icons-material/Launch";
 
+import FullGridIconButton from "../TightBorderedGrid/FullGridIconButton";
+import GridBottomRightCorner from "../TightBorderedGrid/GridBottomRightCorner";
+import GridBottomLeftCorner from "../TightBorderedGrid/GridBottomLeftCorner";
+import GridTopRightCorner from "../TightBorderedGrid/GridTopRightCorner";
+import GridTopLeftCorner from "../TightBorderedGrid/GridTopLeftCorner";
+import TightBorderedPaper from "../TightBorderedGrid/TightBorderedPaper";
 import MachinePlaceholder from "./MachinePlaceholder";
 
 import { UniqueColors } from "../Decorations";
@@ -79,9 +82,8 @@ const DroppableTrackElement = observer(
         droppableId={`track-${track_id}-${slug}`}
       >
         {(provided, _snapshot) => (
-          <Paper>
+          <TightBorderedPaper>
             <Card
-              style={{ padding: "8px" }}
               ref={provided.innerRef}
               // {...provided.draggableProps}
               // {...provided.dragHandleProps}
@@ -99,8 +101,8 @@ const DroppableTrackElement = observer(
                   {machine &&
                   machine.name !== "" &&
                   machine.name !== undefined ? (
-                    <Grid container spacing={2}>
-                      <Grid item xs={10}>
+                    <Grid container spacing={0}>
+                      <GridTopLeftCorner item xs={10}>
                         <Typography
                           color="neutral.500"
                           fontWeight={700}
@@ -112,9 +114,9 @@ const DroppableTrackElement = observer(
                         >
                           {machine.name}
                         </Typography>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <IconButton
+                      </GridTopLeftCorner>
+                      <GridTopRightCorner item xs={2} >
+                        <FullGridIconButton
                           aria-label={`edit ${machine.name}`}
                           size="small"
                           onClick={() =>
@@ -122,8 +124,8 @@ const DroppableTrackElement = observer(
                           }
                         >
                           <LaunchIcon fontSize="small" />
-                        </IconButton>
-                      </Grid>
+                        </FullGridIconButton>
+                      </GridTopRightCorner>
                     </Grid>
                   ) : (
                     <LoadingPlaceHolder
@@ -136,14 +138,14 @@ const DroppableTrackElement = observer(
                 </Box>
                 {machine && machine.name !== "" ? (
                   <Grid container>
-                    <Grid item xs>
+                    <GridBottomLeftCorner item xs>
                       <UniqueColors
                         name={`${machine.machineType}${machine.name}`}
                       />
-                    </Grid>
-                    <Grid item xs>
-                      <Chip label={title} />
-                    </Grid>
+                    </GridBottomLeftCorner>
+                    <GridBottomRightCorner item xs>
+                      <Typography style={{fontFamily: 'Source Code Pro'}}>{title}</Typography>
+                    </GridBottomRightCorner>
                   </Grid>
                 ) : (
                   ""
@@ -151,7 +153,7 @@ const DroppableTrackElement = observer(
                 <Presets />
               </CardContent>
             </Card>
-          </Paper>
+          </TightBorderedPaper>
         )}
       </Droppable>
     );

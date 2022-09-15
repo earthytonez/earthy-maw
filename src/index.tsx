@@ -31,6 +31,12 @@ const theme = createTheme({
   }
 });
 
+declare module '@mui/material/Grid' {
+  interface ButtonPropsVariantOverrides {
+    'tight-border': true;
+  }
+}
+
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
   <StoreProvider>
