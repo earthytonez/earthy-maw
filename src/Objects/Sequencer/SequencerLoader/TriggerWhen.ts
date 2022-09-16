@@ -13,6 +13,7 @@ export interface ITriggerParameters {
   fillStart?: number;
   fillEnd?: number;
   fillList?: number[][]
+  selectedFill?: number; // The fill selected by the user.
 
   // From TOML
   fillWhen?: string
@@ -69,6 +70,11 @@ export default class TriggerWhen {
       this.parameterSets[0]!.fillStart = 13;
     } else if (fill.startsWith("last eight")) {
       this.parameterSets[0]!.fillStart = 9
+    }
+
+    if (fill == "last 16 of 64") {
+      this.parameterSets[0]!.fillStart = 49
+      this.parameterSets[0]!.fillEnd = 64
     }
   }
 

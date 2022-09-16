@@ -6,36 +6,53 @@ import SequencerGate, { ISequencerGate } from "./SequencerGate";
 
 const DEFAULT_GATE = 1;
 
-/* 
+/*
  * Play Every X is used to calculate whether or not a trigger should occur, usually
  * playing every x notes.
  */
 export default class PlayEveryX implements ISequencerRunner {
   rhythm_length: number;
 
-  playEveryXStepInterval(beatMarker: number, parameters: ITriggerParameters): ISequencerGate {
+  playEveryXStepInterval(
+    beatMarker: number,
+    parameters: ITriggerParameters
+  ): ISequencerGate {
     let stepCount = beatMarker % parameters.stepInterval!;
 
-    debug("PLAY_EVERY_X",
-    `Playing steps: ${beatMarker} / ${stepCount} - ${parameters.stepInterval} on ${parameters.on} -- ${parameters.fillEnd}`
+    debug(
+      "PLAY_EVERY_X",
+      `Playing steps: ${beatMarker} / ${stepCount} - ${parameters.stepInterval} on ${parameters.on} -- ${parameters.fillEnd}`
     );
 
     let fillStep = 0;
     if (parameters?.fillEnd) {
-      fillStep = beatMarker % (parameters.fillEnd);
+      fillStep = beatMarker % parameters.fillEnd;
     }
 
     /* TODO: NEEDS MUCHO WORKO */
-    if (fillStep && parameters?.fillStart && parameters?.fillEnd && fillStep >= parameters.fillStart && fillStep <= parameters.fillEnd) {
-      const fillArray = parameters.fillList![0];
-    if (fillArray) {    
-        const triggerFill = fillArray.includes(fillStep - parameters.fillStart);
-        if (triggerFill) {
-          return new SequencerGate(true);
-        }  
+    if (parameters.selectedFill !== 0) {
+      // 0 as a selected fill means no fill.
+
+      if (
+        fillStep &&
+        parameters?.fillStart &&
+        parameters?.fillEnd &&
+        fillStep >= parameters.fillStart &&
+        fillStep <= parameters.fillEnd
+      ) {
+        const fillArray = parameters.fillList![parameters.selectedFill!];
+        if (fillArray) {
+          const triggerFill = fillArray.includes(
+            fillStep - parameters.fillStart
+          );
+          if (triggerFill) {
+            return new SequencerGate(true);
+          } else {
+            return new SequencerGate(false);
+          }
+        }
       }
     }
-
 
     if (stepCount === parameters.on) {
       return new SequencerGate(true);
@@ -44,10 +61,14 @@ export default class PlayEveryX implements ISequencerRunner {
     return new SequencerGate(false);
   }
 
-  playEveryXStepList(beatMarker: number, parameters: ITriggerParameters): ISequencerGate {
+  playEveryXStepList(
+    beatMarker: number,
+    parameters: ITriggerParameters
+  ): ISequencerGate {
     let stepCount = beatMarker % this.rhythm_length;
 
-    debug("PLAY_EVERY_X",
+    debug(
+      "PLAY_EVERY_X",
       `Playing from step list steps: ${this.rhythm_length} -- ${beatMarker} / ${stepCount} (${parameters.stepList}`
     );
 
@@ -55,16 +76,20 @@ export default class PlayEveryX implements ISequencerRunner {
     if (!parameters.gateList) {
       gateToPlay = DEFAULT_GATE;
     } else {
-      gateToPlay = stepCount % parameters.gateList!.length
+      gateToPlay = stepCount % parameters.gateList!.length;
     }
-    debug("PLAY_EVERY_X",
-    `Playing from step list steps: ${gateToPlay} --  ${beatMarker} / ${stepCount} - ${parameters.stepInterval} on ${parameters.on}`
+    debug(
+      "PLAY_EVERY_X",
+      `Playing from step list steps: ${gateToPlay} --  ${beatMarker} / ${stepCount} - ${parameters.stepInterval} on ${parameters.on}`
     );
 
     console.log(parameters.gateList);
     console.log(gateToPlay);
-  
-    return new SequencerGate(parameters?.stepList?.includes(stepCount), (parameters.gateList![gateToPlay]! / 10));
+
+    return new SequencerGate(
+      parameters?.stepList?.includes(stepCount),
+      parameters.gateList![gateToPlay]! / 10
+    );
   }
 
   run(beatMarker: number, parameters: ITriggerParameters): ISequencerGate {
@@ -77,8 +102,8 @@ export default class PlayEveryX implements ISequencerRunner {
         return this.playEveryXStepInterval(beatMarker, parameters);
     }
     return {
-      triggered: false
-    }
+      triggered: false,
+    };
   }
 
   constructor(rhythm_length: number) {

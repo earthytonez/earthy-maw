@@ -61,6 +61,11 @@ export default class Sequencer extends SequencerType {
   minInterval: number = 5;
   maxInterval: number = 10;
 
+  /*
+   * These variables control which fill is selected.
+   */
+  selectedFill: number = 0;
+
   audioContext: Tone.BaseContext;
   musicFeaturesStore: MusicFeaturesStore;
 
@@ -255,12 +260,12 @@ export default class Sequencer extends SequencerType {
     if (this.sequencerLoader?.sequencerHolder?.triggerWhen?.parameterSets[0]?.fillList && this.sequencerLoader?.sequencerHolder?.triggerWhen?.parameterSets[0]?.fillList.length > 0) {
       params = params.concat([{
         name: "Fill",
-        field: "fills",
+        field: "selectedFill",
         fieldType: "slider",
         fieldOptions: {
           min: 0,
           max: this.sequencerLoader.sequencerHolder.triggerWhen.parameterSets[0].fillList.length,
-          current: this.maxInterval,
+          current: this.selectedFill,
         }
       }]);
     }
@@ -354,7 +359,10 @@ export default class Sequencer extends SequencerType {
       this.triggerWhen.parameterSets[this.chosenTriggerParameterSet];
     if (parameters) {
       parameters.gateList = this.gateLengths?.parameterSets[this.chosenGateParameterSet]?.gateList;
+      parameters.selectedFill = this.selectedFill;
     }
+
+    
 
     if (!parameters) {
       throw new Error(`parameters for random sequencer ${this.chosenTriggerParameterSet} must be defined`);

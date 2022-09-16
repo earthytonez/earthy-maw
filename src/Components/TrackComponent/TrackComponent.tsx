@@ -7,8 +7,8 @@ import Grid from "@mui/material/Grid";
 
 import Track from "../../Objects/Track";
 
-import DroppableTrackElement from "./DroppableTrackElement";
-import TrackSettingsComponent from "./TrackSettingsComponent";
+import DroppableTrackElement from "./MachineComponent/DroppableTrackElement";
+import TrackSettingsComponent from "./TrackSettings/TrackSettingsComponent";
 
 interface TrackComponentProps {
   track: Track;
