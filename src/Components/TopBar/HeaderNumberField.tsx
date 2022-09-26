@@ -1,6 +1,5 @@
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import FormHelperText from "@mui/material/FormHelperText";
 import Stack from "@mui/material/Stack";
 
 import React from "react";
@@ -16,8 +15,6 @@ interface IHeaderNumberFieldParams {
 
 function IHeaderNumberFieldTitle({ children }: { children: string }) {
   return (
-    <FormHelperText sx={{marginTop: 0}}>
-      {" "}
       <Typography
         align="center"
         color="neutral.500"
@@ -26,11 +23,11 @@ function IHeaderNumberFieldTitle({ children }: { children: string }) {
           fontSize: "12px",
           textTransform: "uppercase",
           letterSpacing: ".1rem",
+          marginTop: 0
         }}
       >
         {children}{" "}
       </Typography>
-    </FormHelperText>
   );
 }
 
@@ -53,7 +50,7 @@ export default observer(
           inputProps={{
             min: 0, style: { 
               fontSize: '20px',
-              fontFamily: '"Roboto","Helvetica","Arial",sans-serif;',
+              fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
               textAlign: 'center',
             borderBottom: 0 }}} // the change is here
           sx={{

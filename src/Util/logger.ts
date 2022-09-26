@@ -9,7 +9,7 @@ export function debug(subsystem: string, message: string, object?: any, css?: st
     if (!object) {
         object = {};
     }
-    console.debug(`DEBUG ${subsystem} ${message} / ${Object.keys(object).map((key) => { return `${key}=${object[key]} `})}`, css); 
+    console.debug(`DEBUG ${subsystem} ${message} / ${Object.keys(object).map((key) => { return `${key}=${JSON.stringify(object[key])} `})}`, css); 
 }
 
 export function warn(subsystem: string, message: string, object?: any, css?: string) {

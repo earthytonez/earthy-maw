@@ -16,9 +16,9 @@ import MoreIcon from "@mui/icons-material/More";
 import FeatureSelect from "./FeatureSelect";
 import BottomBarDrawer from "./BottomBarDrawer";
 
-import SequencerType from "../../Objects/Sequencer/SequencerType";
-import Arranger from "../../Objects/Arranger";
-import ISynthesizerType from "../../Objects/Synthesizer/ISynthesizerType";
+import SequencerType from "../../stores/Sequencer/SequencerType";
+import Arranger from "../../stores/Arranger";
+import ISynthesizerType from "../../stores/Synthesizer/ISynthesizerType";
 
 import { useStore } from "../../stores/useStore";
 import { useUIStore } from "../../stores/UI/useUIStore";

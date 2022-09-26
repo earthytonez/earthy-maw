@@ -11,9 +11,9 @@ import Tabs from "@mui/material/Tabs";
 import CloseIcon from "@mui/icons-material/Close";
 
 import MachineDrawer from "./MachineDrawer";
-import SequencerType from "../../Objects/Sequencer/SequencerType";
-import Arranger from "../../Objects/Arranger";
-import ISynthesizerType from "../../Objects/Synthesizer/ISynthesizerType";
+import SequencerType from "../../stores/Sequencer/SequencerType";
+import Arranger from "../../stores/Arranger";
+import ISynthesizerType from "../../stores/Synthesizer/ISynthesizerType";
 
 import { useUIStore } from "../../stores/UI/useUIStore";
 

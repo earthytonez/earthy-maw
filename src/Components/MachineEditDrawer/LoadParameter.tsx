@@ -2,60 +2,70 @@ import * as React from "react";
 import { observer } from "mobx-react-lite";
 
 import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 import Slider from "@mui/material/Slider";
 import Typography from "@mui/material/Typography";
 
 import MachineEditDrawerRadioGroup from "./MachineEditDrawerRadioGroup";
 import MachineEditDrawerDial from "./MachineEditDrawerDial";
 
-
 import ArraySelectorComponent from "./ArraySelectorComponent";
+import { ParameterFieldTypes } from "stores/Parameter/Base";
+import GridTopFullWidth from "Components/TightBorderedGrid/GridTopFullWidth";
+import GridMiddleFullWidth from "Components/TightBorderedGrid/GridMiddleFullWidth";
 
 interface ILoadParameterParams {
-    edit: Function;
-    increment: Function;
-    decrement: Function;
-    name: string;
-    field: string;
-    fieldType: string;
-    fieldOptions: any;
-  }
+  edit: Function;
+  increment: Function;
+  decrement: Function;
+  name: string;
+  field: string;
+  fieldType: ParameterFieldTypes;
+  fieldOptions: any;
+}
 
 export default observer(
-    ({
-      edit,
-      name,
-      field,
-      fieldType,
-      fieldOptions,
-      increment,
-      decrement,
-    }: ILoadParameterParams): React.ReactElement => {
-      switch (fieldType) {
-        case "radio":
-          return (
-            <MachineEditDrawerRadioGroup
-              name={name}
-              field={field}
-              fieldOptions={fieldOptions}
-              edit={edit}
-            ></MachineEditDrawerRadioGroup>
-          );
-        case "dial":
-          return (
-            <MachineEditDrawerDial
-              name={name}
-              field={field}
-              fieldOptions={fieldOptions}
-              edit={edit}
-            ></MachineEditDrawerDial>
-          );
-        case "slider":
-          return (
-            <Box sx={{ width: 1 }}>
-              <Typography id="track-false-slider" gutterBottom>
-                {name}
+  ({
+    edit,
+    name,
+    field,
+    fieldType,
+    fieldOptions,
+    increment,
+    decrement,
+  }: ILoadParameterParams): React.ReactElement => {
+    switch (fieldType) {
+      case "radio":
+        return (
+          <MachineEditDrawerRadioGroup
+            name={name}
+            field={field}
+            fieldOptions={fieldOptions}
+            edit={edit}
+          ></MachineEditDrawerRadioGroup>
+        );
+      case "dial":
+        return (
+          <MachineEditDrawerDial
+            name={name}
+            field={field}
+            fieldOptions={fieldOptions}
+            edit={edit}
+          ></MachineEditDrawerDial>
+        );
+      case "slider":
+        return (
+          <Grid container sx={{ mr: 0, ml: 0, pr: 0, pl: 0 }}>
+            <GridTopFullWidth sx={{ width: 1 }}>
+              <Typography
+                style={{ fontFamily: "Source Code Pro" }}
+                id="track-false-slider"
+                gutterBottom
+              >
+                {name} - {fieldOptions.current}
               </Typography>
+            </GridTopFullWidth>
+            <GridMiddleFullWidth sx={{ width: 1 }}>
               <Slider
                 aria-label={name}
                 defaultValue={fieldOptions.current}
@@ -69,15 +79,22 @@ export default observer(
                 max={fieldOptions.max}
                 valueLabelDisplay="auto"
               />
-            </Box>
-          );
-        case "arraySelector":
-          return (
-            <Box>
-              <Typography id="track-false-slider" gutterBottom>
+            </GridMiddleFullWidth>
+          </Grid>
+        );
+      case "arraySelector":
+        return (
+          <Grid container sx={{ mr: 0, ml: 0, pr: 0, pl: 0 }}>
+            <GridMiddleFullWidth>
+              <Typography
+                style={{ fontFamily: "Source Code Pro" }}
+                id="track-false-slider"
+                gutterBottom
+              >
                 {name}
               </Typography>
-  
+            </GridMiddleFullWidth>
+            <GridMiddleFullWidth>
               <ArraySelectorComponent
                 aria-label={name}
                 selectableValues={fieldOptions.options}
@@ -86,12 +103,12 @@ export default observer(
                 incrementValue={() => increment(field)}
                 decrementValue={() => decrement(field)}
               />
-            </Box>
-          );
-  
-        default:
-          return <Box></Box>;
-      }
+            </GridMiddleFullWidth>
+          </Grid>
+        );
+
+      default:
+        return <Box></Box>;
     }
-  );
-  
+  }
+);

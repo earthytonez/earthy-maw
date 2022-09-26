@@ -4,12 +4,7 @@ import { observer } from "mobx-react-lite";
 import { DragDropContext } from "react-beautiful-dnd";
 import "./App.css";
 
-import * as Tone from "tone";
-
 import Box from "@mui/material/Box"
-
-import Arranger from "./Objects/Arranger";
-import SequencerType from "./Objects/Sequencer/SequencerType";
 
 import BottomBar from "./Components/BottomBar/index";
 import TopBar from "./Components/TopBar/index";
@@ -17,44 +12,22 @@ import TrackList from "./Components/TrackComponent/TrackListComponent";
 
 import { useStore } from './stores/useStore';
 
-import {
-  SEQUENCER_TYPES,
-  SYNTH_TYPES,
-} from "./config/constants";
 import MachineEditDrawer from "./Components/MachineEditDrawer/index";
 
-
-const ARRANGER_TYPES = ["Repeater"];
-
-function generateSynthTypes() {
-  return SYNTH_TYPES;
-}
-
-function generateSequencerTypes() {
-  return SEQUENCER_TYPES.map((type, i) => {
-    let sequencerType = new SequencerType(type, i);
-    sequencerType.load();
-    return sequencerType;
-  });
-}
-
-function generateArrangerTypes() {
-  return ARRANGER_TYPES.map((type, _i) => new Arranger(type, Tone.getContext()));
-}
-
-const ARRANGER_TYPE_INITIAL_STATE = generateArrangerTypes();
-const SYNTH_TYPE_INITIAL_STATE = generateSynthTypes();
-const SEQUENCER_TYPE_INITIAL_STATE = generateSequencerTypes();
-
 const App = observer(() => {
+  const store = useStore();
+
+  const ARRANGER_TYPE_INITIAL_STATE = store.arrangerTypes();
+  const SYNTH_TYPE_INITIAL_STATE = store.synthTypes();
+  const SEQUENCER_TYPE_INITIAL_STATE = store.sequencerTypes();
+  
   const [arrangerTypes] = React.useState(ARRANGER_TYPE_INITIAL_STATE);
   const [synthTypes] = React.useState(SYNTH_TYPE_INITIAL_STATE);
   const [sequencerTypes] = React.useState(SEQUENCER_TYPE_INITIAL_STATE);
 
-  const store = useStore();
   let tracks = store.trackStore.tracks;
-  Tone.setContext(store.audioContext);
-
+  
+  // Tone.setContext(store.audioContext);
   /*
    * Main track/loop
    */

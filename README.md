@@ -12,7 +12,8 @@ MMF (Minimum Marketable Features)
 Tech Debt: 1. Save more things (like Octaves)
 
 1. Help
-  1. 
+  1. Make parameters modulatable by LFO and Date.
+  2. 
 
 
 1. Share on Twitter.

@@ -8,7 +8,8 @@ export default styled(Paper)`
   border-radius: ${PAPER_BORDER_RADIUS};
   border: 1px solid ${GRID_BORDER_COLOR};
 
-  :hover {
-    color: #2e8b57;
-  }
 `;
+
+// :hover {
+//   color: #2e8b57;
+// }

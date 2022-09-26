@@ -1,0 +1,7 @@
+name = "Waveform"
+description = "Single Oscillator Waveform Synth"
+tags = [
+    "house", "trance", "edm"
+]
+plugins = ["filter<lowpass>"]
+type = "PolySynth<FMSynth>"

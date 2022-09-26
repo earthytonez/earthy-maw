@@ -1,0 +1,79 @@
+import Synthesizer from "../Synthesizer";
+
+import * as Tone from "tone";
+
+import { ISequencerGate } from '../../../stores/Sequencer/SequencerRunner/SequencerGate';
+import IOscillatorType from "../IOscillatorType";
+import IPlayParams from "Types/IPlayParams";
+import { debug } from '../../../Util/logger';
+
+import ISynthesizerEditableParams from '../ISynthEditableParams';
+
+export default class Bell extends Synthesizer {
+  oscillatorType?: IOscillatorType = undefined;
+  oscillatorTypeA?: IOscillatorType = "sine1";
+  oscillatorTypeB?: IOscillatorType = "sine";
+  oscillatorTypeC?: IOscillatorType = undefined;
+
+  name: string = "Bell";
+  slug: string = "bell";
+  pitch: number = 0;
+
+  synth: any;
+
+  get _editParameters(): ISynthesizerEditableParams[] {
+    return [];
+    }
+
+  attachVolume(vol: Tone.Volume) {
+    if (vol) {
+      this.synth.connect(vol);
+    }
+  }
+
+  play(gate: ISequencerGate, params: IPlayParams) {
+    console.log(`Bell is playing note ${params.note} for length ${gate.length}`);
+    this.synth.triggerAttackRelease(params.note, gate.length);
+    debug("Bell Context: ", this.synth);
+  }
+
+  constructor(vol: Tone.Volume) {
+    super();
+
+    try {
+      this.synth = new Tone.FMSynth(
+        {
+          modulation: {
+            type: "sine1",
+          },
+          modulationIndex: 1.3,
+          modulationEnvelope: {
+            attack: 0.002,
+            decay: 0.998,
+            sustain: .2,
+            release: 0
+          },
+          oscillator : {
+            type : 'sine',
+          },
+          envelope: {
+            attack: 0.002,
+            decay: 0.998,
+            sustain: .2,
+            release: 0
+          }
+        }
+      );
+
+      
+    } catch(err) {
+      console.error(this.synth);
+      console.error(err);
+    }
+    if (vol) {
+      this.synth.connect(vol);
+    } else {
+      this.synth.toDestination();
+    }
+  }
+}

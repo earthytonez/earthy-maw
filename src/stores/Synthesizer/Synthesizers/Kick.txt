@@ -1,0 +1,62 @@
+import * as Tone from "tone";
+import { observable, makeObservable, action } from "mobx";
+import { Note } from "@tonaljs/tonal";
+
+import Synthesizer from "../Synthesizer";
+
+import { ISequencerGate } from '../../../stores/Sequencer/SequencerRunner/SequencerGate';
+import IPlayParams from "../../../Types/IPlayParams";
+import { debug } from '../../../Util/logger';
+
+
+import ISynthEditableParams, { PITCH_SYNTH_PARAM } from '../ISynthEditableParams';
+import IOscillatorType from "../IOscillatorType";
+
+export default class Kick extends Synthesizer {
+
+  oscillatorType?: IOscillatorType = undefined;
+  oscillatorTypeA?: IOscillatorType = undefined;
+  oscillatorTypeB?: IOscillatorType = undefined;
+  oscillatorTypeC?: IOscillatorType = undefined;
+
+  name: string = "Kick";
+  slug: string = "kick";
+  synth: any;
+  pitch: number = Note.midi("C2")!;
+
+  get _editParameters(): ISynthEditableParams[] {
+    return [
+      PITCH_SYNTH_PARAM(this.pitch)
+    ];
+  }
+
+  attachVolume(vol: Tone.Volume) {
+    if (vol) {
+      this.synth.connect(vol);
+    }
+  }
+
+  play(_gate: ISequencerGate, params: IPlayParams) {
+    this.synth.triggerAttackRelease(Note.fromMidi(this.pitch), "16n", params.time);
+    debug("KICK", "Kick Context: ", this.synth);
+    debug("KICK", `pitch: ${this.pitch}`);
+  }
+
+  constructor(_vol: Tone.Volume) {
+    super();
+    
+    this.synth = new Tone.MembraneSynth();
+
+    // if (vol) {
+    //   this.synth.connect(vol);
+    // } else {
+    //   this.synth.toDestination();
+    // }
+
+    makeObservable(this, {
+      pitch: observable,
+      changeParameter: action.bound
+    })
+    
+  }
+}

@@ -1,0 +1,8 @@
+name = "Kick"
+description = "Kick Drum"
+tags = [
+    "house", "trance", "edm"
+]
+plugins = ["filter<lowpass>"]
+type = "MembraneSynth"
+

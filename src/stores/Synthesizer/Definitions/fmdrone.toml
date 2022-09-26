@@ -1,0 +1,7 @@
+name = "FM Drone"
+description = "FM Drone Synth"
+tags = [
+    "drone", "minimalism"
+]
+plugins = ["filter<lowpass>", "reverb", "chorus", "delay<feedback>"]
+type = "PolySynth<FMSynth>"

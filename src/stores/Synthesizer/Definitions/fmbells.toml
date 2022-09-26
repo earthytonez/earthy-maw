@@ -1,0 +1,7 @@
+name = "FM Bells"
+description = "FM Bells Synth"
+tags = [
+    "house", "trance", "edm"
+]
+plugins = ["filter<lowpass>"]
+type = "PolySynth<FMSynth>"

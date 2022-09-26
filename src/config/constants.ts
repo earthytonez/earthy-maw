@@ -2,15 +2,26 @@ import { TOML_FILES } from './constants/sequencer';
 
 import { ChordType } from "@tonaljs/tonal";
 
-import Bell from "../Objects/Synthesizer/Synthesizers/Bell";
-import FMDrone from "../Objects/Synthesizer/Synthesizers/FMDrone";
-import FMBells from "../Objects/Synthesizer/Synthesizers/FMBells";
-import Kick from "../Objects/Synthesizer/Synthesizers/Kick";
-import HiHat from "../Objects/Synthesizer/Synthesizers/HiHat";
-import Bass from "../Objects/Synthesizer/Synthesizers/Bass";
-import Waveform from "../Objects/Synthesizer/Synthesizers/Waveform";
+// import Bell from "../stores/Synthesizer/Synthesizers/Bell";
+// import FMDrone from "../stores/Synthesizer/Synthesizers/FMDrone";
+// import FMBells from "../stores/Synthesizer/Synthesizers/FMBells";
+// import Kick from "../stores/Synthesizer/Synthesizers/Kick";
+// import HiHat from "../stores/Synthesizer/Synthesizers/HiHat";
+// import Bass from "../stores/Synthesizer/Synthesizers/Bass";
+// import Waveform from "../stores/Synthesizer/Synthesizers/Waveform";
 
-import ISynthesizerType from "../Objects/Synthesizer/ISynthesizerType";
+import DuoSynth from "../stores/Synthesizer/SynthesizerTypes/DuoSynth";
+import MembraneSynth from "../stores/Synthesizer/SynthesizerTypes/MembraneSynth";
+import MonoSynth from "../stores/Synthesizer/SynthesizerTypes/MonoSynth";
+import PolySynth from "../stores/Synthesizer/SynthesizerTypes/PolySynth";
+import FMSynth from "../stores/Synthesizer/SynthesizerTypes/FMSynth";
+import AMSynth from "../stores/Synthesizer/SynthesizerTypes/AMSynth";
+import NoiseSynth from "../stores/Synthesizer/SynthesizerTypes/NoiseSynth";
+import PluckSynth from "../stores/Synthesizer/SynthesizerTypes/PluckSynth";
+import Sampler from "../stores/Synthesizer/SynthesizerTypes/Sampler";
+
+
+import ISynthesizerType from "../stores/Synthesizer/ISynthesizerType";
 
 export const NOTE_LETTERS = ["A", "B", "C", "D", "E", "F", "G"];
 export const OCTAVE_MIN = 0;
@@ -76,14 +87,27 @@ export interface IHash {
 } 
 
 export const SYNTH_TYPE_FROM_STRING: IHash = {
-  "bass": Bass,
-  "bell": Bell,
-  "hihat": HiHat,
-  "kick": Kick,
-  "fmdrone": FMDrone,
-  "fmbells": FMBells,
-  "waveform": Waveform
+  "DuoSynth": DuoSynth,
+  "MembraneSynth": MembraneSynth,
+  "MonoSynth": MonoSynth,
+  "PolySynth": PolySynth,
+  "FMSynth": FMSynth,
+  "AMSynth": AMSynth,
+  "NoiseSynth": NoiseSynth,
+  "PluckSynth": PluckSynth,
+  "Sampler": Sampler,
 }
+
+
+// export const SYNTH_FROM_STRING: IHash = {
+//   "bass": Bass,
+//   "bell": Bell,
+//   "hihat": HiHat,
+//   "kick": Kick,
+//   "fmdrone": FMDrone,
+//   "fmbells": FMBells,
+//   "waveform": Waveform
+// }
 
 export const ALL_SYNTH_PARAMETERS = [
   "oscillatorType"

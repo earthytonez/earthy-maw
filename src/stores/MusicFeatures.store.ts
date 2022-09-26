@@ -1,10 +1,10 @@
 import * as Tone from "tone";
 import { action, autorun, observable, makeObservable } from "mobx";
 
-import RootStore from '../stores/Root.store';
+import RootStore from './Root.store';
 
 import { info } from "../Util/logger";
-import { BeatMarker } from '../stores/MusicFeatures/BeatMarker';
+import { BeatMarker } from './MusicFeatures/BeatMarker';
 
 import IMusicScale from '../Types/IMusicScale'; // Change to Tune.js
 import IMusicKey from '../Types/IMusicKey'; // Change to Tune.js
@@ -57,12 +57,12 @@ export default class MusicFeaturesStore {
 
   setPlay(newValue: boolean) {
     if (newValue === true) {
-      info("MUSIC_FEATUERS", "Stopping Tone.Transport");
+      info("MUSIC_FEATURES", "Stopping Tone.Transport");
       Tone.start();
       Tone.Transport.start();
       Tone.context.resume();
     } else {
-      info("MUSIC_FEATUERS", "Starting Tone.Transport");
+      info("MUSIC_FEATURES", "Starting Tone.Transport");
       Tone.Transport.stop();
     }
     this.play = newValue;
@@ -186,6 +186,6 @@ export default class MusicFeaturesStore {
     });
     this.audioContext = audioContext;
     this.rootStore = rootStore;
-    Tone.setContext(this.audioContext);
+    // Tone.setContext(this.audioContext);
   }
 }

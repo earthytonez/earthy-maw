@@ -1,0 +1,7 @@
+name = "Bell"
+description = "Mono FM Bell"
+tags = [
+    "house", "trance", "edm"
+]
+plugins = ["filter<highpass>"]
+type = "FMSynth"

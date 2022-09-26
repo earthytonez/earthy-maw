@@ -2,11 +2,10 @@ import * as Tone from "tone";
 
 import { makeObservable, action, observable, autorun } from "mobx";
 
-import Track from "../Objects/Track";
+import Track from "./Track";
 
 import { debug, info } from '../Util/logger';
 import RootStore from "./Root.store";
-
 
 const bluebird = require("bluebird");
 
@@ -20,8 +19,7 @@ export default class TrackStore {
       new Track(
         this.tracks.length,
         this.audioContext,
-        this.rootStore.musicFeaturesStore,
-        this
+        this.rootStore,
       )
     );
     this.saveTracks();
@@ -38,7 +36,16 @@ export default class TrackStore {
   }
   
   emptyTracks() {
-    return (this.tracks === [] || this.tracks.length === 0 || JSON.stringify(this.tracks) === '[{"id":0,"slug":"track-0"},{"id":1,"slug":"track-1"}]')
+    console.log(this.tracks);
+    return (this.tracks === [] || this.tracks.length === 0 || this.tracksJSON() === '[{"id":0,"slug":"track-0"},{"id":1,"slug":"track-1"}]')
+  }
+
+  tracksJSON(): string {
+    let tracksJSON = JSON.stringify(this.tracks.map((track: any) => {
+      return track.toJSON();
+    }));
+    console.log(tracksJSON);
+    return tracksJSON;
   }
 
   saveTracks() {
@@ -53,8 +60,8 @@ export default class TrackStore {
 
   initialize() {
     this.tracks = [
-      new Track(0, this.audioContext, this.rootStore.musicFeaturesStore, this),
-      new Track(1, this.audioContext, this.rootStore.musicFeaturesStore, this),
+      new Track(0, this.audioContext, this.rootStore),
+      new Track(1, this.audioContext, this.rootStore),
     ];
     this.tracks[0]!.setLoading(false);
     this.tracks[1]!.setLoading(false);
@@ -71,7 +78,7 @@ export default class TrackStore {
 
     for (let i = 0; i <= 100; i++) {
       if (track[`synth[${i}]`] ||  track[`seq[${i}]`]) {
-        this.tracks.push(new Track(0, this.audioContext, this.rootStore.musicFeaturesStore, this, {
+        this.tracks.push(new Track(0, this.audioContext, this.rootStore, {
           synth: track[`synth[${i}]`],
           sequencer: track[`seq[${i}]`]
         }))
@@ -88,7 +95,7 @@ export default class TrackStore {
             let t = new Track(
               i,
               this.audioContext,
-              this.rootStore.musicFeaturesStore,
+              this.rootStore,
               this
             );
             await t.load(trackData);
@@ -113,7 +120,7 @@ export default class TrackStore {
     info("LOADSAVETRACKS", "Loading Tracks from Local Storage");
     let _tracks = localStorage.getItem("tracks");
     let tracks;
-    if (_tracks !== "undefined") {
+    if (_tracks !== "undefined" && _tracks !== "") {
       tracks = JSON.parse(_tracks!);
     }
     debug("LOADSAVETRACKS", `Tracks = ${JSON.stringify(tracks)}`)

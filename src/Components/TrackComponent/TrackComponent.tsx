@@ -5,7 +5,7 @@ import { observer } from "mobx-react-lite";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 
-import Track from "../../Objects/Track";
+import Track from "../../stores/Track";
 
 import DroppableTrackElement from "./MachineComponent/DroppableTrackElement";
 import TrackSettingsComponent from "./TrackSettings/TrackSettingsComponent";

@@ -1,0 +1,4 @@
+name = "Hi Hat"
+description = "Hi Hat"
+sample = "/samples/909/chh/HHCD0.WAV"
+type = "Sampler"

@@ -1,0 +1,38 @@
+name = "Simple Arpeggiator"
+description = "Simple Arpeggiator"
+total_length = 64
+rhythm_length = 8
+outputs = 1
+tags = [ "minimalism", "arpeggiator" ]
+type = "arpeggiator"
+
+[IntervalsToPlay]
+interval_type = "arpeggiator"
+type_list = [
+    "up",
+    "down",
+    "updown",
+    "updowntoptwo",
+    "random"
+]
+
+# Not sure about this
+[lengthOfInterval]
+list =[
+[1, 1, 1, 1],
+[1, 1, 2, 0],
+[1, 2, 1, 0],
+[1, 2, 0, 1],
+[2, 1, 1, 0],
+[2, 1, 0, 1],
+[2, 0, 1, 1],
+[2, 0, 1, 1],
+[0, 1, 1, 2],
+[0, 1, 2, 1],
+[0, 2, 1, 1]
+]
+
+[TriggerWhen]
+trigger = "every 4 steps"
+
+
