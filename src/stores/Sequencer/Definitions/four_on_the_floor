@@ -7,6 +7,8 @@ tags = [
 ]
 type = "step"
 
+parameters = ["pitch"]
+
 [NoteToPlay]
 note = "C2"
 

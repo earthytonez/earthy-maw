@@ -11,27 +11,175 @@ import BaseParameter from "./Parameter/Base";
 /*
  * Defines Parameters not associated with a plugin.
  */
+
+interface IHash {
+  [details: string]: (trackNumber: number) => BaseParameter;
+}
 export default class ParameterStore {
+  parameters: IHash = {
+    pitch: (trackNumber: number) => {
+      return new NumericParameter({
+        userParameterStore: this.rootStore!.userParameterStore,
+        name: "Pitch",
+        key: this.parameterKey("pitch", trackNumber),
+        default: Note.midi("C2")!,
+      });
+    },
+    trigger_set: (trackNumber: number) => {
+      return new NumericParameter({
+        userParameterStore: this.rootStore!.userParameterStore,
+        name: "Trigger Set", //  chosenTriggerParameterSet
+        key: this.parameterKey("trigger_set", trackNumber),
+        default: Note.midi("C2")!,
+        // fieldOptions: {
+        //   min: 0,
+        //   max: this.triggerWhen?.parameterSets.length! - 1,
+        //   step: 1,
+        //   current: this.chosenGateParameterSet,
+        // },
+      });
+    },
+    gate_set: (trackNumber: number) => {
+      return new NumericParameter({
+        userParameterStore: this.rootStore!.userParameterStore,
+        name: "Gate Set", // chosenGateParameterSet
+        key: this.parameterKey("gate_set", trackNumber),
+        default: Note.midi("C2")!,
+        // fieldOptions: {
+        //   min: 0,
+        //   max: this.triggerWhen?.parameterSets.length! - 1,
+        //   step: 1,
+        //   current: this.chosenGateParameterSet,
+        // },
+      });
+    },
+    min_gate: (trackNumber: number) => {
+      return new NumericParameter({
+        userParameterStore: this.rootStore!.userParameterStore,
+        name: "Min Gate", // chosenGateParameterSet
+        key: this.parameterKey("min_gate", trackNumber),
+        default: Note.midi("C2")!,
+        //  fieldOptions: {
+        //   min: 10,
+        //   max: 60,
+        //   step: 1,
+        //   current: this.minGate,
+        // },
+      });
+    },
+    max_gate: (trackNumber: number) => {
+      return new NumericParameter({
+        userParameterStore: this.rootStore!.userParameterStore,
+        name: "Max Gate", // chosenGateParameterSet
+        key: this.parameterKey("max_gate", trackNumber),
+        default: Note.midi("C2")!,
+        // fieldOptions: {
+        // min: 10,
+        // max: 300,
+        // step: 1,
+        // current: this.maxGate,
+        // },
+      });
+    },
+    min_interval: (trackNumber: number) => {
+      return new NumericParameter({
+        userParameterStore: this.rootStore!.userParameterStore,
+        name: "Minimum Interval", // chosenGateParameterSet
+        key: this.parameterKey("min_interval", trackNumber),
+        default: Note.midi("C2")!,
+        // fieldOptions: {
+        // min: 0,
+        // max: 100,
+        // current: this.minInterval,
+        // },
+      });
+    },
+    max_interval: (trackNumber: number) => {
+      return new NumericParameter({
+        userParameterStore: this.rootStore!.userParameterStore,
+        name: "Max Interval", // chosenGateParameterSet
+        key: this.parameterKey("max_interval", trackNumber),
+        default: Note.midi("C2")!,
+        // fieldOptions: {
+        /* It's a slider. */
+        // min: 0,
+        // max: 100,
+        // current: this.minInterval,
+        // },
+      });
+    },
+    selected_fill: (trackNumber: number) => {
+      return new NumericParameter({
+        userParameterStore: this.rootStore!.userParameterStore,
+        name: "Selected Fill", // chosenGateParameterSet
+        key: this.parameterKey("selected_fill", trackNumber),
+        default: Note.midi("C2")!,
+        // fieldOptions: {
+        /* It's a slider. */
+        // min: 0,
+        // max: fill list length,
+        // },
+      });
+    },
+  };
+
   constructor(public rootStore: RootStore | undefined) {}
 
   parameterKey(parameterName: string, trackNumber: number): string {
     return `track.${trackNumber}.synthesizer.${parameterName}`;
   }
 
-  fetchForSynth(_synth: BaseSynthesizer, trackNumber: number): BaseParameter[] {
-    return [
-    new NumericParameter({
-        userParameterStore: this.rootStore!.userParameterStore,
-        name: "Pitch",
-        key: this.parameterKey("pitch", trackNumber),
-        default: Note.midi("C2")!,
-      }),
-    ];
+  fetchForSynth(
+    _synth: BaseSynthesizer,
+    _trackNumber: number
+  ): BaseParameter[] {
+    return [];
   }
 
-  fetchForSequencer(sequencer: Sequencer): BaseParameter[] {
-    console.log(sequencer);
-    return [];
+  makeParameterList(sequencer: Sequencer): string[] {
+    let retVal: string[] = [];
+    retVal = retVal.concat(
+      sequencer?.sequencerLoader?.sequencerHolder?.parameters!
+    );
+
+    if (sequencer.sequencerLoader?.sequencerHolder.type == "step") {
+      retVal.push("trigger_set");
+      retVal.push("gate_set");
+    }
+
+    if (
+      sequencer.sequencerLoader?.sequencerHolder.type == "drone" ||
+      sequencer.sequencerLoader?.sequencerHolder.type == "randomStep"
+    ) {
+      retVal.push("min_gate");
+      retVal.push("max_gate");
+      retVal.push("min_interval");
+      retVal.push("max_interval");
+    }
+
+    if (
+      sequencer.sequencerLoader?.sequencerHolder?.triggerWhen?.parameterSets[0]
+        ?.fillList &&
+      sequencer.sequencerLoader?.sequencerHolder?.triggerWhen?.parameterSets[0]
+        ?.fillList.length > 0
+    ) {
+      retVal.push("selected_fill");
+    }
+    return retVal.filter((parameter: string | undefined) => {
+      return parameter !== undefined;
+    })
+  }
+
+  fetchForSequencer(
+    sequencer: Sequencer,
+    trackNumber: number
+  ): BaseParameter[] {
+    let parametersToGet = this.makeParameterList(sequencer);
+    
+    let parameters = parametersToGet.map((parameter: string) => {
+      return this.parameters[parameter]!(trackNumber);
+    });
+    return parameters!;
   }
 
   fetchForArranger(arranger: Arranger): BaseParameter[] {

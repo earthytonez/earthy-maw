@@ -73,9 +73,12 @@ export default function MachineDrawer(
             // {...provided.draggableProps}
             // {...provided.dragHandleProps}
           >
-            <ListItem style={{backgroundColor: "#333"}}>
+            <ListItem style={{ backgroundColor: "#333" }}>
               <ListItemText>
-                <Typography>Drag {props.machines[0].machineType} from list below to track in main window.</Typography>
+                <Typography>
+                  Drag {props.machines[0].machineType} from list below to track
+                  in main window.
+                </Typography>
               </ListItemText>
             </ListItem>
             {props.machines.map((machine: any, i: number) => {
@@ -87,7 +90,9 @@ export default function MachineDrawer(
                 >
                   {(draggableProvided, _draggableSnapshot) => (
                     <ListItem
-                      id={`${machine.machineType.toLowerCase()}-${machine.slug}`}
+                      id={`${machine.machineType.toLowerCase()}-${
+                        machine.slug
+                      }`}
                       ref={draggableProvided.innerRef}
                       {...draggableProvided.draggableProps}
                       {...draggableProvided.dragHandleProps}
@@ -96,9 +101,7 @@ export default function MachineDrawer(
                         draggableProvided.draggableProps.style
                       )}
                     >
-                      <ListItemButton
-                        
-                      >
+                      <ListItemButton>
                         <ListItemText key={machine.id} primary={machine.name} />
                       </ListItemButton>
                     </ListItem>

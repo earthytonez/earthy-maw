@@ -16,7 +16,7 @@ import MoreIcon from "@mui/icons-material/More";
 import FeatureSelect from "./FeatureSelect";
 import BottomBarDrawer from "./BottomBarDrawer";
 
-import SequencerType from "../../stores/Sequencer/SequencerType";
+import ISequencerType from "../../stores/Sequencer/ISequencerType";
 import Arranger from "../../stores/Arranger";
 import ISynthesizerType from "../../stores/Synthesizer/ISynthesizerType";
 
@@ -37,7 +37,7 @@ const flexContainer: CSS.Properties = {
 };
 
 interface BottomBarProps {
-  sequencerTypes: Array<SequencerType>;
+  sequencerTypes: Array<ISequencerType>;
   arrangerTypes: Array<Arranger>;
   synthTypes: Array<ISynthesizerType>;
 }

@@ -92,18 +92,8 @@ export default class BaseSynthesizer {
   }
 
   get editParameters(): ISynthEditableParams[] {
-    console.log(this._parameters);
-    console.log(this._parameters);
-    console.log(this._parameters);
-    console.log(this._parameters);
-    console.log(this._parameters);
     return Array.from(this._parameters!.values());
-    // let retVal = this._editParameters;
-    // if (this.filter) {
-    //     retVal = retVal.concat(this.filter._editParameters);
-    // }
-    // return retVal
-}
+  }
 
   // get _editParameters(): BaseParameter[] {
   //   debug("SYNTHESIZER_BASE", "_editParameters", this._parameters)

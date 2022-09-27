@@ -9,6 +9,7 @@ export default interface IParsedSequencerTOML {
   name: string;
   description: string;
   outputs: number;
+  parameters: string[];
   rhythm_length: number;
   tags: string[];
   total_length: number;

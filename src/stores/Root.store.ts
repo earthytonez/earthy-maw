@@ -12,7 +12,7 @@ import SequencerTypeStore from './MachineType/SequencerType';
 import ArrangerTypeStore from './MachineType/ArrangerType';
 import PluginStore from "./Plugin.store";
 import ParameterStore from "./Parameter.store";
-
+import ISequencerType from './Sequencer/ISequencerType';
 // import { AudioContext } from 'standardized-audio-context';
 
 export default class RootStore {
@@ -73,7 +73,7 @@ export default class RootStore {
     return this.synthTypeStore.getAll();
   }
 
-  sequencerTypes() {
+  sequencerTypes(): ISequencerType[] {
     return this.sequencerTypeStore.getAll();
   }
 

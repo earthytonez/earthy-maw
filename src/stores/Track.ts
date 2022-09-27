@@ -5,6 +5,7 @@ import Arranger from "./Arranger/Arranger";
 import Sequencer from "./Sequencer";
 import BaseSynthesizer from "./Synthesizer/SynthesizerTypes/Base";
 import { getSynthesizer } from "./Synthesizer/SynthesizerFactory";
+import { getSequencer } from "./Sequencer/SequencerFactory";
 
 import { BeatMarker } from "../stores/MusicFeatures/BeatMarker";
 import MusicFeaturesStore from "./MusicFeatures.store";
@@ -120,12 +121,17 @@ export default class Track {
   }
 
   sequencerFromSlug(sequencerSlug: string) {
-    return new Sequencer(
-      sequencerSlug,
-      this.audioContext(),
+    console.log("TRACK::SEQUENCER_FROM_SLUG", `Sequencer Slug: ${sequencerSlug}`);
+    return getSequencer(
+      this.userParameterStore,
+      this.parameterStore,
       this.musicFeaturesStore,
+      this.pluginStore,
+      sequencerSlug,
+      this.id,
+      this.audioContext(),
       this.trackFeatures
-    );
+    )
   }
 
   arrangerFromSlug(arrangerSlug: string) {
@@ -149,14 +155,10 @@ export default class Track {
     
     this[machineType as keyof this] = machine;
 
-    console.log(this.synthesizer);
-
     if (this.sequencer && this.synthesizer) {
       this.sequencer.bindSynth(this.synthesizer);
     }
-    if (machineType === "sequencer") {
-      await this.sequencer?.load();
-    }
+
     if (machineType === "synthesizer") {
       this.synthesizer?.attachVolume(this.trackFeatures.volume.vol);
     }
@@ -164,7 +166,11 @@ export default class Track {
 
   sequencerJSON() {
     if (this.sequencer) {
-      return this.sequencer.toJSON();
+      return {
+        name: this.sequencer.name,
+        slug: this.sequencer.slug,
+        type: this.sequencer.type
+      }
     }
     return undefined;
   }
@@ -174,7 +180,7 @@ export default class Track {
     if (this.synthesizer) {
       return {
         name: this.synthesizer.name,
-        slug: this.synthesizer.name.toLowerCase()
+        slug: this.synthesizer.name.replaceAll(" ", "_").toLowerCase()
       };
     }
     return undefined;
@@ -188,7 +194,6 @@ export default class Track {
       sequencer: this.sequencerJSON(),
       synthesizer: this.synthesizerJSON(),
     };
-    console.log(retVal);
     return retVal;
   }
 
@@ -217,19 +222,7 @@ export default class Track {
 
   async loadTrackSequencer(sequencer: any) {
     if (!sequencer) return;
-
-    debug("TRACK", `Sequencer Type: ${sequencer.type}`, sequencer);
-    this.sequencer = new Sequencer(
-      sequencer.type,
-      Tone.getContext(),
-      this.musicFeaturesStore,
-      this.trackFeatures
-      );
-    await this.sequencer.load();
-
-    this.sequencer!.loadParameters(sequencer);
-
-    debug("TRACK", "LOADED SEQUENCER", this.sequencerJSON);
+    this.sequencer = await this.sequencerFromSlug(sequencer.slug);
   }
 
   async loadTrackSynthesizer(synthesizer: BaseSynthesizer) {

@@ -22,6 +22,7 @@ import Sampler from "../stores/Synthesizer/SynthesizerTypes/Sampler";
 
 
 import ISynthesizerType from "../stores/Synthesizer/ISynthesizerType";
+import ISequencerType from "../stores/Sequencer/ISequencerType";
 
 export const NOTE_LETTERS = ["A", "B", "C", "D", "E", "F", "G"];
 export const OCTAVE_MIN = 0;
@@ -58,28 +59,29 @@ export const MUSIC_THEORY_CHORDS = ChordType.names()
 export const MAJOR_SCALE_INTERVALS = [2, 2, 1, 2, 2, 2, 1];
 export const MINOR_SCALE_INTERVALS = [2, 1, 2, 2, 1, 2, 2];
 
-export const SEQUENCER_TYPES = [
-  "FourOTFloor",
-  "OffBeatFour",
-  "OneTwo",
-  "HiHat",
-  "SimpleDrone",
-  "HouseHiHat",
-  "OneFour",
-  "TwoFour",
-  "ThreeFour",
-  "SimpleArpeggiator",
-  "Random"
-];
-
 export const SYNTH_TYPES: ISynthesizerType[] = [
   { id: 0, name: "Bell", slug: "bell", machineType: "Synthesizer" },
-  { id: 0, name: "Bass", slug: "bass", machineType: "Synthesizer" },
-  { id: 1, name: "HiHat", slug: "hihat", machineType: "Synthesizer" },
-  { id: 2, name: "Kick", slug: "kick", machineType: "Synthesizer" },
+  { id: 1, name: "Bass", slug: "bass", machineType: "Synthesizer" },
+  { id: 2, name: "HiHat", slug: "hihat", machineType: "Synthesizer" },
+  { id: 3, name: "Kick", slug: "kick", machineType: "Synthesizer" },
   { id: 4, name: "FMBells", slug: "fmbells", machineType: "Synthesizer" },
   { id: 5, name: "FMDrone", slug: "fmdrone", machineType: "Synthesizer" },
   { id: 6, name: "Waveform", slug: "waveform", machineType: "Synthesizer" },
+];
+
+export const SEQUENCER_TYPES: ISequencerType[] = [
+  { id: 0, name: "Four On The Floor", slug: "four_on_the_floor", machineType: "Sequencer" },
+  { id: 1, name: "Off Beat Four", slug: "off_beat_four", machineType: "Sequencer" },
+  { id: 2, name: "OneTwo", slug: "one_two", machineType: "Sequencer" },
+  { id: 3, name: "HiHat", slug: "hihat", machineType: "Sequencer" },
+  { id: 4, name: "SimpleDrone", slug: "simple_drone", machineType: "Sequencer" },
+  { id: 5, name: "HouseHiHat", slug: "house_hihat", machineType: "Sequencer" },
+  { id: 6, name: "OneFour", slug: "one_four", machineType: "Sequencer" },
+  { id: 7, name: "TwoFour", slug: "two_four", machineType: "Sequencer" },
+  { id: 8, name: "ThreeFour", slug: "three_four", machineType: "Sequencer" },
+  { id: 9, name: "SimpleArpeggiator", slug: "simple_arpeggiator", machineType: "Sequencer" },
+  { id: 10, name: "Random", slug: "random", machineType: "Sequencer" },
+  { id: 11, name: "MorodorBass", slug: "morodor_bass", machineType: "Sequencer" },
 ];
 
 export interface IHash {

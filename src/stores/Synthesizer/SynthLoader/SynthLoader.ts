@@ -6,6 +6,7 @@ import ISynthType from "./ISynthType";
 
 class SynthLoaderHolder {
   name?: string;
+  slug?: string;
   type?: ISynthType;
   tags?: string[];
   plugins?: string[];
@@ -37,6 +38,7 @@ export default class SynthLoader {
       const data: IParsedSynthTOML = toml.parse(this.synthCode);
 
       this.synthHolder.name = data.name;
+      this.synthHolder.slug = data.name.replaceAll(" ", "_").toLowerCase();
       this.synthHolder.description = data.description;
       this.synthHolder.tags = data.tags;
       this.synthHolder.type = data.type;

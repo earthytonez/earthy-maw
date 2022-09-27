@@ -3,18 +3,15 @@ import BaseSynthesizer from "stores/Synthesizer/SynthesizerTypes/Base";
 import {
   runInAction,
   makeObservable,
-  computed,
   observable,
 } from "mobx";
 
-import { GateLengths, SequencerLoader, TriggerWhen } from "./SequencerLoader/index";
+import { SequencerLoader } from "./SequencerLoader/index";
 
-import { info } from "../../Util/logger";
-
-import { TOML_FILES } from '../../config/constants';
+import SequencerDefinition from "./SequencerLoader/SequencerDefinition";
 
 export default class SequencerType {
-  id: number;
+  name: string;
   slug: string;
   boundSynthesizer?: BaseSynthesizer = undefined;
   machineType: string = "Sequencer";
@@ -23,6 +20,17 @@ export default class SequencerType {
   x = 0;
 
   awaitBuffers?: Promise<any>;
+  
+  constructor(sequencerDefinition: SequencerDefinition) {
+    this.name = sequencerDefinition.name!;
+    this.slug = sequencerDefinition.slug!;
+    this.type = sequencerDefinition.type!;
+
+    makeObservable(this, {
+      name: observable,
+      slug: observable,
+    });
+  }
 
   isSynth() {
     return false;
@@ -45,32 +53,21 @@ export default class SequencerType {
     return this.sequencerLoader;
   }
 
-  async load() {
-    info(
-      "SEQUENCER TYPE",
-      `# Loading Sequencer Type`,
-      { type: this.type },
-      "font-weight:bold"
-    );
+  // async load() {
+  //   info(
+  //     "SEQUENCER TYPE",
+  //     `# Loading Sequencer Type`,
+  //     { type: this.type },
+  //     "font-weight:bold"
+  //   );
 
-    if (TOML_FILES[this.type] === undefined) {
-      throw new Error(`Sequencer Type Not Found: ${this.type}`)
-    }
+  //   if (TOML_FILES[this.type] === undefined) {
+  //     throw new Error(`Sequencer Type Not Found: ${this.type}`)
+  //   }
 
-    this.sequencerLoader = await this.fetchTOML(TOML_FILES[this.type]);
-  }
+  //   this.sequencerLoader = await this.fetchTOML(TOML_FILES[this.type]);
+  // }
 
-  get gateLengths(): GateLengths | undefined {
-    return this.sequencerLoader?.gateLengths();
-  }
-
-  get triggerWhen(): TriggerWhen | undefined {
-    return this.sequencerLoader?.triggerWhen();
-  }
-
-  get name(): string | undefined{
-    return this.sequencerLoader?.name;
-  }
 
   get code(): string | undefined {
     return this.sequencerLoader?.code();
@@ -80,14 +77,4 @@ export default class SequencerType {
     return this.sequencerLoader?.type;
   }
 
-  constructor(type: string, id: number) {
-    this.id = id;
-    this.slug = type;
-    this.type = type;
-
-    makeObservable(this, {
-      name: computed,
-      slug: observable,
-    });
-  }
 }

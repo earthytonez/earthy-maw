@@ -1,12 +1,13 @@
 import * as Tone from "tone";
 import { Chord } from "@tonaljs/tonal";
 
-import { makeObservable, action, computed, observable } from "mobx";
+import { makeObservable, action, computed } from "mobx";
 
 import IPlayParams from "../../Types/IPlayParams";
 import { debug, info } from "../../Util/logger";
 import SequencerType from "./SequencerType";
 
+import SequencerDefinition from "./SequencerLoader/SequencerDefinition";
 import PlayEveryX from "./SequencerRunner/PlayEveryX";
 import RandomTrigger from "./SequencerRunner/RandomTrigger";
 import { ISequencerGate } from "./SequencerRunner/SequencerGate";
@@ -16,9 +17,16 @@ import MusicFeaturesStore from "../MusicFeatures.store";
 import { BeatMarker } from "../MusicFeatures/BeatMarker";
 
 import BaseSynthesizer from "../Synthesizer/SynthesizerTypes/Base";
-import { TOML_FILES } from "config/constants";
+import BaseParameter from "../Parameter/Base";
+
 import { IMusicChord, IMusicKey, IMusicScale } from "Types";
 import { ITriggerParameters } from "./SequencerLoader/TriggerWhen";
+
+import TriggerWhen from "./SequencerLoader/TriggerWhen";
+import GateLengths from "./SequencerLoader/GateLengths";
+import NoteToPlay from "./SequencerLoader/NoteToPlay";
+import VolumeToPlay from "./SequencerLoader/VolumeToPlay";
+import IntervalToPlay from "./SequencerLoader/IntervalToPlay";
 
 export default class Sequencer extends SequencerType {
   slug: string;
@@ -45,6 +53,8 @@ export default class Sequencer extends SequencerType {
   droneLength: number = 9;
   droneTail: number = 6;
 
+  _parameters: Map<string, BaseParameter> = new Map();
+
   /*
    * These variables are defined on the Track and come in through the constructor
    */
@@ -69,16 +79,67 @@ export default class Sequencer extends SequencerType {
   audioContext: Tone.BaseContext;
   musicFeaturesStore: MusicFeaturesStore;
 
+  intervalToPlay: IntervalToPlay = new IntervalToPlay();
+  noteToPlay: NoteToPlay = new NoteToPlay();
+  gateLengths: GateLengths = new GateLengths();
+  triggerWhen: TriggerWhen = new TriggerWhen();
+  volumeToPlay: VolumeToPlay = new VolumeToPlay();
+  totalLength: number;
+
+  constructor(
+    sequencerDefinition: SequencerDefinition,
+    audioContext: Tone.BaseContext,
+    musicFeaturesStore: MusicFeaturesStore,
+    trackFeatures: any
+  ) {
+    super(sequencerDefinition);
+
+    this.beatsSinceLastNote = 0;
+    this.name = sequencerDefinition.name!;
+
+    this.audioContext = audioContext;
+    this.musicFeaturesStore = musicFeaturesStore;
+    this.trackFeatures = trackFeatures;
+    this.slug = sequencerDefinition.slug!;
+    this.type = sequencerDefinition.type!;
+
+    this.intervalToPlay = sequencerDefinition.intervalToPlay;
+    this.noteToPlay = sequencerDefinition.noteToPlay;
+    this.triggerWhen = sequencerDefinition.triggerWhen;
+    this.gateLengths = sequencerDefinition.gateLengths;
+    this.volumeToPlay = sequencerDefinition.volumeToPlay;
+    this.totalLength = sequencerDefinition.totalLength;
+    
+    this.loadRunners(sequencerDefinition.rhythm_length!);
+
+    makeObservable(this, {
+      bindSynth: action,
+      changeParameter: action.bound,
+      decrementParameter: action.bound,
+      editParameters: computed,
+      incrementParameter: action.bound,
+      play: action,
+      resetBeatsSinceLastNote: action.bound,
+      toJSON: action.bound,
+      randomTrigger: action.bound,
+    });
+  }
+  
+  measureBeat(beatMarker: BeatMarker): number {
+    if (!this.totalLength) {
+      return beatMarker.num;
+    }
+    console.log(this.totalLength);
+    console.log(beatMarker.num % this.totalLength);
+    return beatMarker.num % this.totalLength;
+  }
+
   setLoading(loading: boolean) {
     this._loading = loading;
   }
 
   get loading() {
     return this._loading;
-  }
-
-  get name() {
-    return this.sequencerLoader?.name;
   }
 
   resetBeatsSinceLastNote() {
@@ -140,168 +201,15 @@ export default class Sequencer extends SequencerType {
   }
 
   get editParameters(): ISequencerParameters[] {
-    let params:any = [];
-    if (this.sequencerLoader?.sequencerHolder.type === "step") {
-      params = params.concat([
-        {
-          name: "Trigger Set",
-          field: "chosenTriggerParameterSet",
-          fieldType: "slider",
-          fieldOptions: {
-            min: 0,
-            max: this.triggerWhen?.parameterSets.length! - 1,
-            step: 1,
-            current: this.chosenGateParameterSet,
-          },
-        },
-        {
-          name: "Gate Set",
-          field: "chosenGateParameterSet",
-          fieldType: "slider",
-          fieldOptions: {
-            min: 0,
-            max: this.gateLengths?.parameterSets.length! - 1,
-            step: 1,
-            current: this.chosenGateParameterSet,
-          },
-        },
-      ])
-    };
-
-
-    if (this.sequencerLoader?.sequencerHolder.type === "drone") {
-      params = params.concat([
-        {
-          name: "Minimum Gate",
-          field: "minGate",
-          fieldType: "slider",
-          fieldOptions: {
-            min: 10,
-            max: 60,
-            step: 1,
-            current: this.minGate,
-          },
-        },
-        {
-          name: "Maximum Gate",
-          field: "maxGate",
-          fieldType: "slider",
-          fieldOptions: {
-            min: 10,
-            max: 300,
-            step: 1,
-            current: this.maxGate,
-          },
-        },
-        {
-          name: "Minimum Interval",
-          field: "minInterval",
-          fieldType: "slider",
-          fieldOptions: {
-            min: 0,
-            max: 100,
-            current: this.minInterval,
-          },
-        },
-        {
-          name: "Maximum Interval",
-          field: "maxInterval",
-          fieldType: "slider",
-          fieldOptions: {
-            min: 0,
-            max: 100,
-            current: this.maxInterval,
-          },
-        },
-      ]);
-    };
-
-    if (this.sequencerLoader?.sequencerHolder.type === "randomStep") {
-      params = params.concat([
-        {
-          name: "Minimum Gate",
-          field: "minGate",
-          fieldType: "slider",
-          fieldOptions: {
-            min: .1,
-            max: 20,
-            step: .1,
-            current: this.minGate,
-          },
-        },
-        {
-          name: "Maximum Gate",
-          field: "maxGate",
-          fieldType: "slider",
-          fieldOptions: {
-            min: .1,
-            max: 20,
-            step: .1,
-            current: this.maxGate,
-          },
-        },
-        {
-          name: "Minimum Interval",
-          field: "minInterval",
-          fieldType: "slider",
-          fieldOptions: {
-            min: 0,
-            max: 100,
-            current: this.minInterval,
-          },
-        },
-        {
-          name: "Maximum Interval",
-          field: "maxInterval",
-          fieldType: "slider",
-          fieldOptions: {
-            min: 0,
-            max: 100,
-            current: this.maxInterval,
-          },
-        },
-      ]);
-    };
-
-    if (this.sequencerLoader?.sequencerHolder?.triggerWhen?.parameterSets[0]?.fillList && this.sequencerLoader?.sequencerHolder?.triggerWhen?.parameterSets[0]?.fillList.length > 0) {
-      params = params.concat([{
-        name: "Fill",
-        field: "selectedFill",
-        fieldType: "slider",
-        fieldOptions: {
-          min: 0,
-          max: this.sequencerLoader.sequencerHolder.triggerWhen.parameterSets[0].fillList.length,
-          current: this.selectedFill,
-        }
-      }]);
-    }
-    return params;
-  }
-
-  async load() {
-    info(
-      "SEQUENCER",
-      `# Loading sequencer`,
-      { type: this.type },
-      "font-weight:bold"
-    );
-
-    if (!this.type) {
-      return;
-    }
-
-    this.sequencerLoader = await this.fetchTOML(TOML_FILES[this.type]);
-    this.loadRunners();
+    return Array.from(this._parameters!.values());
   }
 
   /*
    *
    */
-  private async loadRunners() {
-    this.playEveryXRunner = new PlayEveryX(this.sequencerLoader!.rhythm_length);
-    this.randomTriggerRunner = new RandomTrigger(
-      this.sequencerLoader!.rhythm_length
-    );
+  private async loadRunners(rhythm_length: number) {
+    this.playEveryXRunner = new PlayEveryX(rhythm_length);
+    this.randomTriggerRunner = new RandomTrigger(rhythm_length);
   }
 
   /*
@@ -323,6 +231,24 @@ export default class Sequencer extends SequencerType {
     };
   }
 
+    /* Here we have parameters, how does the data get back to the plugin, or wherever it 
+     is supposed to go?  I think you change the userdata and everything pulls from that.
+     */
+     registerParameter(parameter: BaseParameter) {
+      this._parameters?.set(parameter.slug, parameter);
+    }
+  
+    registerParameters(parameters: BaseParameter[]): Sequencer {
+      if (!parameters) {
+        return this;
+      }
+      parameters.forEach((parameter: BaseParameter) => {
+        this.registerParameter(parameter);
+      });
+  
+      return this;
+    }
+  
   /*
    * This is a simple step sequencer, that enables you to sequence based on either a list or a mathematical formula.
    * This is only for triggers/gates it does not determine what note to play.
@@ -392,7 +318,7 @@ export default class Sequencer extends SequencerType {
     This triggers the volume sequencer.  Some sequencers may have steps with different volume levels.
   */
   volume(beatMarker: BeatMarker): number {
-    return this.sequencerLoader!.volume(beatMarker);
+    return 0 * beatMarker.num;
   }
 
   /* This triggers the note sequencer.*/
@@ -402,14 +328,16 @@ export default class Sequencer extends SequencerType {
     chord: IMusicChord,
     beatMarker: BeatMarker
   ): Tone.FrequencyClass {
-    return this.sequencerLoader!.note(
-      key,
-      scale,
-      chord,
-      this.trackFeatures.octaves.val(),
-      beatMarker
-    );
-  }
+    let octaves = this.trackFeatures.octaves.val();
+      return this.noteToPlay.get(
+        key,
+        scale,
+        chord,
+        octaves,
+        this.measureBeat(beatMarker),
+        this.intervalToPlay
+      );
+    }
 
   bounceChord(notes: any, synthFn: any, playDuration: any, tailDuration: any) {
     let playParams = {
@@ -557,7 +485,7 @@ export default class Sequencer extends SequencerType {
   }
 
   sequencerType(): string {
-    return this.sequencerLoader?.type!;
+    return this.type;
   }
 
   /* This action is triggered externall to possibly play a sequencer */
@@ -602,35 +530,6 @@ export default class Sequencer extends SequencerType {
     }
   }
 
-  constructor(
-    type: string,
-    audioContext: Tone.BaseContext,
-    musicFeaturesStore: MusicFeaturesStore,
-    trackFeatures: any
-  ) {
-    super(type, 0);
-
-    this.beatsSinceLastNote = 0;
-
-    this.audioContext = audioContext;
-    this.musicFeaturesStore = musicFeaturesStore;
-    this.trackFeatures = trackFeatures;
-    this.slug = type;
-    this.type = type;
-
-    makeObservable(this, {
-      sequencerLoader: observable,
-      bindSynth: action,
-      changeParameter: action.bound,
-      decrementParameter: action.bound,
-      editParameters: computed,
-      incrementParameter: action.bound,
-      play: action,
-      resetBeatsSinceLastNote: action.bound,
-      toJSON: action.bound,
-      randomTrigger: action.bound,
-    });
-  }
 }
 
 // setAwaitBuffers() {

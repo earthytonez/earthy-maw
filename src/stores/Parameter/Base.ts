@@ -45,8 +45,8 @@ export default abstract class BaseParameter {
     public name: string,
     protected _key: string
   ) {
-    this.slug = name.replace(" ", "").toLowerCase();
-    this.field = name.replace(" ", "").toLowerCase();
+    this.slug = name.replaceAll(" ", "").toLowerCase();
+    this.field = name.replaceAll(" ", "").toLowerCase();
   }
 
   abstract setValue(newValue: string | number | string[] | number[]): boolean;

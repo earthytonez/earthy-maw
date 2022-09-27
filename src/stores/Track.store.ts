@@ -44,7 +44,7 @@ export default class TrackStore {
     let tracksJSON = JSON.stringify(this.tracks.map((track: any) => {
       return track.toJSON();
     }));
-    console.log(tracksJSON);
+
     return tracksJSON;
   }
 

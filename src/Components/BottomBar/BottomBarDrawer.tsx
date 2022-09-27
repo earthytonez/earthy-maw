@@ -11,7 +11,7 @@ import Tabs from "@mui/material/Tabs";
 import CloseIcon from "@mui/icons-material/Close";
 
 import MachineDrawer from "./MachineDrawer";
-import SequencerType from "../../stores/Sequencer/SequencerType";
+import ISequencerType from "../../stores/Sequencer/ISequencerType";
 import Arranger from "../../stores/Arranger";
 import ISynthesizerType from "../../stores/Synthesizer/ISynthesizerType";
 
@@ -22,7 +22,7 @@ const LEFT_DRAWER_WIDTH = 300;
 
 interface BottomBarDrawerProps {
   anchor: Anchor;
-  sequencerTypes: Array<SequencerType>;
+  sequencerTypes: Array<ISequencerType>;
   arrangerTypes: Array<Arranger>;
   synthTypes: Array<ISynthesizerType>;
   toggleDrawer: Function;
