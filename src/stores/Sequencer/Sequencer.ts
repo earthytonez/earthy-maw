@@ -28,6 +28,14 @@ import NoteToPlay from "./SequencerLoader/NoteToPlay";
 import VolumeToPlay from "./SequencerLoader/VolumeToPlay";
 import IntervalToPlay from "./SequencerLoader/IntervalToPlay";
 
+interface IIntervalsToPlay {
+  interval_length: number;
+  list: number[];
+
+  type: string;
+  type_list: string[];
+}
+
 export default class Sequencer extends SequencerType {
   slug: string;
 
@@ -79,12 +87,17 @@ export default class Sequencer extends SequencerType {
   audioContext: Tone.BaseContext;
   musicFeaturesStore: MusicFeaturesStore;
 
-  intervalToPlay: IntervalToPlay = new IntervalToPlay();
-  noteToPlay: NoteToPlay = new NoteToPlay();
+  tags?: string[];
+  description?: string = "";
   gateLengths: GateLengths = new GateLengths();
-  triggerWhen: TriggerWhen = new TriggerWhen();
+  intervalToPlay: IntervalToPlay = new IntervalToPlay();
+  intervalsToPlay?: IIntervalsToPlay;
+  noteToPlay: NoteToPlay = new NoteToPlay();
+  parameters?: string[];
   volumeToPlay: VolumeToPlay = new VolumeToPlay();
+  rhythm_length?: number = undefined;
   totalLength: number;
+  triggerWhen: TriggerWhen = new TriggerWhen();
 
   constructor(
     sequencerDefinition: SequencerDefinition,
