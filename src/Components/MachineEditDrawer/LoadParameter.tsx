@@ -20,6 +20,7 @@ interface ILoadParameterParams {
   decrement: Function;
   name: string;
   field: string;
+  parameterValue: any;
   fieldType: ParameterFieldTypes;
   fieldOptions: any;
 }
@@ -33,6 +34,7 @@ export default observer(
     fieldOptions,
     increment,
     decrement,
+    parameterValue,
   }: ILoadParameterParams): React.ReactElement => {
     switch (fieldType) {
       case "radio":
@@ -62,14 +64,14 @@ export default observer(
                 id="track-false-slider"
                 gutterBottom
               >
-                {name} - {fieldOptions.current}
+                {name} - {parameterValue}
               </Typography>
             </GridTopFullWidth>
             <GridMiddleFullWidth sx={{ width: 1 }}>
               <Slider
                 aria-label={name}
-                defaultValue={fieldOptions.current}
-                getAriaValueText={() => fieldOptions.current}
+                defaultValue={parameterValue}
+                getAriaValueText={() => parameterValue}
                 step={1}
                 marks
                 onChange={(mouseEvent: any) =>
@@ -98,7 +100,7 @@ export default observer(
               <ArraySelectorComponent
                 aria-label={name}
                 selectableValues={fieldOptions.options}
-                currentValue={fieldOptions.current}
+                currentValue={parameterValue}
                 setValue={(value: any) => edit(field, value)}
                 incrementValue={() => increment(field)}
                 decrementValue={() => decrement(field)}

@@ -1,57 +1,57 @@
 import * as Tone from "tone";
 import { action, autorun, observable, makeObservable } from "mobx";
 
-import RootStore from './Root.store';
+import RootStore from "./Root.store";
 
 import { info } from "../Util/logger";
-import { BeatMarker } from './MusicFeatures/BeatMarker';
+import { BeatMarker } from "./MusicFeatures/BeatMarker";
 
-import IMusicScale from '../Types/IMusicScale'; // Change to Tune.js
-import IMusicKey from '../Types/IMusicKey'; // Change to Tune.js
-import { IMusicChord } from "Types";
-import { ChordType, ScaleType } from "@tonaljs/tonal";
+// import IMusicScale from "../Types/IMusicScale"; // Change to Tune.js
+// import IMusicKey from "../Types/IMusicKey"; // Change to Tune.js
+// import { IMusicChord } from "Types";
+// import { ChordType, ScaleType } from "@tonaljs/tonal";
+import MusicChordParameter from "./Parameter/MusicChordParameter";
+import MusicScaleParameter from "./Parameter/MusicScaleParameter";
+import MusicKeyParameter from "./Parameter/MusicKeyParameter";
+import NumericSetParameter from "./Parameter/NumericSetParameter";
+import NumericParameter from "./Parameter/NumericParameter";
 
 export default class MusicFeaturesStore {
-  audioContext: Tone.BaseContext;
-  rootStore: RootStore;
-  musicKey: IMusicKey = "C";
-  musicChord: IMusicChord = ChordType.get("major");
-  musicScale: IMusicScale = ScaleType.get("major");
-  musicChordProgression: string = "1";
+  musicChord: MusicChordParameter;
 
-  musicKeyOnDeck: IMusicKey | undefined = undefined;
-  musicScaleOnDeck: IMusicScale | undefined = undefined;
-  musicChordOnDeck: IMusicChord | undefined = undefined;
-  musicChordProgressionOnDeck: string | undefined = undefined;
+  musicKey: MusicKeyParameter;
+  // musicChord: IMusicChord = ChordType.get("major");
+  musicScale: MusicScaleParameter;
+  musicChordProgression: NumericSetParameter;
 
-  musicSectionLength: number = 64;
-  musicSectionLengthOnDeck: number | undefined = undefined;
+  musicSectionLength: NumericParameter;
 
-  tempo: number = 120; // in bpm
+  tempo: NumericParameter; // in bpm
   play: boolean = false;
   beatMarker: BeatMarker = new BeatMarker(1);
 
   greaterMusicSectionLength(): number {
-    if (!this.musicSectionLengthOnDeck) return this.musicSectionLength;
-    if (this.musicSectionLength > this.musicSectionLengthOnDeck) {
-      return this.musicSectionLength;
+    if (!this.musicSectionLength.onDeckValue)
+      return this.musicSectionLength.val;
+    if (this.musicSectionLength.val > this.musicSectionLength.onDeckValue) {
+      return this.musicSectionLength.val;
     }
-    return this.musicSectionLengthOnDeck;
+    return this.musicSectionLength.onDeckValue;
   }
 
   changeFeatures() {
     if (this.beatMarker.num % this.greaterMusicSectionLength() === 0) {
-      info("MUSIC_FEATURES", "Changing Features!")
-      if (this.musicKeyOnDeck) this.musicKey = this.musicKeyOnDeck;
-      if (this.musicScaleOnDeck) this.musicScale = this.musicScaleOnDeck;
-      if (this.musicChordOnDeck) this.musicChord = this.musicChordOnDeck;
-      if (this.musicChordProgressionOnDeck) this.musicChordProgression = this.musicChordProgressionOnDeck;
-      if (this.musicSectionLengthOnDeck) this.musicSectionLength = this.musicSectionLengthOnDeck;
-    } 
+      info("MUSIC_FEATURES", "Changing Features!");
+      this.musicKey.swapOnDeck();
+      this.musicScale.swapOnDeck();
+      this.musicChord.swapOnDeck();
+      this.musicChordProgression.swapOnDeck();
+      this.musicSectionLength.swapOnDeck();
+      this.tempo.swapOnDeck();
+    }
   }
 
   incrementBeatNumber() {
-    console.log(this.beatMarker);
     this.beatMarker.increment();
   }
 
@@ -73,19 +73,18 @@ export default class MusicFeaturesStore {
   }
 
   decrementTempo() {
-    this.tempo = this.tempo++;
-    Tone.Transport.bpm.value = this.tempo;
+    this.tempo.decrement();
+    Tone.Transport.bpm.value = this.tempo.val;
   }
 
   incrementTempo() {
-    this.tempo = this.tempo++;
-    Tone.Transport.bpm.value = this.tempo;
+    this.tempo.increment();
+    Tone.Transport.bpm.value = this.tempo.val;
   }
 
   setTempo(tempo: number) {
-    console.log("setTempo");
-    this.tempo = tempo;
-    Tone.Transport.bpm.value = this.tempo;
+    this.tempo.setValue(tempo);
+    Tone.Transport.bpm.value = this.tempo.val;
   }
 
   /*
@@ -93,7 +92,7 @@ export default class MusicFeaturesStore {
    * event.target.value
    */
   setKey(key: string) {
-    this.musicKeyOnDeck = key as IMusicKey;
+    this.musicKey.setOnDeckValue(key);
   }
 
   /*
@@ -101,7 +100,7 @@ export default class MusicFeaturesStore {
    * event.target.value
    */
   setChord(chord: string) {
-    this.musicChordOnDeck = ChordType.get(chord);
+    this.musicChord.setValue(chord);
   }
 
   /*
@@ -109,50 +108,100 @@ export default class MusicFeaturesStore {
    * event.target.value
    */
   setScale(scale: string) {
-    this.musicScaleOnDeck = ScaleType.get(scale);
+    this.musicScale.setValue(scale);
   }
 
   setSectionLength(sectionLength: number) {
-    this.musicSectionLengthOnDeck = sectionLength;
+    this.musicSectionLength.setValue(sectionLength);
   }
 
-  load(_musicFeatures: any) {
-    if (_musicFeatures.tempo) {
-      this.tempo = _musicFeatures.tempo;
-    }
+  // load(_musicFeatures: any) {
+  //   if (_musicFeatures.tempo) {
+  //     this.tempo = _musicFeatures.tempo;
+  //   }
 
-    if (_musicFeatures.beatMarker) {
-      this.beatMarker = new BeatMarker(_musicFeatures.beatMarker);
-    }
-    if (_musicFeatures.musicKey) {
-      this.musicKey = _musicFeatures.musicKey;
-    }
-    if (_musicFeatures.musicScale) {
-      console.log(_musicFeatures);
-      if (typeof _musicFeatures.musicScale === "string") {
-        this.musicScale = ScaleType.get((_musicFeatures.musicScale as string).toLowerCase());
-      } else {
-        this.musicScale = ScaleType.get("major");
-      }
-    }
+  //   if (_musicFeatures.beatMarker) {
+  //     this.beatMarker = new BeatMarker(_musicFeatures.beatMarker);
+  //   }
+  //   if (_musicFeatures.musicKey) {
+  //     this.musicKey = _musicFeatures.musicKey;
+  //   }
+  //   if (_musicFeatures.musicScale) {
+  //     console.log(_musicFeatures);
+  //     if (typeof _musicFeatures.musicScale === "string") {
+  //       this.musicScale.setValue(
+  //         (_musicFeatures.musicScale as string).toLowerCase()
+  //       );
+  //     } else {
+  //       this.musicScale = ScaleType.get("major");
+  //     }
+  //   }
 
-    if (_musicFeatures.musicChord) {
-      console.log(_musicFeatures);
-      if (typeof _musicFeatures.musicChord === "string") {
-        this.musicChord = ChordType.get((_musicFeatures.musicChord as string).toLowerCase());
-      } else {
-        this.musicChord = ChordType.get("major");
-      }
-    }
+  //   if (_musicFeatures.musicChord) {
+  //     console.log(_musicFeatures);
+  //     if (typeof _musicFeatures.musicChord === "string") {
+  //       this.musicChord.setValue(
+  //         ChordType.get((_musicFeatures.musicChord as string).toLowerCase())
+  //       );
+  //     } else {
+  //       this.musicChord.setValue(ChordType.get("major"));
+  //     }
+  //   }
+  // }
 
-  }
+  constructor(private rootStore: RootStore, audioContext: Tone.BaseContext) {
+    this.musicChord = new MusicChordParameter({
+      name: "Chord",
+      key: "global.musicChord",
+      userParameterStore: this.rootStore.userParameterStore,
+      default: "major",
+    });
 
-  constructor(rootStore: RootStore, audioContext: Tone.BaseContext) {
-    let musicFeaturesRaw: null | string = localStorage.getItem("musicFeatures");
-    if (musicFeaturesRaw) {
-      let _musicFeatures = JSON.parse(musicFeaturesRaw);   
-      this.load(_musicFeatures);   
-    }
+    this.musicKey = new MusicKeyParameter({
+      name: "Key",
+      key: "global.musicKey",
+      userParameterStore: this.rootStore.userParameterStore,
+      default: "C",
+    });
+
+    this.musicScale = new MusicScaleParameter({
+      name: "Scale",
+      key: "global.musicScale",
+      userParameterStore: this.rootStore.userParameterStore,
+      default: "major",
+    });
+
+    this.musicSectionLength = new NumericParameter({
+      name: "Music Section Length",
+      key: "global.music_section_length",
+      userParameterStore: this.rootStore.userParameterStore,
+      default: 64,
+      changedAtSection: true,
+    });
+
+    this.tempo = new NumericParameter({
+      name: "Tempo",
+      key: "global.tempo",
+      userParameterStore: this.rootStore.userParameterStore,
+      default: 120,
+      changedAtSection: true,
+    });
+
+    this.musicChordProgression = new NumericSetParameter({
+      name: "Chord Progression",
+      key: "global.chord_progression",
+      userParameterStore: this.rootStore.userParameterStore,
+      default: [1],
+      changedAtSection: true,
+    });
+
+    Tone.setContext(audioContext);
+
+    // let musicFeaturesRaw: null | string = localStorage.getItem("musicFeatures");
+    // if (musicFeaturesRaw) {
+    //   let _musicFeatures = JSON.parse(musicFeaturesRaw);
+    //   this.load(_musicFeatures);
+    // }
 
     autorun(() => {
       localStorage.setItem(
@@ -162,7 +211,7 @@ export default class MusicFeaturesStore {
           tempo: this.tempo,
           musicKey: this.musicKey,
           musicScale: this.musicScale.name,
-          musicChord: this.musicChord.name
+          musicChord: this.musicChord.name,
         })
       );
     });
@@ -173,7 +222,6 @@ export default class MusicFeaturesStore {
       play: observable,
       beatMarker: observable,
       tempo: observable,
-      rootStore: false,
       playPause: action.bound,
       setPlay: action.bound,
       setKey: action.bound,
@@ -182,10 +230,7 @@ export default class MusicFeaturesStore {
       setSectionLength: action.bound,
       setScale: action.bound,
       incrementBeatNumber: action.bound,
-      changeFeatures: action.bound
+      changeFeatures: action.bound,
     });
-    this.audioContext = audioContext;
-    this.rootStore = rootStore;
-    // Tone.setContext(this.audioContext);
   }
 }

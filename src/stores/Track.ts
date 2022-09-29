@@ -30,11 +30,11 @@ export default class Track {
   sequencer?: Sequencer;
   synthesizer?: BaseSynthesizer;
 
-  private musicFeaturesStore: MusicFeaturesStore
-  private userParameterStore: UserParameterStore
-  private parameterStore: ParameterStore
-  private pluginStore: PluginStore
-  private trackStore: TrackStore
+  private musicFeaturesStore: MusicFeaturesStore;
+  private userParameterStore: UserParameterStore;
+  private parameterStore: ParameterStore;
+  private pluginStore: PluginStore;
+  private trackStore: TrackStore;
 
   trackFeatures: ITrackFeatures;
 
@@ -85,7 +85,6 @@ export default class Track {
     this.trackStore.removeTrack(this.id);
   };
 
-
   async tick(beatMarker: BeatMarker, time: number) {
     if (!this.sequencer) return;
     if (!this.musicFeaturesStore) {
@@ -93,13 +92,13 @@ export default class Track {
     }
 
     await this.sequencer.play(
-      this.musicFeaturesStore.musicKey,
-      this.musicFeaturesStore.musicScale,
-      this.musicFeaturesStore.musicChord,
+      this.musicFeaturesStore.musicKey.value(),
+      this.musicFeaturesStore.musicScale.value(),
+      this.musicFeaturesStore.musicChord.value(),
       beatMarker,
       time
     );
-    
+
     if (beatMarker.num % 10 === 0) {
       this.trackStore?.saveTracks();
     }
@@ -111,17 +110,20 @@ export default class Track {
 
   synthFromSlug(synthSlug: string) {
     console.log("TRACK::SYNTH_FROM_SLUG", `Synth Slug: ${synthSlug}`);
-    return getSynthesizer(  
+    return getSynthesizer(
       this.userParameterStore,
       this.parameterStore,
       this.pluginStore,
       synthSlug,
       this.id
-    )
+    );
   }
 
   sequencerFromSlug(sequencerSlug: string) {
-    console.log("TRACK::SEQUENCER_FROM_SLUG", `Sequencer Slug: ${sequencerSlug}`);
+    console.log(
+      "TRACK::SEQUENCER_FROM_SLUG",
+      `Sequencer Slug: ${sequencerSlug}`
+    );
     return getSequencer(
       this.userParameterStore,
       this.parameterStore,
@@ -131,28 +133,33 @@ export default class Track {
       this.id,
       this.audioContext(),
       this.trackFeatures
-    )
+    );
   }
 
   arrangerFromSlug(arrangerSlug: string) {
     return new Arranger(arrangerSlug, Tone.getContext());
   }
 
-  newMachine(machineType: "synthesizer" | "sequencer" | "arranger", machineSlug: string) {
-    switch(machineType) {
+  newMachine(
+    machineType: "synthesizer" | "sequencer" | "arranger",
+    machineSlug: string
+  ) {
+    switch (machineType) {
       case "synthesizer":
         return this.synthFromSlug(machineSlug);
       case "sequencer":
         return this.sequencerFromSlug(machineSlug);
       case "arranger":
-        return this.arrangerFromSlug(machineSlug);   
+        return this.arrangerFromSlug(machineSlug);
     }
   }
 
-  async assignMachine(machineType: "synthesizer" | "sequencer" | "arranger", machineSlug: any) {
-    
+  async assignMachine(
+    machineType: "synthesizer" | "sequencer" | "arranger",
+    machineSlug: any
+  ) {
     let machine = await this.newMachine(machineType, machineSlug);
-    
+
     this[machineType as keyof this] = machine;
 
     if (this.sequencer && this.synthesizer) {
@@ -169,8 +176,8 @@ export default class Track {
       return {
         name: this.sequencer.name,
         slug: this.sequencer.slug,
-        type: this.sequencer.type
-      }
+        type: this.sequencer.type,
+      };
     }
     return undefined;
   }
@@ -180,7 +187,7 @@ export default class Track {
     if (this.synthesizer) {
       return {
         name: this.synthesizer.name,
-        slug: this.synthesizer.name.replaceAll(" ", "_").toLowerCase()
+        slug: this.synthesizer.name.replaceAll(" ", "_").toLowerCase(),
       };
     }
     return undefined;
@@ -255,21 +262,21 @@ export default class Track {
     // }
     try {
       await this.loadTrackArranger(trackData);
-    } catch(err: any) {
+    } catch (err: any) {
       error("TRACK_LOAD_FEATURES_ERROR_ARRANGER", err.stack);
     }
     try {
       if (trackData.sequencer) {
         await this.loadTrackSequencer(trackData.sequencer);
       }
-    } catch(err: any) {
+    } catch (err: any) {
       error("TRACK_LOAD_FEATURES_ERROR_SEQUENCER", err.stack);
     }
     try {
       if (trackData.synthesizer) {
         await this.loadTrackSynthesizer(trackData.synthesizer);
       }
-    } catch(err: any) {
+    } catch (err: any) {
       error("TRACK_LOAD_FEATURES_ERROR_SYNTHESIZER", err.stack);
     }
 
@@ -281,7 +288,7 @@ export default class Track {
   private initializeMachines(trackMachines: any) {
     this.arranger = undefined;
     if (trackMachines?.sequencer) {
-      this.loadTrackSequencer(trackMachines.sequencer)
+      this.loadTrackSequencer(trackMachines.sequencer);
     } else {
       this.sequencer = undefined;
     }
@@ -293,5 +300,4 @@ export default class Track {
     }
     this.setLoading(false);
   }
-
 }

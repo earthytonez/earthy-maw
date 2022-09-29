@@ -131,13 +131,13 @@ const TopBar = observer(() => {
             </Typography>
             <PlayButtonToggle play={play} playPause={playPause} />
             <HeaderNumberField
-              value={tempo}
+              value={tempo.get()}
               onChange={onChangeTempo}
               title="bpm"
               width="120px"
             />
             <HeaderNumberField
-              value={musicSectionLength}
+              value={musicSectionLength.get()}
               onChange={onChangeSectionLength}
               title="Section Length"
               width="140px"

@@ -25,9 +25,9 @@ export default class NoteToPlay {
     _measureBeat: number
   ): Tone.FrequencyClass<number> {
     let scaleName = `${key} ${scale.name}`;
-    debug("NoteToPlay", `Getting notes from ${scaleName} scale.`);
+    debug("NOTE_TO_PLAY", `Getting notes from ${scaleName} scale.`);
     let notes = Scale.get(scaleName).notes;
-    debug("NoteToPlay", `NOTES: `, notes);
+    debug("NOTE_TO_PLAY", `NOTES: `, notes);
     let octave = octaves[Math.floor(Math.random() * octaves.length)];
     let note = notes[Math.floor(Math.random() * notes.length)];
 
@@ -56,6 +56,7 @@ export default class NoteToPlay {
     if (this.noteNotInterval) {
       return Tone.Frequency(startNote);
     }
+    debug("NOTE_TO_PLAY", `Getting notes from ${measureBeat} ${chord} chord.`);
 
     let interval = intervalToPlay.get(measureBeat, chord);
 
@@ -78,7 +79,7 @@ export default class NoteToPlay {
     debug("NOTE_TO_PLAY", `Note set as ${JSON.stringify(this.note)}`);
     debug("NOTE_TO_PLAY", "intervalToPlay", intervalToPlay);
 
-    if (intervalToPlay.intervalType == "arpeggiator") {
+    if (intervalToPlay.intervalType === "arpeggiator") {
       this.noteChooser = "interval";
     }
     switch (this.noteChooser) {
@@ -87,7 +88,14 @@ export default class NoteToPlay {
       case "single":
         return this.getSingleNote();
       case "interval":
-        return this.getIntervalNote(key, scale, chord, octaves, measureBeat, intervalToPlay);
+        return this.getIntervalNote(
+          key,
+          scale,
+          chord,
+          octaves,
+          measureBeat,
+          intervalToPlay
+        );
     }
   }
 

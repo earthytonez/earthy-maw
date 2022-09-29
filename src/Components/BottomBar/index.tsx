@@ -68,6 +68,8 @@ const BottomBar = observer((props: BottomBarProps) => {
       uiStore.browseMachines(undefined, open);
     };
 
+  console.log(musicScale);
+
   return (
     <React.Fragment>
       <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
@@ -86,9 +88,10 @@ const BottomBar = observer((props: BottomBarProps) => {
                 <FeatureSelect
                   title="Keys"
                   slug="keys"
-                  value={musicKey}
+                  value={musicKey.val}
                   change={setKey}
                   options={MUSIC_THEORY_KEYS}
+                  valuePending={musicKey.valuePending}
                 />
               </FormControl>
               <FormControl>
@@ -112,18 +115,20 @@ const BottomBar = observer((props: BottomBarProps) => {
                 <FeatureSelect
                   title="Scale"
                   slug="scale"
-                  value={musicScale.name}
+                  value={musicScale.val.name}
                   change={setScale}
                   options={MUSIC_THEORY_SCALES}
+                  valuePending={musicScale.valuePending}
                 />
               </FormControl>
               <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
                 <FeatureSelect
                   title="Chord"
                   slug="chord"
-                  value={musicChord.name}
+                  value={musicChord.val.name}
                   change={setChord}
                   options={MUSIC_THEORY_CHORDS}
+                  valuePending={musicChord.valuePending}
                 />
               </FormControl>
             </FormGroup>

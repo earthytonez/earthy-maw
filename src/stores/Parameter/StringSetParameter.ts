@@ -1,27 +1,44 @@
 import UserParameterStore from "stores/UserParameter.store";
 import BaseParameter from "./Base";
 
+interface IStringSetParameterParams {
+  userParameterStore: UserParameterStore;
+  name: string;
+  key: string;
+  default: string[];
+  plugin?: string;
+  changedAtSection?: boolean;
+  onDeckValue?: string[];
+  multiSelect?: boolean;
+}
+
 export default class StringSetParameter extends BaseParameter {
   type: string = "set";
+  default: string[] = [];
+  multiSelect: boolean = false;
 
-  constructor(
-    _userParameterStore: UserParameterStore,
-    name: string,
-    _key: string,
-    private _defaultValue: string[],
-    private multiSelect: boolean = true
-  ) {
-    super(_userParameterStore, name, _key);
+  constructor(params: IStringSetParameterParams) {
+    super(params.userParameterStore, params.name, params.key);
+
+    this.default = params.default;
+    this.plugin = params.plugin;
+    this.userParameterStore = params.userParameterStore;
+    if (params.changedAtSection) {
+      this.changedAtSection = params.changedAtSection;
+    }
+    if (params.multiSelect) {
+      this.multiSelect = params.multiSelect;
+    }
   }
 
   setValue(newValue: string[]): boolean {
-    this._userParameterStore.set(this._key, newValue);
+    this.userParameterStore.set(this.key, newValue);
     return true;
   }
 
   removeItem(item: string) {
     if (!this.multiSelect) {
-        return;
+      return;
     }
 
     let value = this.value();
@@ -36,7 +53,7 @@ export default class StringSetParameter extends BaseParameter {
 
   addItem(item: string) {
     if (!this.multiSelect) {
-        return this.setValue([item]);
+      return this.setValue([item]);
     }
     const index = this.value().indexOf(item, 0);
     if (index == -1) {
@@ -55,13 +72,17 @@ export default class StringSetParameter extends BaseParameter {
   }
 
   valueOfSet(): string[] {
-    if (this._userParameterStore.get(this._key)) {
-      return this._userParameterStore.get(this._key) as string[];
+    if (this.userParameterStore.get(this.key)) {
+      return this.userParameterStore.get(this.key) as string[];
     }
-    return this._defaultValue;
+    return this.default;
   }
 
   value(): string[] {
+    return this.valueOfSet();
+  }
+
+  get val(): string[] {
     return this.valueOfSet();
   }
 

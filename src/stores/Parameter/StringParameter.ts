@@ -1,31 +1,48 @@
-import UserParameterStore from 'stores/UserParameter.store';
-import BaseParameter from './Base';
+import UserParameterStore from "stores/UserParameter.store";
+import BaseParameter from "./Base";
+
+interface IStringParameterParams {
+  userParameterStore: UserParameterStore;
+  name: string;
+  key: string;
+  default: string;
+  plugin?: string;
+  changedAtSection?: boolean;
+  onDeckValue?: string;
+}
 
 export default class StringParameter extends BaseParameter {
-    type: string = "string";
+  type: string = "string";
+  default: string = "";
+  changedAtSection: boolean = false;
 
-    constructor(_userParameterStore: UserParameterStore, name: string, _key: string, private _defaultValue: string) {
-        super(_userParameterStore, name, _key);
+  constructor(params: IStringParameterParams) {
+    super(params.userParameterStore, params.name, params.key);
+
+    this.default = params.default;
+  }
+
+  setValue(newValue: string): boolean {
+    this.userParameterStore.set(this.key, newValue);
+    return true;
+  }
+
+  stringValue(): string {
+    if (this.userParameterStore.get(this.key)) {
+      return this.userParameterStore.get(this.key) as string;
     }
+    return this.default;
+  }
 
-    setValue(newValue: string): boolean {
-        this._userParameterStore.set(this._key, newValue);
-        return true;
-    }
+  value(): string {
+    return this.stringValue();
+  }
 
-    stringValue(): string {
-        if (this._userParameterStore.get(this._key)) {
-            return this._userParameterStore.get(this._key) as string;
-        }
-        return this._defaultValue;
-    }
+  get val(): string {
+    return this.stringValue();
+  }
 
-    value(): string {
-        return this.stringValue();
-    }
-
-    get(): string {
-        return this.stringValue();
-    }
-
+  get(): string {
+    return this.stringValue();
+  }
 }

@@ -12,8 +12,8 @@ MMF (Minimum Marketable Features)
 Tech Debt: 1. Save more things (like Octaves)
 
 1. Help
-  1. Make parameters modulatable by LFO and Date.
-  2. 
+  1. Fix Keys/Scale/Chord Changes to show yellow when changed.
+  2. Make parameters modulatable by LFO and Date.
 
 
 1. Share on Twitter.

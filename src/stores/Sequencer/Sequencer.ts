@@ -74,7 +74,7 @@ export default class Sequencer extends SequencerType {
   /*
    * These variables are for random step sequencers.
    */
-  minGate: number = .1;
+  minGate: number = 0.1;
   maxGate: number = 10;
   minInterval: number = 5;
   maxInterval: number = 10;
@@ -122,7 +122,7 @@ export default class Sequencer extends SequencerType {
     this.gateLengths = sequencerDefinition.gateLengths;
     this.volumeToPlay = sequencerDefinition.volumeToPlay;
     this.totalLength = sequencerDefinition.totalLength;
-    
+
     this.loadRunners(sequencerDefinition.rhythm_length!);
 
     makeObservable(this, {
@@ -137,7 +137,7 @@ export default class Sequencer extends SequencerType {
       randomTrigger: action.bound,
     });
   }
-  
+
   measureBeat(beatMarker: BeatMarker): number {
     if (!this.totalLength) {
       return beatMarker.num;
@@ -161,7 +161,7 @@ export default class Sequencer extends SequencerType {
 
   toJSON() {
     // let excludedKeys = ["musicFeaturesStore", "trackStore", "boundSynthesizer", "trackFeatures",];
-    let includedKeys = ["type"]
+    let includedKeys = ["type"];
 
     let filteredObject = Object.keys(this)
       .filter((key: string) => !includedKeys.includes(key))
@@ -169,7 +169,7 @@ export default class Sequencer extends SequencerType {
         obj[key] = this[key as keyof this];
         return obj;
       }, {});
-      
+
     return filteredObject;
   }
 
@@ -204,9 +204,17 @@ export default class Sequencer extends SequencerType {
     }
   }
 
-  changeParameter(parameter: string, value: any) {
-    console.log(`Change Parameter ${parameter}`);
-    this[parameter as keyof this] = value;
+  changeParameter(parameterSlug: string, value: any) {
+    if (!this._parameters) {
+      throw new Error("No Parameters");
+    }
+
+    let parameter = this._parameters.get(parameterSlug);
+
+    if (!parameter) {
+      throw new Error("Invalid Parameter");
+    }
+    parameter.setValue(value);
   }
 
   loadParameters(sequencer: any) {
@@ -234,7 +242,11 @@ export default class Sequencer extends SequencerType {
     parameters: ITriggerParameters
   ): ISequencerGate {
     try {
-      return this.playEveryXRunner!.run(beatMarker, parameters);
+      return this.playEveryXRunner!.run(
+        beatMarker,
+        parameters,
+        this._parameters
+      );
     } catch (err) {
       console.error(err, parameters);
     }
@@ -244,24 +256,24 @@ export default class Sequencer extends SequencerType {
     };
   }
 
-    /* Here we have parameters, how does the data get back to the plugin, or wherever it 
+  /* Here we have parameters, how does the data get back to the plugin, or wherever it 
      is supposed to go?  I think you change the userdata and everything pulls from that.
      */
-     registerParameter(parameter: BaseParameter) {
-      this._parameters?.set(parameter.slug, parameter);
-    }
-  
-    registerParameters(parameters: BaseParameter[]): Sequencer {
-      if (!parameters) {
-        return this;
-      }
-      parameters.forEach((parameter: BaseParameter) => {
-        this.registerParameter(parameter);
-      });
-  
+  registerParameter(parameter: BaseParameter) {
+    this._parameters?.set(parameter.slug, parameter);
+  }
+
+  registerParameters(parameters: BaseParameter[]): Sequencer {
+    if (!parameters) {
       return this;
     }
-  
+    parameters.forEach((parameter: BaseParameter) => {
+      this.registerParameter(parameter);
+    });
+
+    return this;
+  }
+
   /*
    * This is a simple step sequencer, that enables you to sequence based on either a list or a mathematical formula.
    * This is only for triggers/gates it does not determine what note to play.
@@ -307,12 +319,15 @@ export default class Sequencer extends SequencerType {
     let parameters =
       this.triggerWhen.parameterSets[this.chosenTriggerParameterSet];
     if (parameters) {
-      parameters.gateList = this.gateLengths?.parameterSets[this.chosenGateParameterSet]?.gateList;
+      parameters.gateList =
+        this.gateLengths?.parameterSets[this.chosenGateParameterSet]?.gateList;
       parameters.selectedFill = this.selectedFill;
     }
 
     if (!parameters) {
-      throw new Error(`parameters for random sequencer ${this.chosenTriggerParameterSet} must be defined`);
+      throw new Error(
+        `parameters for random sequencer ${this.chosenTriggerParameterSet} must be defined`
+      );
     }
 
     switch (this.triggerWhen.type) {
@@ -342,15 +357,15 @@ export default class Sequencer extends SequencerType {
     beatMarker: BeatMarker
   ): Tone.FrequencyClass {
     let octaves = this.trackFeatures.octaves.val();
-      return this.noteToPlay.get(
-        key,
-        scale,
-        chord,
-        octaves,
-        this.measureBeat(beatMarker),
-        this.intervalToPlay
-      );
-    }
+    return this.noteToPlay.get(
+      key,
+      scale,
+      chord,
+      octaves,
+      this.measureBeat(beatMarker),
+      this.intervalToPlay
+    );
+  }
 
   bounceChord(notes: any, synthFn: any, playDuration: any, tailDuration: any) {
     let playParams = {
@@ -410,15 +425,20 @@ export default class Sequencer extends SequencerType {
 
     let octave = 4;
     if (this.trackFeatures.octaves) {
-      octave = this.trackFeatures.octaves.val()[Math.floor(Math.random() * this.trackFeatures.octaves.val().length)];
+      octave =
+        this.trackFeatures.octaves.val()[
+          Math.floor(Math.random() * this.trackFeatures.octaves.val().length)
+        ];
     }
 
     let toneFrequencyChord = chordNotes.map((note: string) => {
       return Tone.Frequency(`${note}${octave}`);
     });
-    
-    let toneFrequencyChords = [...toneFrequencyChord].sort(() => Math.random() - 0.5)[0]; // What is this doing?
-  
+
+    let toneFrequencyChords = [...toneFrequencyChord].sort(
+      () => Math.random() - 0.5
+    )[0]; // What is this doing?
+
     console.log(toneFrequencyChords);
     playParams.notes = toneFrequencyChord;
 
@@ -515,8 +535,6 @@ export default class Sequencer extends SequencerType {
       return; // debug("SEQUENCER", "No Bound Synthesizer");
     }
 
-    debug("SEQUENCER", `gateAndNote? ${this.sequencerType()}`);
-
     let gate: ISequencerGate = this.gateAndNote(beatMarker);
 
     if (gate.triggered) {
@@ -542,7 +560,6 @@ export default class Sequencer extends SequencerType {
       );
     }
   }
-
 }
 
 // setAwaitBuffers() {

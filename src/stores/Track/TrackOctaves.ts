@@ -49,19 +49,17 @@ export default class TrackOctaves {
   }
 
   initializeParameter() {
-    return new NumericSetParameter(
-      this.userParameterStore,
-      "Octaves",
-      this.userParameterKey,
-      this.defaultValue(),
-      this._isMultiOctave()
-    );
+    return new NumericSetParameter({
+      userParameterStore: this.userParameterStore,
+      name: "Octaves",
+      key: this.userParameterKey,
+      default: this.defaultValue(),
+      multiSelect: this._isMultiOctave()
+  });
   }
 
   set octaves(val: number[]) {
-    console.log(this.parameter);
     this.parameter.setValue(val);
-    console.log(this.parameter);
   }
 
   get octaves(): number[] {

@@ -15,13 +15,21 @@ export default class PlayEveryX implements ISequencerRunner {
 
   playEveryXStepInterval(
     beatMarker: number,
-    parameters: ITriggerParameters
+    parameters: ITriggerParameters,
+    sequencerParameters: any
   ): ISequencerGate {
-    let stepCount = beatMarker % parameters.stepInterval!;
+    let stepInterval;
+    if (sequencerParameters.has("stepinterval")) {
+      stepInterval = sequencerParameters.get("stepinterval").val;
+    } else {
+      stepInterval = parameters.stepInterval;
+    }
+
+    let stepCount = beatMarker % stepInterval!;
 
     debug(
       "PLAY_EVERY_X",
-      `Playing steps: ${beatMarker} / ${stepCount} - ${parameters.stepInterval} on ${parameters.on} -- ${parameters.fillEnd}`
+      `Playing steps: ${beatMarker} / ${stepCount} - ${stepInterval} on ${parameters.on} -- ${parameters.fillEnd}`
     );
 
     let fillStep = 0;
@@ -63,9 +71,17 @@ export default class PlayEveryX implements ISequencerRunner {
 
   playEveryXStepList(
     beatMarker: number,
-    parameters: ITriggerParameters
+    parameters: ITriggerParameters,
+    sequencerParameters: any
   ): ISequencerGate {
     let stepCount = beatMarker % this.rhythm_length;
+
+    let stepInterval;
+    if (sequencerParameters.has("stepinterval")) {
+      stepInterval = sequencerParameters.get("stepinterval");
+    } else {
+      stepInterval = parameters.stepInterval;
+    }
 
     debug(
       "PLAY_EVERY_X",
@@ -80,7 +96,7 @@ export default class PlayEveryX implements ISequencerRunner {
     }
     debug(
       "PLAY_EVERY_X",
-      `Playing from step list steps: ${gateToPlay} --  ${beatMarker} / ${stepCount} - ${parameters.stepInterval} on ${parameters.on}`
+      `Playing from step list steps: ${gateToPlay} --  ${beatMarker} / ${stepCount} - ${stepInterval} on ${parameters.on}`
     );
 
     console.log(parameters.gateList);
@@ -92,14 +108,27 @@ export default class PlayEveryX implements ISequencerRunner {
     );
   }
 
-  run(beatMarker: number, parameters: ITriggerParameters): ISequencerGate {
+  run(
+    beatMarker: number,
+    parameters: ITriggerParameters,
+    sequencerParameters: any
+  ): ISequencerGate {
+    console.log(sequencerParameters);
     debug("PLAY_EVERY_X", "Parameters = ", parameters);
 
     switch (parameters.triggerType) {
       case "stepList":
-        return this.playEveryXStepList(beatMarker, parameters);
+        return this.playEveryXStepList(
+          beatMarker,
+          parameters,
+          sequencerParameters
+        );
       case "stepInterval":
-        return this.playEveryXStepInterval(beatMarker, parameters);
+        return this.playEveryXStepInterval(
+          beatMarker,
+          parameters,
+          sequencerParameters
+        );
     }
     return {
       triggered: false,

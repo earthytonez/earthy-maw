@@ -1,10 +1,15 @@
 import NumericSetParameter from "./NumericSetParameter";
 import UserParameterStore from "stores/UserParameter.store";
 
-test('set a set parameter', () => {
-    const userParameterStore = new UserParameterStore();
-    const setParameter = new NumericSetParameter(userParameterStore, "Waveform", "track.1.synthesizer.waveform", [3, 4]);
-    expect(setParameter.get()).toStrictEqual([3, 4]);
-    setParameter.setValue([1, 2]);
-    expect(setParameter.get()).toStrictEqual([1, 2]);
+test("set a string parameter", () => {
+  const userParameterStore = new UserParameterStore();
+  const musicChordParameter = new NumericSetParameter({
+    userParameterStore: userParameterStore,
+    name: "Chord",
+    key: "global.chord",
+    default: [1, 2],
+  });
+  expect(musicChordParameter.val).toBe([1, 2]);
+  musicChordParameter.setValue([3, 4]);
+  expect(musicChordParameter.val).toBe([3, 4]);
 });

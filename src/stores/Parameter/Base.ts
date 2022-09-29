@@ -5,6 +5,12 @@
 import IModulator from "../Modulator/IModulator";
 import UserParameterStore from "stores/UserParameter.store";
 
+export interface IBaseParameterParams {
+  userParameterStore: UserParameterStore;
+  name: string;
+  key: string;
+  changedAtSection?: boolean;
+}
 // export interface IParameter {
 //   _value: string | number;
 //   name: string;
@@ -23,10 +29,11 @@ import UserParameterStore from "stores/UserParameter.store";
 //   increment(): null;
 // }
 
-export type ParameterFieldTypes = "slider" | "radio" | "dial" | "arraySelector"
+export type ParameterFieldTypes = "slider" | "radio" | "dial" | "arraySelector";
 
 export default abstract class BaseParameter {
   abstract type: string;
+  changedAtSection: boolean = false;
   _value: number | string | undefined;
   modulators: IModulator = [];
   plugin?: string;
@@ -41,15 +48,14 @@ export default abstract class BaseParameter {
   };
 
   constructor(
-    protected _userParameterStore: UserParameterStore,
+    protected userParameterStore: UserParameterStore,
     public name: string,
-    protected _key: string
+    protected key: string
   ) {
     this.slug = name.replaceAll(" ", "").toLowerCase();
     this.field = name.replaceAll(" ", "").toLowerCase();
   }
 
-  abstract setValue(newValue: string | number | string[] | number[]): boolean;
   /*
    * value gets the actual parameter data which should be decided based on three
    * values.
@@ -59,21 +65,20 @@ export default abstract class BaseParameter {
    * 3. Any modulation changes to the value of the parameter.
    */
   numberValue(): number {
-    return this._userParameterStore.get(this._key) as number;
+    return this.userParameterStore.get(this.key) as number;
   }
   stringValue(): string {
-    return this._userParameterStore.get(this._key) as string;
+    return this.userParameterStore.get(this.key) as string;
   }
 
   numericSetValue(): number[] {
-    return this._userParameterStore.get(this._key) as number[];
+    return this.userParameterStore.get(this.key) as number[];
   }
 
   stringSetValue(): string[] {
-    return this._userParameterStore.get(this._key) as string[];
+    return this.userParameterStore.get(this.key) as string[];
   }
 
-  value(): string | number | number[] | string[] {
-    return this.numberValue();
-  }
+  abstract setValue(newValue: any): boolean;
+  abstract get val(): any;
 }

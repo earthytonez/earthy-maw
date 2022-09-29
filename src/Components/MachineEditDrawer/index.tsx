@@ -93,7 +93,7 @@ const MachineEditDrawer = observer((): React.ReactElement => {
           retVal["default"] = [eP];
         }
       }
-    })
+    });
     return retVal;
   };
 
@@ -118,52 +118,56 @@ const MachineEditDrawer = observer((): React.ReactElement => {
         <List
           sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
         >
-              {
-                defaultParameters.map((parameter: any, key: number) => {
-                  console.log(
-                    `MachineEditDrawer: ${JSON.stringify(parameter)}`
-                  );
-                  return (
-                    <ListItem key={key} sx={{mb: 5, pr: 0, pl: 0}}>
-                      <LoadParameter
-                        key={key}
-                        edit={editParameter}
-                        increment={incrementParameter}
-                        decrement={decrementParameter}
-                        name={parameter.name}
-                        field={parameter.field}
-                        fieldType={parameter.fieldType}
-                        fieldOptions={parameter.fieldOptions}
-                      />
-                    </ListItem>
-                  );
-                })
-              }
+          {defaultParameters.map((parameter: any, key: number) => {
+            console.log(`MachineEditDrawer: ${JSON.stringify(parameter)}`);
+            return (
+              <ListItem key={key} sx={{ mb: 5, pr: 0, pl: 0 }}>
+                <LoadParameter
+                  key={key}
+                  edit={editParameter}
+                  increment={incrementParameter}
+                  decrement={decrementParameter}
+                  name={parameter.name}
+                  parameterValue={parameter.val}
+                  field={parameter.field}
+                  fieldType={parameter.fieldType}
+                  fieldOptions={parameter.fieldOptions}
+                />
+              </ListItem>
+            );
+          })}
 
           {Object.keys(editParametersByPlugin).map(
             (plugin: any, key: number) => {
-              return (<TightBorderedPaper key={key}><GridTopFullWidth><Typography variant="h4">{plugin}</Typography></GridTopFullWidth>
-              {
-                editParametersByPlugin[plugin].map((parameter: any, _key: number) => {
-                  console.log(
-                    `MachineEditDrawer: ${JSON.stringify(parameter)}`
-                  );
-                  return (
-                    <ListItem key={parameter.slug}>
-                      <LoadParameter
-                        key={parameter.slug}
-                        edit={editParameter}
-                        increment={incrementParameter}
-                        decrement={decrementParameter}
-                        name={parameter.name}
-                        field={parameter.field}
-                        fieldType={parameter.fieldType}
-                        fieldOptions={parameter.fieldOptions}
-                      />
-                    </ListItem>
-                  );
-                })
-              }</TightBorderedPaper>);
+              return (
+                <TightBorderedPaper key={key}>
+                  <GridTopFullWidth>
+                    <Typography variant="h4">{plugin}</Typography>
+                  </GridTopFullWidth>
+                  {editParametersByPlugin[plugin].map(
+                    (parameter: any, _key: number) => {
+                      console.log(
+                        `MachineEditDrawer: ${JSON.stringify(parameter)}`
+                      );
+                      return (
+                        <ListItem key={parameter.slug}>
+                          <LoadParameter
+                            key={parameter.slug}
+                            edit={editParameter}
+                            increment={incrementParameter}
+                            decrement={decrementParameter}
+                            name={parameter.name}
+                            field={parameter.field}
+                            parameterValue={parameter.val}
+                            fieldType={parameter.fieldType}
+                            fieldOptions={parameter.fieldOptions}
+                          />
+                        </ListItem>
+                      );
+                    }
+                  )}
+                </TightBorderedPaper>
+              );
             }
           )}
         </List>

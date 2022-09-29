@@ -8,6 +8,7 @@ import { Note } from "@tonaljs/tonal";
 import RootStore from "./Root.store";
 import BaseSynthesizer from "./Synthesizer/SynthesizerTypes/Base";
 import BaseParameter from "./Parameter/Base";
+import NumericEnumParameter from "./Parameter/NumericEnumParameter";
 /*
  * Defines Parameters not associated with a plugin.
  */
@@ -121,6 +122,20 @@ export default class ParameterStore {
         // },
       });
     },
+    step_interval: (trackNumber: number) => {
+      return new NumericEnumParameter({
+        userParameterStore: this.rootStore!.userParameterStore,
+        name: "Step Interval", // chosenGateParameterSet
+        key: this.parameterKey("step_interval", trackNumber),
+        options: [1, 2, 3, 4, 6, 8, 12, 16],
+        default: 4,
+        // fieldOptions: {
+        /* It's a slider. */
+        // min: 0,
+        // max: fill list length,
+        // },
+      });
+    },
   };
 
   constructor(public rootStore: RootStore | undefined) {}
@@ -142,19 +157,25 @@ export default class ParameterStore {
       sequencer?.sequencerLoader?.sequencerHolder?.parameters!
     );
 
-    if (sequencer.sequencerLoader?.sequencerHolder.type == "step") {
+    if (sequencer.sequencerLoader?.sequencerHolder.type === "step") {
       retVal.push("trigger_set");
       retVal.push("gate_set");
     }
 
     if (
-      sequencer.sequencerLoader?.sequencerHolder.type == "drone" ||
-      sequencer.sequencerLoader?.sequencerHolder.type == "randomStep"
+      sequencer.sequencerLoader?.sequencerHolder.type === "drone" ||
+      sequencer.sequencerLoader?.sequencerHolder.type === "randomStep"
     ) {
       retVal.push("min_gate");
       retVal.push("max_gate");
       retVal.push("min_interval");
       retVal.push("max_interval");
+    }
+
+    if (
+      sequencer.triggerWhen.parameterSets[0]?.triggerType === "stepInterval"
+    ) {
+      retVal.push("step_interval");
     }
 
     if (
@@ -167,7 +188,7 @@ export default class ParameterStore {
     }
     return retVal.filter((parameter: string | undefined) => {
       return parameter !== undefined;
-    })
+    });
   }
 
   fetchForSequencer(
@@ -175,7 +196,7 @@ export default class ParameterStore {
     trackNumber: number
   ): BaseParameter[] {
     let parametersToGet = this.makeParameterList(sequencer);
-    
+
     let parameters = parametersToGet.map((parameter: string) => {
       return this.parameters[parameter]!(trackNumber);
     });

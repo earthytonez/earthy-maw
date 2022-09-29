@@ -157,7 +157,7 @@ export default class BaseSynthesizer {
    */
   parameterValue(slug: string): any {
     try {
-      return this._parameters.get(slug)!.value();
+      return this._parameters.get(slug)!.val();
     } catch (err) {
       throw new Error(`parameterValue slug: ${slug} error: ${err}`);
     }

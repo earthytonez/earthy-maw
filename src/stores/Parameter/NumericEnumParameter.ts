@@ -1,40 +1,93 @@
-import UserParameterStore from 'stores/UserParameter.store';
-import BaseParameter, { ParameterFieldTypes } from './Base';
+import UserParameterStore from "stores/UserParameter.store";
+import BaseParameter, { ParameterFieldTypes } from "./Base";
 
-export default class NumericEnumParameter extends BaseParameter{
-    type: string = "numeric_enum";
-    fieldType: ParameterFieldTypes = "arraySelector";
+import { makeObservable, action, computed, observable } from "mobx";
 
-    constructor(_userParameterStore: UserParameterStore, name: string, _key: string, private options: number[], private _defaultValue: number) {
-        super(_userParameterStore, name, _key);
-        this.fieldOptions = {
-            current: _defaultValue,
-            options: options
-        }
+interface INumericEnumParameterParams {
+  userParameterStore: UserParameterStore;
+  name: string;
+  key: string;
+  default: number;
+  plugin?: string;
+  options: number[];
+  changedAtSection?: boolean;
+  onDeckValue?: number;
+}
 
+export default class NumericEnumParameter extends BaseParameter {
+  type: string = "numeric_enum";
+  default: number;
+  options: number[];
+  fieldType: ParameterFieldTypes = "arraySelector";
+  onDeckValue?: number;
+  _val: number;
+
+  constructor(params: INumericEnumParameterParams) {
+    super(params.userParameterStore, params.name, params.key);
+
+    this.options = params.options;
+    this.default = params.default;
+    this._val = params.default;
+    if (this.userParameterStore.has(this.key)) {
+      this._val = this.userParameterStore.get(this.key) as number;
+    } else {
+      this._val = params.default;
     }
 
-    setValue(newValue: number): boolean {
-        if (this.options.includes(newValue)) {
-            this._userParameterStore.set(this._key, newValue);
-            return true;
-        }
-        return false;
+    this.plugin = params.plugin;
+    this.userParameterStore = params.userParameterStore;
+    this.onDeckValue = params.onDeckValue;
+
+    if (params.changedAtSection) {
+      this.changedAtSection = params.changedAtSection;
     }
 
-    numericValue(): number {
-        if (this._userParameterStore.get(this._key)) {
-            return this._userParameterStore.get(this._key) as number;
-        }
-        return this._defaultValue;
-    }
+    this.fieldOptions = {
+      min: 0,
+      max: 100,
+      current: params.default,
+      options: params.options,
+    };
 
-    value(): number {
-        return this.numericValue();
-    }
+    makeObservable(this, {
+      _val: observable,
 
-    get(): number {
-        return this.numericValue();
-    }
+      valuePending: computed,
+      val: computed,
+      setValue: action.bound,
+    });
+  }
 
+  get valuePending(): boolean {
+    return this.onDeckValue !== undefined;
+  }
+
+  setValue(newValue: number): boolean {
+    console.log(`Numeric Enum Parameter ${this.name} setValue ${newValue}`);
+    if (this.options.includes(newValue)) {
+      this.userParameterStore.set(this.key, newValue);
+      this._val = newValue;
+      return true;
+    }
+    return false;
+  }
+
+  numericValue(): number {
+    if (this.userParameterStore.get(this.key)) {
+      return this.userParameterStore.get(this.key) as number;
+    }
+    return this.default;
+  }
+
+  value(): number {
+    return this._val;
+  }
+
+  get val(): number {
+    return this._val;
+  }
+
+  get(): number {
+    return this.numericValue();
+  }
 }
