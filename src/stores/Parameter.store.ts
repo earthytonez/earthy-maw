@@ -9,6 +9,7 @@ import RootStore from "./Root.store";
 import BaseSynthesizer from "./Synthesizer/SynthesizerTypes/Base";
 import BaseParameter from "./Parameter/Base";
 import NumericEnumParameter from "./Parameter/NumericEnumParameter";
+import StringEnumParameter from "./Parameter/StringEnumParameter";
 /*
  * Defines Parameters not associated with a plugin.
  */
@@ -136,6 +137,15 @@ export default class ParameterStore {
         // },
       });
     },
+    arpeggiator_type: (trackNumber: number) => {
+      return new StringEnumParameter({
+        userParameterStore: this.rootStore!.userParameterStore,
+        name: "Arpeggiator Type", // chosenGateParameterSet
+        key: this.parameterKey("arpeggiator_type", trackNumber),
+        options: ["up", "down", "updown", "downup", "random"],
+        default: "up",
+      });
+    },
   };
 
   constructor(public rootStore: RootStore | undefined) {}
@@ -157,15 +167,16 @@ export default class ParameterStore {
       sequencer?.sequencerLoader?.sequencerHolder?.parameters!
     );
 
-    if (sequencer.sequencerLoader?.sequencerHolder.type === "step") {
+    if (sequencer.type === "step") {
       retVal.push("trigger_set");
       retVal.push("gate_set");
     }
 
-    if (
-      sequencer.sequencerLoader?.sequencerHolder.type === "drone" ||
-      sequencer.sequencerLoader?.sequencerHolder.type === "randomStep"
-    ) {
+    if (sequencer.type === "arpeggiator") {
+      retVal.push("arpeggiator_type");
+    }
+
+    if (sequencer.type === "drone" || sequencer.type === "randomStep") {
       retVal.push("min_gate");
       retVal.push("max_gate");
       retVal.push("min_interval");
@@ -179,10 +190,8 @@ export default class ParameterStore {
     }
 
     if (
-      sequencer.sequencerLoader?.sequencerHolder?.triggerWhen?.parameterSets[0]
-        ?.fillList &&
-      sequencer.sequencerLoader?.sequencerHolder?.triggerWhen?.parameterSets[0]
-        ?.fillList.length > 0
+      sequencer?.triggerWhen?.parameterSets[0]?.fillList &&
+      sequencer?.triggerWhen?.parameterSets[0]?.fillList.length > 0
     ) {
       retVal.push("selected_fill");
     }

@@ -363,7 +363,8 @@ export default class Sequencer extends SequencerType {
       chord,
       octaves,
       this.measureBeat(beatMarker),
-      this.intervalToPlay
+      this.intervalToPlay,
+      this._parameters
     );
   }
 

@@ -27,7 +27,7 @@ export default class NumericEnumParameter extends BaseParameter {
 
     this.options = params.options;
     this.default = params.default;
-    this._val = params.default;
+
     if (this.userParameterStore.has(this.key)) {
       this._val = this.userParameterStore.get(this.key) as number;
     } else {

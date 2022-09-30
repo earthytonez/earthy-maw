@@ -1,6 +1,5 @@
 import * as Tone from "tone";
 
-import NoteIntervalCalculator from "./NoteIntervalCalculator";
 import { debug, warn } from "../../../Util/logger";
 
 import { Scale } from "@tonaljs/tonal";
@@ -44,28 +43,42 @@ export default class NoteToPlay {
     chord: IMusicChord,
     octaves: number[],
     measureBeat: number,
-    intervalToPlay: IntervalToPlay
+    intervalToPlay: IntervalToPlay,
+    parameters: any
   ): Tone.FrequencyClass<number> {
     let octaveToPlay = 4;
     console.log("NOTE_TO_PLAY", octaveToPlay, octaves);
     if (octaves[0]) {
       octaveToPlay = octaves[0];
     }
+
     let startNote = `${key}${octaveToPlay}`;
 
     if (this.noteNotInterval) {
       return Tone.Frequency(startNote);
     }
-    debug("NOTE_TO_PLAY", `Getting notes from ${measureBeat} ${chord} chord.`);
 
-    let interval = intervalToPlay.get(measureBeat, chord);
+    debug(
+      "NOTE_TO_PLAY",
+      `Getting notes from ${measureBeat} ${chord.name} chord.`
+    );
 
-    if (!interval) {
-      return Tone.Frequency(startNote);
-    }
-    let noteIntervalCalculator = new NoteIntervalCalculator(key, scale);
+    let intervalFrequency = intervalToPlay.get(
+      measureBeat,
+      chord,
+      key,
+      scale,
+      startNote,
+      octaveToPlay,
+      parameters
+    );
 
-    return Tone.Frequency(noteIntervalCalculator.getNote(startNote, interval));
+    debug(
+      "NOTE_TO_PLAY",
+      `Returning intervalFrequency ${intervalFrequency}`,
+      intervalFrequency
+    );
+    return intervalFrequency;
   }
 
   get(
@@ -74,7 +87,8 @@ export default class NoteToPlay {
     chord: IMusicChord,
     octaves: number[],
     measureBeat: number,
-    intervalToPlay: IntervalToPlay
+    intervalToPlay: IntervalToPlay,
+    parameters: any
   ): Tone.FrequencyClass {
     debug("NOTE_TO_PLAY", `Note set as ${JSON.stringify(this.note)}`);
     debug("NOTE_TO_PLAY", "intervalToPlay", intervalToPlay);
@@ -94,7 +108,8 @@ export default class NoteToPlay {
           chord,
           octaves,
           measureBeat,
-          intervalToPlay
+          intervalToPlay,
+          parameters
         );
     }
   }

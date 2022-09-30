@@ -18,7 +18,7 @@ interface IMusicChordParameterParams {
 
 export default class MusicChordParameter extends BaseParameter {
   type: string = "string";
-  chnagedAtSection: boolean = true;
+  changedAtSection: boolean = true;
   default: string;
   onDeckValue: string | undefined;
   _val: string;
@@ -59,6 +59,9 @@ export default class MusicChordParameter extends BaseParameter {
   }
 
   setValue(newValue: string): boolean {
+    console.log(
+      `Running setValue for Music Chord Parameter ${this.changedAtSection}`
+    );
     if (this.changedAtSection) {
       this.onDeckValue = newValue;
     } else {

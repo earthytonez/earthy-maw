@@ -9,14 +9,14 @@ interface IStringEnumParamterParams {
   key: string;
   options: string[];
   default: string;
-  plugin: string | undefined;
+  plugin?: string | undefined;
 }
 
 export default class StringEnumParameter extends BaseParameter {
   type: string = "string_enum";
   fieldType: ParameterFieldTypes = "arraySelector";
   options: string[];
-  plugin: string | undefined;
+  plugin?: string | undefined;
   default: string;
   userParameterStore: UserParameterStore;
 
@@ -25,7 +25,9 @@ export default class StringEnumParameter extends BaseParameter {
 
     this.options = params.options;
     this.default = params.default;
-    this.plugin = params.plugin;
+    if (params.plugin) {
+      this.plugin = params.plugin;
+    }
     this.userParameterStore = params.userParameterStore;
 
     this.fieldOptions = {
