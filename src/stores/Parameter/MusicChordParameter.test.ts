@@ -13,5 +13,7 @@ test("set a string parameter", () => {
   musicChordParameter.setValue("square");
   expect(musicChordParameter.val.name).toBe("major");
   musicChordParameter.setValue("minor");
+  expect(musicChordParameter.val.name).toBe("major"); // Set Value shouldn't change value as music chord parameter defaults to on deck.
+  musicChordParameter.swapOnDeck();
   expect(musicChordParameter.val.name).toBe("minor");
 });

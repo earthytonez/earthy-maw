@@ -9,7 +9,7 @@ test("set a set parameter", () => {
     key: "track.1.synthesizer.waveform",
     default: ["sine"],
   });
-  expect(setParameter.get()).toStrictEqual(["sine"]);
+  expect(setParameter.val).toStrictEqual(["sine"]);
   setParameter.setValue(["square"]);
-  expect(setParameter.get()).toStrictEqual(["square"]);
+  expect(setParameter.val).toStrictEqual(["square"]);
 });

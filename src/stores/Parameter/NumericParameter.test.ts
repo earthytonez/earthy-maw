@@ -1,15 +1,37 @@
 import NumericParameter from "./NumericParameter";
 import UserParameterStore from "stores/UserParameter.store";
 
-test("set a numeric parameter", () => {
+test("set a numeric parameter that is not changed at section intervals", async () => {
   const userParameterStore = new UserParameterStore();
+  await userParameterStore.remove("track.1.synthesizer.cutoff");
+
   const numericParameter = new NumericParameter({
-    userParameterStore: userParameterStore,
-    name: "Cutoff",
-    key: "track.1.synthesizer.filter.cutoff",
-    default: 1500,
+    userParameterStore,
+    name: "Waveform",
+    key: "track.1.synthesizer.waveform",
+    default: 1,
+    changedAtSection: false,
   });
-  expect(numericParameter.get()).toBe(1500);
-  numericParameter.setValue(1000);
-  expect(numericParameter.get()).toBe(1000);
+
+  expect(numericParameter.val).toBe(1);
+  numericParameter.setValue(2);
+  expect(numericParameter.val).toBe(2);
+});
+
+test("set a numeric parameter that is changed at section intervals", async () => {
+  const userParameterStore = new UserParameterStore();
+  await userParameterStore.remove("track.1.synthesizer.cutoff");
+  const numericParameter = new NumericParameter({
+    userParameterStore,
+    name: "Waveform",
+    key: "track.1.synthesizer.cutoff",
+    default: 1,
+    changedAtSection: true,
+  });
+
+  expect(numericParameter.val).toBe(1);
+  numericParameter.setValue(2);
+  expect(numericParameter.val).toBe(1);
+  numericParameter.swapOnDeck();
+  expect(numericParameter.val).toBe(2);
 });

@@ -1,7 +1,9 @@
 import { makeObservable, computed, action } from "mobx";
-import NumericSetParameter from "stores/Parameter/NumericSetParameter";
 
-import UserParameterStore from "stores/UserParameter.store";
+import BooleanParameter from "../Parameter/BooleanParameter";
+import NumericSetParameter from "../Parameter/NumericSetParameter";
+
+import UserParameterStore from "../UserParameter.store";
 
 // const ALL_OCTAVES = [1, 2, 3, 4, 5, 6, 7, 8];
 const DEFAULT_OCTAVES = [3, 4, 5, 6];
@@ -37,8 +39,8 @@ export default class TrackOctaves {
     return this.octaves;
   }
 
-  get userParameterKey() {
-    return `track.${this.track.id}.track.octaves`;
+  userParameterKey(parameter: string) {
+    return `track.${this.track.id}.track.${parameter}`;
   }
 
   defaultValue() {
@@ -49,13 +51,19 @@ export default class TrackOctaves {
   }
 
   initializeParameter() {
+    new BooleanParameter({
+      userParameterStore: this.userParameterStore,
+      name: "Chnage Octave on Note",
+      key: this.userParameterKey("change_octave_on_note"),
+      default: false,
+    });
     return new NumericSetParameter({
       userParameterStore: this.userParameterStore,
       name: "Octaves",
-      key: this.userParameterKey,
+      key: this.userParameterKey("octave"),
       default: this.defaultValue(),
-      multiSelect: this._isMultiOctave()
-  });
+      multiSelect: this._isMultiOctave(),
+    });
   }
 
   set octaves(val: number[]) {
@@ -63,8 +71,8 @@ export default class TrackOctaves {
   }
 
   get octaves(): number[] {
-    console.log(`TrackOctaves`, `TRACK_OCTAVES ${this.parameter.value()}`)
-    return this.parameter.value()
+    console.log(`TrackOctaves`, `TRACK_OCTAVES ${this.parameter.value()}`);
+    return this.parameter.value();
     // console.log("GET OCTAVES");
     // let octaves = this.userParameterStore.get(
     //   this.userParameterKey
@@ -105,7 +113,6 @@ export default class TrackOctaves {
 
   public addOctaveToList(octave: number) {
     this.parameter.addItem(octave);
-
   }
 
   private toggleMultiOctave(octave: number) {
@@ -116,7 +123,6 @@ export default class TrackOctaves {
     private userParameterStore: UserParameterStore,
     private track?: any
   ) {
-
     this.parameter = this.initializeParameter();
 
     makeObservable(this, {

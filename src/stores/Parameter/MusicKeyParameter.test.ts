@@ -3,15 +3,17 @@ import UserParameterStore from "stores/UserParameter.store";
 
 test("set a string parameter", () => {
   const userParameterStore = new UserParameterStore();
-  const musicChordParameter = new MusicKeyParameter({
+  const musicKeyParameter = new MusicKeyParameter({
     userParameterStore: userParameterStore,
-    name: "Chord",
+    name: "Key",
     key: "global.chord",
-    default: "major",
+    default: "C",
   });
-  expect(musicChordParameter.val).toBe("major");
-  musicChordParameter.setValue("square");
-  expect(musicChordParameter.val).toBe("major");
-  musicChordParameter.setValue("minor");
-  expect(musicChordParameter.val).toBe("minor");
+  expect(musicKeyParameter.val).toBe("C");
+  musicKeyParameter.setValue("square");
+  expect(musicKeyParameter.val).toBe("C");
+  musicKeyParameter.setValue("D");
+  expect(musicKeyParameter.val).toBe("C"); // Set Value shouldn't change value as music chord parameter defaults to on deck.
+  musicKeyParameter.swapOnDeck();
+  expect(musicKeyParameter.val).toBe("D");
 });

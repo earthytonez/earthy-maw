@@ -10,6 +10,8 @@ import BaseSynthesizer from "./Synthesizer/SynthesizerTypes/Base";
 import BaseParameter from "./Parameter/Base";
 import NumericEnumParameter from "./Parameter/NumericEnumParameter";
 import StringEnumParameter from "./Parameter/StringEnumParameter";
+import StringEnumArrayParameter from "./Parameter/StringEnumArrayParameter";
+import NumericArrayParameter from "./Parameter/NumericArrayParameter";
 /*
  * Defines Parameters not associated with a plugin.
  */
@@ -146,6 +148,32 @@ export default class ParameterStore {
         default: "up",
       });
     },
+    step_pitch_shift: (trackNumber: number) => {
+      return new NumericArrayParameter({
+        userParameterStore: this.rootStore!.userParameterStore,
+        name: "Step Pitch Shift",
+        key: this.parameterKey("step_pitch_shift", trackNumber),
+        default: [0, 0, 0, 0, 0, 0, 0, 0],
+      });
+    },
+    step_pitch_shift_direction: (trackNumber: number) => {
+      return new StringEnumArrayParameter({
+        userParameterStore: this.rootStore!.userParameterStore,
+        name: "Step Pitch Shift Direction",
+        key: this.parameterKey("step_pitch_shift_direction", trackNumber),
+        options: ["up", "down", "either"],
+        default: [
+          "either",
+          "either",
+          "either",
+          "either",
+          "either",
+          "either",
+          "either",
+          "either",
+        ],
+      });
+    },
   };
 
   constructor(public rootStore: RootStore | undefined) {}
@@ -163,9 +191,7 @@ export default class ParameterStore {
 
   makeParameterList(sequencer: Sequencer): string[] {
     let retVal: string[] = [];
-    retVal = retVal.concat(
-      sequencer?.sequencerLoader?.sequencerHolder?.parameters!
-    );
+    retVal = retVal.concat(sequencer?.parameters!);
 
     if (sequencer.type === "step") {
       retVal.push("trigger_set");

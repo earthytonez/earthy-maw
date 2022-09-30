@@ -10,6 +10,7 @@ export interface IBaseParameterParams {
   name: string;
   key: string;
   changedAtSection?: boolean;
+  plugin?: string;
 }
 // export interface IParameter {
 //   _value: string | number;
@@ -36,7 +37,7 @@ export default abstract class BaseParameter {
   changedAtSection: boolean = false;
   _value: number | string | undefined;
   modulators: IModulator = [];
-  plugin?: string;
+  plugin: string | undefined = undefined;
   slug: string;
   field?: string;
   fieldType?: ParameterFieldTypes;
@@ -50,8 +51,12 @@ export default abstract class BaseParameter {
   constructor(
     protected userParameterStore: UserParameterStore,
     public name: string,
-    protected key: string
+    protected key: string,
+    plugin: string | undefined
   ) {
+    if (this.plugin) {
+      this.plugin = plugin;
+    }
     this.slug = name.replaceAll(" ", "").toLowerCase();
     this.field = name.replaceAll(" ", "").toLowerCase();
   }

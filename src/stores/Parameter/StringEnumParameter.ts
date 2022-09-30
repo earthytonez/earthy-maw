@@ -16,7 +16,6 @@ export default class StringEnumParameter extends BaseParameter {
   type: string = "string_enum";
   fieldType: ParameterFieldTypes = "arraySelector";
   options: string[];
-  plugin?: string | undefined;
   default: string;
   userParameterStore: UserParameterStore;
 

@@ -31,12 +31,7 @@ export default class MusicFeaturesStore {
   beatMarker: BeatMarker = new BeatMarker(1);
 
   greaterMusicSectionLength(): number {
-    if (!this.musicSectionLength.onDeckValue)
-      return this.musicSectionLength.val;
-    if (this.musicSectionLength.val > this.musicSectionLength.onDeckValue) {
-      return this.musicSectionLength.val;
-    }
-    return this.musicSectionLength.onDeckValue;
+    return this.musicSectionLength.greaterValue();
   }
 
   changeFeatures() {

@@ -1,5 +1,8 @@
+import { makeObservable, observable, action } from "mobx";
 import UserParameterStore from "stores/UserParameter.store";
 import BaseParameter from "./Base";
+
+import ParameterValue from "./ParameterValue/ParameterValue";
 
 interface IStringParameterParams {
   userParameterStore: UserParameterStore;
@@ -8,41 +11,46 @@ interface IStringParameterParams {
   default: string;
   plugin?: string;
   changedAtSection?: boolean;
-  onDeckValue?: string;
 }
 
 export default class StringParameter extends BaseParameter {
   type: string = "string";
-  default: string = "";
-  changedAtSection: boolean = false;
+  parameterValue: ParameterValue<string>;
 
   constructor(params: IStringParameterParams) {
-    super(params.userParameterStore, params.name, params.key);
+    super(params.userParameterStore, params.name, params.key, params.plugin);
 
-    this.default = params.default;
-  }
+    this.parameterValue = new ParameterValue<string>(
+      params.userParameterStore,
+      params.key,
+      params.default,
+      !!params.changedAtSection
+    );
 
-  setValue(newValue: string): boolean {
-    this.userParameterStore.set(this.key, newValue);
-    return true;
-  }
-
-  stringValue(): string {
-    if (this.userParameterStore.get(this.key)) {
-      return this.userParameterStore.get(this.key) as string;
+    if (this.userParameterStore.has(this.key)) {
+      let val = this.userParameterStore.get(this.key) as string;
+      this.parameterValue.set(val);
     }
-    return this.default;
+
+    makeObservable(this, {
+      parameterValue: observable,
+      setValue: action.bound,
+    });
+  }
+
+  swapOnDeck(): boolean {
+    return this.parameterValue.swapOnDeck();
+  }
+
+  public setValue(newValue: string): boolean {
+    return this.parameterValue.setValue(newValue);
   }
 
   value(): string {
-    return this.stringValue();
+    return this.parameterValue.val;
   }
 
   get val(): string {
-    return this.stringValue();
-  }
-
-  get(): string {
-    return this.stringValue();
+    return this.parameterValue.val;
   }
 }

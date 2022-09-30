@@ -1,10 +1,14 @@
 import { info } from "../Util/logger";
 
 export default class UserParameterStore {
-  _userParameters: Map<string, string | number | string[] | number[]> =
-    new Map();
+  _userParameters: Map<
+    string,
+    string | number | string[] | number[] | boolean
+  > = new Map();
 
-  get(key: string): string | number | string[] | number[] | undefined {
+  get(
+    key: string
+  ): string | number | string[] | number[] | undefined | boolean {
     return this._userParameters.get(key);
   }
 
@@ -20,7 +24,15 @@ export default class UserParameterStore {
     return this._userParameters.has(key);
   }
 
-  set(key: string, value: string | number | string[] | number[]): boolean {
+  async remove(key: string) {
+    this._userParameters.delete(key);
+    localStorage.removeItem(key);
+  }
+
+  set(
+    key: string,
+    value: string | number | string[] | number[] | boolean
+  ): boolean {
     if (
       key.match(this.parameterKeyRegex) ||
       key.match(this.globalParameterKeyRegex)

@@ -1,17 +1,19 @@
 import MusicScaleParameter from "./MusicScaleParameter";
 import UserParameterStore from "stores/UserParameter.store";
 
-test("set a string parameter", () => {
+test("set a music scale parameter", () => {
   const userParameterStore = new UserParameterStore();
-  const musicChordParameter = new MusicScaleParameter({
+  const musicScaleParameter = new MusicScaleParameter({
     userParameterStore: userParameterStore,
-    name: "Chord",
+    name: "Scale",
     key: "global.chord",
     default: "major",
   });
-  expect(musicChordParameter.val.name).toBe("major");
-  musicChordParameter.setValue("square");
-  expect(musicChordParameter.val.name).toBe("major");
-  musicChordParameter.setValue("minor");
-  expect(musicChordParameter.val.name).toBe("minor");
+  expect(musicScaleParameter.val.name).toBe("major");
+  musicScaleParameter.setValue("square");
+  expect(musicScaleParameter.val.name).toBe("major");
+  musicScaleParameter.setValue("minor");
+  expect(musicScaleParameter.val.name).toBe("major"); // Set Value shouldn't change value as music chord parameter defaults to on deck.
+  musicScaleParameter.swapOnDeck();
+  expect(musicScaleParameter.val.name).toBe("aeolian");
 });
