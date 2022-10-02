@@ -23,8 +23,7 @@ export default class NumericEnumParameter extends BaseParameter {
   _val: number;
 
   constructor(params: INumericEnumParameterParams) {
-    super(params.userParameterStore, params.name, params.key);
-
+    super(params.userParameterStore, params.name, params.key, params.plugin);
     this.options = params.options;
     this.default = params.default;
 

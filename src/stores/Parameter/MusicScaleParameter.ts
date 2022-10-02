@@ -19,7 +19,7 @@ export default class MusicScaleParameter extends BaseParameter {
   _val: string;
 
   constructor(params: IMusicScaleParameterParams) {
-    super(params.userParameterStore, params.name, params.key);
+    super(params.userParameterStore, params.name, params.key, params.plugin);
 
     this.default = params.default;
     if (this.userParameterStore.has(this.key)) {

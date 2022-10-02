@@ -96,7 +96,7 @@ export default class NumericParameter extends BaseParameter {
 //   _val: number;
 
 //   constructor(params: INumericParameterParams) {
-//     super(params.userParameterStore, params.name, params.key);
+//     super(params.userParameterStore, params.name, params.key, params.plugin);
 
 //     this.default = params.default;
 //     this.plugin = params.plugin;

@@ -2,96 +2,81 @@ import { makeObservable, observable, action } from "mobx";
 import UserParameterStore from "stores/UserParameter.store";
 import BaseParameter from "./Base";
 
-import SetParameterValue from "./ParameterValue/SetParameterValue";
+import ArrayParameterValue from "./ParameterValue/ArrayParameterValue";
 
-interface IStringSetParams {
+interface INumericParameterParams {
   userParameterStore: UserParameterStore;
   name: string;
   key: string;
-  default: string[];
+  default: number[];
   plugin?: string;
   changedAtSection?: boolean;
-  multiSelect?: boolean;
 }
 
-export default class StringSet extends BaseParameter {
+export default class NumericParameter extends BaseParameter {
   type: string = "numeric";
-  parameterValue: SetParameterValue<string>;
+  parameterValue: ArrayParameterValue<number>;
 
-  constructor(params: IStringSetParams) {
+  constructor(params: INumericParameterParams) {
     super(params.userParameterStore, params.name, params.key, params.plugin);
 
-    this.parameterValue = new SetParameterValue<string>(
+    this.parameterValue = new ArrayParameterValue<number>(
       params.userParameterStore,
       params.key,
       params.default,
-      !!params.changedAtSection,
-      params.multiSelect
+      !!params.changedAtSection
     );
 
     if (this.userParameterStore.has(this.key)) {
-      let val = this.userParameterStore.get(this.key) as string[];
+      let val = this.userParameterStore.get(this.key) as number[];
       this.parameterValue.set(val);
     }
 
     makeObservable(this, {
       parameterValue: observable,
       setValue: action.bound,
-      toggleItem: action.bound,
-      addItem: action.bound,
-      removeItem: action.bound,
     });
-  }
-
-  toggleItem(item: string) {
-    this.parameterValue.toggleItem(item);
-  }
-
-  addItem(item: string) {
-    this.parameterValue.addItem(item);
-  }
-
-  removeItem(item: string) {
-    this.parameterValue.removeItem(item);
   }
 
   swapOnDeck(): boolean {
     return this.parameterValue.swapOnDeck();
   }
 
-  public setValue(newValue: string[]): boolean {
+  public setValue(newValue: number[]): boolean {
     return this.parameterValue.setValue(newValue);
   }
 
-  value(): string[] {
+  value(): number[] {
     return this.parameterValue.val;
   }
 
-  get val(): string[] {
+  get val(): number[] {
     return this.parameterValue.val;
   }
 }
 
-// interface IStringSetParameterParams {
+// interface INumericArrayParameterParams {
 //   userParameterStore: UserParameterStore;
 //   name: string;
 //   key: string;
-//   default: string[];
+//   default: number[];
 //   plugin?: string;
 //   changedAtSection?: boolean;
-//   onDeckValue?: string[];
+//   onDeckValue?: number[];
 //   multiSelect?: boolean;
 // }
 
-// export default class StringSetParameter extends BaseParameter {
+// export default class NumericArrayParameter extends BaseParameter {
 //   type: string = "set";
-//   default: string[] = [];
+//   default: number[] = [];
 //   multiSelect: boolean = false;
+//   _val: number[];
 
-//   constructor(params: IStringSetParameterParams) {
-//     super(params.userParameterStore, params.name, params.key);
+//   constructor(params: INumericArrayParameterParams) {
+//     super(params.userParameterStore, params.name, params.key, params.plugin);
 
 //     this.default = params.default;
+//     this._val = params.default;
 //     this.plugin = params.plugin;
 //     this.userParameterStore = params.userParameterStore;
 //     if (params.changedAtSection) {
@@ -102,7 +87,7 @@ export default class StringSet extends BaseParameter {
 //     }
 //   }
 
-//   setValue(newValue: string[]): boolean {
+//   setValue(newValue: number[]): boolean {
 //     this.userParameterStore.set(this.key, newValue);
 //     return true;
 //   }
@@ -122,19 +107,19 @@ export default class StringSet extends BaseParameter {
 //     return;
 //   }
 
-//   addItem(item: string) {
+//   addItem(item: number) {
 //     if (!this.multiSelect) {
 //       return this.setValue([item]);
 //     }
 //     const index = this.value().indexOf(item, 0);
-//     if (index == -1) {
+//     if (index === -1) {
 //       this.value().push(item);
 //     }
 //     this.setValue(this.value());
 //     return;
 //   }
 
-//   toggleItem(item: string) {
+//   toggleItem(item: number) {
 //     if (this.value().includes(item)) {
 //       this.removeItem(item);
 //     } else {
@@ -142,22 +127,11 @@ export default class StringSet extends BaseParameter {
 //     }
 //   }
 
-//   valueOfSet(): string[] {
-//     if (this.userParameterStore.get(this.key)) {
-//       return this.userParameterStore.get(this.key) as string[];
-//     }
-//     return this.default;
+//   value(): number[] {
+//     return this._val;
 //   }
 
-//   value(): string[] {
-//     return this.valueOfSet();
-//   }
-
-//   get val(): string[] {
-//     return this.valueOfSet();
-//   }
-
-//   get(): string[] {
-//     return this.valueOfSet();
+//   get val(): number[] {
+//     return this._val;
 //   }
 // }

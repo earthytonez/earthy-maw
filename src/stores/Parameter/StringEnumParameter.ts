@@ -20,7 +20,7 @@ export default class StringEnumParameter extends BaseParameter {
   userParameterStore: UserParameterStore;
 
   constructor(params: IStringEnumParamterParams) {
-    super(params.userParameterStore, params.name, params.key);
+    super(params.userParameterStore, params.name, params.key, params.plugin);
 
     this.options = params.options;
     this.default = params.default;

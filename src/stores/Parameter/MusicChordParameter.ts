@@ -24,7 +24,7 @@ export default class MusicChordParameter extends BaseParameter {
   _val: string;
 
   constructor(params: IMusicChordParameterParams) {
-    super(params.userParameterStore, params.name, params.key);
+    super(params.userParameterStore, params.name, params.key, params.plugin);
 
     this.default = params.default;
     if (this.userParameterStore.has(this.key)) {

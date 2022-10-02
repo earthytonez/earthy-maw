@@ -11,14 +11,16 @@ interface ICustomParameterParams<T> {
   onDeckValue?: string;
 }
 
-export default class CustomParameter<T> extends BaseParameter {
+export default class CustomParameter<
+  T extends string | number | boolean | string[] | number[]
+> extends BaseParameter {
   type: string = "string";
   default: T;
   onDeckValue?: T;
   changedAtSection: boolean = false;
 
   constructor(params: ICustomParameterParams<T>) {
-    super(params.userParameterStore, params.name, params.key);
+    super(params.userParameterStore, params.name, params.key, params.plugin);
 
     if (params.changedAtSection)
       this.changedAtSection = params.changedAtSection;

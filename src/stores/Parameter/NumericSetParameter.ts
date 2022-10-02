@@ -4,21 +4,26 @@ import BaseParameter from "./Base";
 
 import SetParameterValue from "./ParameterValue/SetParameterValue";
 
-interface INumericParameterParams {
+/*
+ * A Numeric Set Parameter is a set of parameters that could be enabled, for example
+ * The list of available octaves is a numeric set parameter because you can have
+ * more than one octave selected, and octaves always come from a specific list.
+ */
+interface INumericSetParameterParams {
   userParameterStore: UserParameterStore;
   name: string;
   key: string;
   default: number[];
   plugin?: string;
   changedAtSection?: boolean;
-  multiSelect: boolean;
+  multiSelect?: boolean;
 }
 
-export default class NumericParameter extends BaseParameter {
-  type: string = "numeric";
+export default class NumericSetParameter extends BaseParameter {
+  type: string = "numeric_set";
   parameterValue: SetParameterValue<number>;
 
-  constructor(params: INumericParameterParams) {
+  constructor(params: INumericSetParameterParams) {
     super(params.userParameterStore, params.name, params.key, params.plugin);
 
     this.parameterValue = new SetParameterValue<number>(
@@ -26,7 +31,7 @@ export default class NumericParameter extends BaseParameter {
       params.key,
       params.default,
       !!params.changedAtSection,
-      params.multiSelect
+      !!params.multiSelect
     );
 
     if (this.userParameterStore.has(this.key)) {

@@ -3,12 +3,12 @@ import { info } from "../Util/logger";
 export default class UserParameterStore {
   _userParameters: Map<
     string,
-    string | number | string[] | number[] | boolean
+    string | number | Array<string | number> | boolean
   > = new Map();
 
   get(
     key: string
-  ): string | number | string[] | number[] | undefined | boolean {
+  ): string | number | Array<string | number> | undefined | boolean {
     return this._userParameters.get(key);
   }
 
@@ -31,7 +31,7 @@ export default class UserParameterStore {
 
   set(
     key: string,
-    value: string | number | string[] | number[] | boolean
+    value: string | number | Array<string | number> | boolean
   ): boolean {
     if (
       key.match(this.parameterKeyRegex) ||
