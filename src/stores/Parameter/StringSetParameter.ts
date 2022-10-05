@@ -4,6 +4,10 @@ import BaseParameter from "./Base";
 
 import SetParameterValue from "./ParameterValue/SetParameterValue";
 
+/*
+ * A String Set parameter is a set of values that could be enabled or disabled.
+ *
+ */
 interface IStringSetParams {
   userParameterStore: UserParameterStore;
   name: string;

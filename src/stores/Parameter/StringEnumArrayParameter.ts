@@ -1,5 +1,6 @@
 import UserParameterStore from "stores/UserParameter.store";
 import BaseParameter from "./Base";
+import { ParameterFieldTypes } from "stores/Parameter/Base";
 
 interface IStringEnumArrayParameterParams {
   userParameterStore: UserParameterStore;
@@ -14,17 +15,26 @@ interface IStringEnumArrayParameterParams {
 }
 
 export default class StringEnumArrayParameter extends BaseParameter {
-  type: string = "set";
+  type: string = "string_enum_array";
   default: string[] = [];
   multiSelect: boolean = false;
   options: string[] = [];
+  fieldType: ParameterFieldTypes = "enumArraySelector";
+  _val: string[];
 
   constructor(params: IStringEnumArrayParameterParams) {
     super(params.userParameterStore, params.name, params.key, params.plugin);
 
     this.default = params.default;
     this.plugin = params.plugin;
+
+    this._val = params.default;
+    this.fieldOptions = {
+      options: params.options,
+    };
+
     this.userParameterStore = params.userParameterStore;
+
     if (params.changedAtSection) {
       this.changedAtSection = params.changedAtSection;
     }
@@ -73,22 +83,11 @@ export default class StringEnumArrayParameter extends BaseParameter {
     }
   }
 
-  valueOfSet(): string[] {
-    if (this.userParameterStore.get(this.key)) {
-      return this.userParameterStore.get(this.key) as string[];
-    }
-    return this.default;
-  }
-
   value(): string[] {
-    return this.valueOfSet();
+    return this._val;
   }
 
   get val(): string[] {
-    return this.valueOfSet();
-  }
-
-  get(): string[] {
-    return this.valueOfSet();
+    return this._val;
   }
 }

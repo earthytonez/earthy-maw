@@ -1,15 +1,15 @@
 import IOscillatorType from "./IOscillatorType";
 
-type IParamFieldTypes = "slider" | "arraySelector" | "radio" | "dial";
+import { ParameterFieldTypes } from "stores/Parameter/Base";
 
 export default interface ISynthEditableParams {
   name: string;
   field?: string;
-  fieldType?: IParamFieldTypes;
+  fieldType?: ParameterFieldTypes;
   fieldOptions?: {
     max?: number;
     min?: number;
-    current: number | string;
+    // current: number | string;
     options?: Array<number | string>;
   };
 }

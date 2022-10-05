@@ -44,7 +44,6 @@ export default class NumericEnumParameter extends BaseParameter {
     this.fieldOptions = {
       min: 0,
       max: 100,
-      current: params.default,
       options: params.options,
     };
 

@@ -1,8 +1,8 @@
 import * as Tone from "tone";
 
-import { debug, warn } from "../../../Util/logger";
+import { debug, info, warn } from "../../../Util/logger";
 
-import { Scale } from "@tonaljs/tonal";
+import { Note, Scale } from "@tonaljs/tonal";
 import { IMusicChord, IMusicKey, IMusicScale } from "Types";
 import IntervalToPlay from "./IntervalToPlay";
 
@@ -14,7 +14,8 @@ export default class NoteToPlay {
   noteNotInterval: boolean = false;
   note?: Tone.FrequencyClass<number> | undefined;
 
-  noteChooser: "random" | "interval" | "single" = "single";
+  noteChooser: "random" | "interval" | "interval_parameter" | "single" =
+    "single";
 
   getRandomNote(
     key: IMusicKey,
@@ -81,6 +82,111 @@ export default class NoteToPlay {
     return intervalFrequency;
   }
 
+  getOctave(octaves: number[]) {
+    let octaveToPlay = 4;
+    if (octaves[0]) {
+      octaveToPlay = octaves[0];
+    }
+    return octaveToPlay;
+  }
+
+  coinToss() {
+    return Math.floor(Math.random() * 2) === 0;
+  }
+
+  calcInterval(
+    interval: number,
+    direction: string,
+    pitchShift: number
+  ): number {
+    switch (direction) {
+      case "up":
+        return interval + pitchShift;
+      case "down":
+        return interval - pitchShift;
+      case "either":
+        if (this.coinToss()) {
+          return interval + pitchShift;
+        } else {
+          return interval - pitchShift;
+        }
+    }
+    return interval + pitchShift;
+  }
+
+  getArrayStep(measureBeat: number, stepInterval: number, steps: number) {
+    return (measureBeat / stepInterval - 1) % steps;
+  }
+
+  getIntervalParameterNote({
+    key,
+    scale,
+    octaves,
+    measureBeat,
+    intervalToPlay,
+    parameters,
+    lastParams,
+  }: {
+    key: IMusicKey;
+    scale: IMusicScale;
+    octaves: number[];
+    measureBeat: number;
+    intervalToPlay: IntervalToPlay;
+    parameters: any;
+    lastParams: any;
+  }): Tone.FrequencyClass<number> {
+    let octaveToPlay = this.getOctave(octaves);
+
+    let stepInterval = parameters.get("stepinterval").val;
+    let _arrayStep = this.getArrayStep(
+      measureBeat,
+      stepInterval,
+      parameters.get("steppitchshift").val.length
+    );
+
+    let stepPitchShift = parseInt(
+      parameters.get("steppitchshift").val[_arrayStep]
+    ) as number;
+
+    console.log(parameters.get("steppitchshiftdirection").val);
+
+    let stepPitchShiftDirection = parameters.get("steppitchshiftdirection").val[
+      _arrayStep
+    ] as string;
+
+    let startNote = `${key}${octaveToPlay}`;
+    let startNoteMidi = Note.midi(startNote) as number;
+    let lastNote = startNote;
+    if (_arrayStep !== 0 && lastParams && lastParams.note) {
+      lastNote = lastParams.note._val;
+    }
+    if (lastNote == undefined) {
+      lastNote = startNote;
+    }
+
+    let interval = intervalToPlay.getCurrentIntervalFromScale(
+      scale,
+      key,
+      startNote,
+      lastNote
+    );
+
+    info(
+      "NOTE_TO_PLAY",
+      `interval ${measureBeat} ${stepInterval} ${_arrayStep} ${lastParams} ${lastNote} ${interval} ${stepPitchShift} ${stepPitchShiftDirection} ${startNote} ${startNoteMidi}`
+    );
+
+    console.log(interval);
+    let retVal = intervalToPlay.getScaleInterval(
+      scale,
+      key,
+      this.calcInterval(interval, stepPitchShiftDirection, stepPitchShift),
+      octaveToPlay
+    );
+    info("NOTE_TO_PLAY", `retVal: ${retVal}`, retVal);
+    return retVal;
+  }
+
   get(
     key: IMusicKey,
     scale: IMusicScale,
@@ -88,10 +194,14 @@ export default class NoteToPlay {
     octaves: number[],
     measureBeat: number,
     intervalToPlay: IntervalToPlay,
-    parameters: any
+    parameters: any,
+    lastParams: any
   ): Tone.FrequencyClass {
     debug("NOTE_TO_PLAY", `Note set as ${JSON.stringify(this.note)}`);
     debug("NOTE_TO_PLAY", "intervalToPlay", intervalToPlay);
+
+    console.log(this.noteChooser);
+    console.log(parameters);
 
     if (intervalToPlay.intervalType === "arpeggiator") {
       this.noteChooser = "interval";
@@ -111,6 +221,16 @@ export default class NoteToPlay {
           intervalToPlay,
           parameters
         );
+      case "interval_parameter":
+        return this.getIntervalParameterNote({
+          key,
+          scale,
+          octaves,
+          measureBeat,
+          intervalToPlay,
+          parameters,
+          lastParams,
+        });
     }
   }
 
@@ -142,12 +262,21 @@ export default class NoteToPlay {
     return noteChooserString === "Rand()";
   }
 
+  isIntervalParameterNote(noteChooserString: string) {
+    return noteChooserString === "IntervalParameter()";
+  }
+
   randomNoteToMidi() {}
 
   parseNote(note: string): Tone.FrequencyClass | undefined {
     if (this.isRandomNote(note)) {
       this.noteChooser = "random";
     }
+
+    if (this.isIntervalParameterNote(note)) {
+      this.noteChooser = "interval_parameter";
+    }
+
     if (this.isLetterNumberNote(note)) {
       this.noteChooser = "single";
       return Tone.Frequency(this.letterNumberNoteToMidi(note));

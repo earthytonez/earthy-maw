@@ -30,7 +30,6 @@ export default class StringEnumParameter extends BaseParameter {
     this.userParameterStore = params.userParameterStore;
 
     this.fieldOptions = {
-      current: this.default,
       options: this.options,
     };
 

@@ -1,6 +1,7 @@
 import { makeObservable, observable, action } from "mobx";
 import UserParameterStore from "stores/UserParameter.store";
 import BaseParameter from "./Base";
+import { ParameterFieldTypes } from "stores/Parameter/Base";
 
 import ArrayParameterValue from "./ParameterValue/ArrayParameterValue";
 
@@ -11,11 +12,14 @@ interface INumericParameterParams {
   default: number[];
   plugin?: string;
   changedAtSection?: boolean;
+  min: number;
+  max: number;
 }
 
 export default class NumericParameter extends BaseParameter {
   type: string = "numeric";
   parameterValue: ArrayParameterValue<number>;
+  fieldType: ParameterFieldTypes = "numericArraySelector";
 
   constructor(params: INumericParameterParams) {
     super(params.userParameterStore, params.name, params.key, params.plugin);
@@ -26,6 +30,11 @@ export default class NumericParameter extends BaseParameter {
       params.default,
       !!params.changedAtSection
     );
+
+    this.fieldOptions = {
+      min: params.min,
+      max: params.max,
+    };
 
     if (this.userParameterStore.has(this.key)) {
       let val = this.userParameterStore.get(this.key) as number[];

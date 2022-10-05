@@ -149,11 +149,24 @@ export default class ParameterStore {
       });
     },
     step_pitch_shift: (trackNumber: number) => {
-      return new NumericArrayParameter({
+      return new /* It's a parameter that has an array of numbers. */
+      NumericArrayParameter({
         userParameterStore: this.rootStore!.userParameterStore,
         name: "Step Pitch Shift",
         key: this.parameterKey("step_pitch_shift", trackNumber),
         default: [0, 0, 0, 0, 0, 0, 0, 0],
+        min: 0,
+        max: 36,
+      });
+    },
+    step_gate_array: (trackNumber: number) => {
+      return new NumericArrayParameter({
+        userParameterStore: this.rootStore!.userParameterStore,
+        name: "Step Gate Array",
+        key: this.parameterKey("step_gate_array", trackNumber),
+        default: [0, 0, 0, 0, 0, 0, 0, 0],
+        min: 0,
+        max: 1,
       });
     },
     step_pitch_shift_direction: (trackNumber: number) => {
@@ -161,7 +174,7 @@ export default class ParameterStore {
         userParameterStore: this.rootStore!.userParameterStore,
         name: "Step Pitch Shift Direction",
         key: this.parameterKey("step_pitch_shift_direction", trackNumber),
-        options: ["up", "down", "either"],
+        options: ["up", "down", "either", "none"],
         default: [
           "either",
           "either",
@@ -209,6 +222,12 @@ export default class ParameterStore {
       retVal.push("max_interval");
     }
 
+    if (sequencer.type === "fixedStep") {
+      retVal.push("step_pitch_shift");
+      retVal.push("step_pitch_shift_direction");
+      retVal.push("step_gate_array");
+    }
+
     if (
       sequencer.triggerWhen.parameterSets[0]?.triggerType === "stepInterval"
     ) {
@@ -232,6 +251,7 @@ export default class ParameterStore {
   ): BaseParameter[] {
     let parametersToGet = this.makeParameterList(sequencer);
 
+    console.log(parametersToGet);
     let parameters = parametersToGet.map((parameter: string) => {
       return this.parameters[parameter]!(trackNumber);
     });

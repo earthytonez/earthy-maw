@@ -30,7 +30,13 @@ export interface IBaseParameterParams {
 //   increment(): null;
 // }
 
-export type ParameterFieldTypes = "slider" | "radio" | "dial" | "arraySelector";
+export type ParameterFieldTypes =
+  | "slider"
+  | "radio"
+  | "dial"
+  | "arraySelector"
+  | "enumArraySelector"
+  | "numericArraySelector";
 
 export default abstract class BaseParameter {
   abstract type: string;
@@ -44,7 +50,6 @@ export default abstract class BaseParameter {
   fieldOptions?: {
     min?: number;
     max?: number;
-    current: number | string; // This could also be an enum?  Which should be a number or a string.
     options?: number[] | string[];
   };
 
@@ -57,6 +62,7 @@ export default abstract class BaseParameter {
     if (this.plugin) {
       this.plugin = plugin;
     }
+
     this.slug = name.replaceAll(" ", "").toLowerCase();
     this.field = name.replaceAll(" ", "").toLowerCase();
   }

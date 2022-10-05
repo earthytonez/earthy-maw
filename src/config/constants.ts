@@ -101,8 +101,14 @@ export const SEQUENCER_TYPES: ISequencerType[] = [
   { id: 10, name: "Random", slug: "random", machineType: "Sequencer" },
   {
     id: 11,
-    name: "MorodorBass",
-    slug: "morodor_bass",
+    name: "Morodor Bassline",
+    slug: "morodor_basssine",
+    machineType: "Sequencer",
+  },
+  {
+    id: 12,
+    name: "Directional Intervals",
+    slug: "directional_intervals",
     machineType: "Sequencer",
   },
 ];

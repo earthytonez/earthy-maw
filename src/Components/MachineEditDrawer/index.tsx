@@ -21,6 +21,8 @@ import TightBorderedPaper from "Components/TightBorderedGrid/TightBorderedPaper"
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
+const DRAWER_WIDTH = "24vw";
+
 const MachineEditDrawer = observer((): React.ReactElement => {
   const store = useStore();
   const uiStore = useUIStore();
@@ -107,9 +109,11 @@ const MachineEditDrawer = observer((): React.ReactElement => {
     defaultParameters = [];
   }
 
+  console.log(defaultParameters);
+
   return (
     <Drawer anchor={anchor} open={uiStore.objectEditIsOpen}>
-      <Box sx={{ padding: "0em 1em", width: "20vw" }}>
+      <Box sx={{ padding: "0em 1em", width: { DRAWER_WIDTH } }}>
         <GridTopRightCorner>
           <FullGridIconButton onClick={() => toggleObjectEdit(false)}>
             <CloseIcon fontSize="small" />

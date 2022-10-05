@@ -10,6 +10,8 @@ import MachineEditDrawerRadioGroup from "./MachineEditDrawerRadioGroup";
 import MachineEditDrawerDial from "./MachineEditDrawerDial";
 
 import ArraySelectorComponent from "./ArraySelectorComponent";
+import EnumArraySelectorComponent from "./EnumArraySelectorComponent";
+import NumericArraySelectorComponent from "./NumericArraySelectorComponent";
 import { ParameterFieldTypes } from "stores/Parameter/Base";
 import GridTopFullWidth from "Components/TightBorderedGrid/GridTopFullWidth";
 import GridMiddleFullWidth from "Components/TightBorderedGrid/GridMiddleFullWidth";
@@ -36,6 +38,7 @@ export default observer(
     decrement,
     parameterValue,
   }: ILoadParameterParams): React.ReactElement => {
+    console.log(fieldType);
     switch (fieldType) {
       case "radio":
         return (
@@ -104,6 +107,53 @@ export default observer(
                 setValue={(value: any) => edit(field, value)}
                 incrementValue={() => increment(field)}
                 decrementValue={() => decrement(field)}
+              />
+            </GridMiddleFullWidth>
+          </Grid>
+        );
+      case "enumArraySelector":
+        return (
+          <Grid container sx={{ mr: 0, ml: 0, pr: 0, pl: 0 }}>
+            <GridMiddleFullWidth>
+              <Typography
+                style={{ fontFamily: "Source Code Pro" }}
+                id="track-false-slider"
+                gutterBottom
+              >
+                {name}
+              </Typography>
+            </GridMiddleFullWidth>
+            <GridMiddleFullWidth>
+              <EnumArraySelectorComponent
+                aria-label={name}
+                selectableValues={fieldOptions.options}
+                currentValue={parameterValue}
+                setValue={(value: any) => edit(field, value)}
+              />
+            </GridMiddleFullWidth>
+          </Grid>
+        );
+      case "numericArraySelector":
+        return (
+          <Grid container sx={{ mr: 0, ml: 0, pr: 0, pl: 0 }}>
+            <GridMiddleFullWidth>
+              <Typography
+                style={{ fontFamily: "Source Code Pro" }}
+                id="track-false-slider"
+                gutterBottom
+              >
+                {name}
+              </Typography>
+            </GridMiddleFullWidth>
+            <GridMiddleFullWidth>
+              <NumericArraySelectorComponent
+                aria-label={name}
+                currentValue={parameterValue}
+                setValue={(value: any) => edit(field, value)}
+                // incrementValue={() => increment(field)}
+                // decrementValue={() => decrement(field)}
+                min={fieldOptions.min}
+                max={fieldOptions.max}
               />
             </GridMiddleFullWidth>
           </Grid>

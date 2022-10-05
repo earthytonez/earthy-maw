@@ -71,6 +71,8 @@ export default class Sequencer extends SequencerType {
   droneSpacingHigh: number = 3;
   droneSpacingLow: number = 2;
 
+  lastParams: any;
+
   /*
    * These variables are for random step sequencers.
    */
@@ -364,7 +366,8 @@ export default class Sequencer extends SequencerType {
       octaves,
       this.measureBeat(beatMarker),
       this.intervalToPlay,
-      this._parameters
+      this._parameters,
+      this.lastParams
     );
   }
 
@@ -541,24 +544,24 @@ export default class Sequencer extends SequencerType {
     if (gate.triggered) {
       if (this.sequencerType() === "drone") {
         console.log("sequencerType Drone");
-        return this.boundSynthesizer.play(
-          gate,
-          this.droneParams(key, scale, chord, beatMarker, time)
-        );
+        let params = this.droneParams(key, scale, chord, beatMarker, time);
+        this.boundSynthesizer.play(gate, params);
+        return (this.lastParams = params);
       }
 
       if (this.sequencerType() === "arpeggiator") {
         console.log(`sequencerType Arpeggiator ${beatMarker}`);
-        return this.boundSynthesizer.play(
-          gate,
-          this.arpParams(key, scale, chord, beatMarker, time)
-        );
+        let params = this.arpParams(key, scale, chord, beatMarker, time);
+        this.boundSynthesizer.play(gate, params);
+        return (this.lastParams = params);
       }
 
-      return this.boundSynthesizer.play(
+      let params = this.playParams(key, scale, chord, beatMarker, time);
+      this.boundSynthesizer.play(
         gate,
         this.playParams(key, scale, chord, beatMarker, time)
       );
+      return (this.lastParams = params);
     }
   }
 }
