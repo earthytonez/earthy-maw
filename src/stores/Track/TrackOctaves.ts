@@ -53,9 +53,11 @@ export default class TrackOctaves {
   initializeParameter() {
     new BooleanParameter({
       userParameterStore: this.userParameterStore,
-      name: "Chnage Octave on Note",
+      name: "Change Octave on Note",
       key: this.userParameterKey("change_octave_on_note"),
       default: false,
+      description:
+        "Whether or not the octave should change per note or per section.",
     });
     return new NumericSetParameter({
       userParameterStore: this.userParameterStore,
@@ -63,6 +65,7 @@ export default class TrackOctaves {
       key: this.userParameterKey("octave"),
       default: this.defaultValue(),
       multiSelect: this._isMultiOctave(),
+      description: "Octaves that could be selected to be played for sequencer.",
     });
   }
 

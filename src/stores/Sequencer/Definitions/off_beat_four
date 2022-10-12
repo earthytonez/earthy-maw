@@ -8,5 +8,7 @@ type = "step"
 [NoteToPlay]
 note = "C4"
 
+parameters = ["beat_repeats", "beat_offset"]
+
 [TriggerWhen]
 trigger = "every 4 steps on 2"

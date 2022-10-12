@@ -6,6 +6,65 @@ import SequencerGate, { ISequencerGate } from "./SequencerGate";
 
 const DEFAULT_GATE = 1;
 
+interface IPlayEveryXFillParams {
+  beatMarker: number;
+  fillStart: number;
+  fillEnd: number;
+  fillList: number[][];
+  selectedFill: number;
+}
+
+class PlayEveryXFill {
+  beatMarker: number;
+  fillStart: number;
+  fillEnd: number;
+  fillList: number[][];
+  selectedFill: number;
+  fillStep: number = 0;
+  constructor(params: IPlayEveryXFillParams) {
+    this.beatMarker = params.beatMarker;
+    this.fillStart = params.fillStart;
+    this.fillEnd = params.fillEnd;
+    this.fillList = params.fillList;
+    this.selectedFill = params.selectedFill;
+  }
+
+  private get fillArray(): number[] {
+    return this.fillList[this.selectedFill]!;
+  }
+
+  private get triggerFill() {
+    return this.fillArray.includes(this.fillStep - this.fillStart);
+  }
+
+  fill(): ISequencerGate {
+    debug(
+      "PLAY_EVERY_X_FILL",
+      `Returning Fill fillArray=${this.fillArray} triggerFillDecision=${this.fillStep}-${this.fillStart} triggerFill=${this.triggerFill}`
+    );
+    if (this.fillArray && this.triggerFill) {
+      return new SequencerGate(true);
+    } else {
+      return new SequencerGate(false);
+    }
+  }
+
+  try(): boolean {
+    if (this.fillEnd) {
+      this.fillStep = this.beatMarker % this.fillEnd;
+    }
+
+    let decision =
+      this.fillStep >= this.fillStart && this.fillStep <= this.fillEnd;
+
+    debug(
+      "PLAY_EVERY_X_FILL",
+      `Returning Fill Try ${this.fillStep}, ${this.fillStart}, ${this.fillEnd}, ${decision}`
+    );
+
+    return decision;
+  }
+}
 /*
  * Play Every X is used to calculate whether or not a trigger should occur, usually
  * playing every x notes.
@@ -16,7 +75,7 @@ export default class PlayEveryX implements ISequencerRunner {
   playEveryXStepInterval(
     beatMarker: number,
     parameters: ITriggerParameters,
-    sequencerParameters: any
+    sequencerParameters: Map<string, any>
   ): ISequencerGate {
     let stepInterval;
     if (sequencerParameters.has("stepinterval")) {
@@ -27,38 +86,36 @@ export default class PlayEveryX implements ISequencerRunner {
 
     let stepCount = beatMarker % stepInterval!;
 
+    console.log(sequencerParameters);
+
     debug(
       "PLAY_EVERY_X",
-      `Playing steps: ${beatMarker} / ${stepCount} - ${stepInterval} on ${parameters.on} -- ${parameters.fillEnd}`
+      `Playing steps: ${beatMarker} / ${stepCount} - ${stepInterval} on ${
+        parameters.on
+      } -- fillStart: ${parameters.fillStart} -- fillEnd: ${
+        parameters.fillEnd
+      }, Selected Fill: ${sequencerParameters.get("selectedfill")}`
     );
 
-    let fillStep = 0;
-    if (parameters?.fillEnd) {
-      fillStep = beatMarker % parameters.fillEnd;
-    }
+    if (
+      sequencerParameters.has("selectedfill") &&
+      sequencerParameters.get("selectedfill") !== 0 &&
+      parameters.fillStart &&
+      parameters.fillEnd &&
+      parameters.fillList
+    ) {
+      let playEveryXFill = new PlayEveryXFill({
+        beatMarker: beatMarker,
+        fillStart: parameters.fillStart,
+        fillEnd: parameters.fillEnd,
+        fillList: parameters.fillList,
+        selectedFill: sequencerParameters.get("selectedfill").val,
+      });
 
-    /* TODO: NEEDS MUCHO WORKO */
-    if (parameters.selectedFill !== 0) {
-      // 0 as a selected fill means no fill.
-
-      if (
-        fillStep &&
-        parameters?.fillStart &&
-        parameters?.fillEnd &&
-        fillStep >= parameters.fillStart &&
-        fillStep <= parameters.fillEnd
-      ) {
-        const fillArray = parameters.fillList![parameters.selectedFill!];
-        if (fillArray) {
-          const triggerFill = fillArray.includes(
-            fillStep - parameters.fillStart
-          );
-          if (triggerFill) {
-            return new SequencerGate(true);
-          } else {
-            return new SequencerGate(false);
-          }
-        }
+      if (playEveryXFill.try()) {
+        let fill = playEveryXFill.fill();
+        console.log(`PLAY_EVERY_X_FILL CRAP ${fill}`);
+        return fill;
       }
     }
 
@@ -98,9 +155,6 @@ export default class PlayEveryX implements ISequencerRunner {
       "PLAY_EVERY_X",
       `Playing from step list steps: ${gateToPlay} --  ${beatMarker} / ${stepCount} - ${stepInterval} on ${parameters.on}`
     );
-
-    console.log(parameters.gateList);
-    console.log(gateToPlay);
 
     return new SequencerGate(
       parameters?.stepList?.includes(stepCount),

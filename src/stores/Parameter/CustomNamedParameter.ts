@@ -18,7 +18,7 @@
 //   changedAtSection: boolean = false;
 
 //   constructor(params: ICustomParameterParams<T>) {
-//     super(params.userParameterStore, params.name, params.key, params.plugin);
+//     super(params.userParameterStore, params.name, params.key, params.plugin, params.description);
 
 //     if (params.changedAtSection)
 //       this.changedAtSection = params.changedAtSection;

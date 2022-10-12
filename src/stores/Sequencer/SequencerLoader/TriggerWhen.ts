@@ -7,26 +7,25 @@ export interface ITriggerParameters {
   stepList?: number[];
   gateList?: number[];
   // random parameters
-  octaves?: number
-  minSkip?: number
-  maxSkip?: number
+  octaves?: number;
+  minSkip?: number;
+  maxSkip?: number;
   fillStart?: number;
   fillEnd?: number;
-  fillList?: number[][]
-  selectedFill?: number; // The fill selected by the user.
+  fillList?: number[][];
 
   // From TOML
-  fillWhen?: string
+  fillWhen?: string;
 }
 
 /**
  * TriggerWhen determines when a trigger/gate will happen.
- * 
+ *
  * Types:
  * random
  * everyX:   trigger on an interval - every beat, every 4 beats, etc.
  * stepArray
- * 
+ *
  * @date 2022-08-14
  * @param {any} line:string
  * @returns {any}
@@ -46,17 +45,17 @@ export default class TriggerWhen {
   }
 
   /* Adds to parameterSets */
-  parseList(lists: number[][]) {  
+  parseList(lists: number[][]) {
     this.parameterSets = lists.map((list: any) => {
       return {
         triggerType: "stepList",
-        stepList: list
-      }
-    })  
+        stepList: list,
+      };
+    });
     info("TRIGGER_WHEN", "Parsed List with parameter sets", this.parameterSets);
   }
 
-  parseFillList(lists: number[][]) {  
+  parseFillList(lists: number[][]) {
     this.parameterSets[0]!.fillList = lists;
     info("TRIGGER_WHEN", "Parsed List with parameter sets", this.parameterSets);
   }
@@ -69,12 +68,12 @@ export default class TriggerWhen {
     if (fill.startsWith("last four")) {
       this.parameterSets[0]!.fillStart = 13;
     } else if (fill.startsWith("last eight")) {
-      this.parameterSets[0]!.fillStart = 9
+      this.parameterSets[0]!.fillStart = 9;
     }
 
     if (fill === "last 16 of 64") {
-      this.parameterSets[0]!.fillStart = 61
-      this.parameterSets[0]!.fillEnd = 64
+      this.parameterSets[0]!.fillStart = 48;
+      this.parameterSets[0]!.fillEnd = 64;
     }
   }
 
@@ -88,14 +87,14 @@ export default class TriggerWhen {
 
     switch (trimmedLine) {
       case trimmedLine.match(/Rand\(\)/)?.input:
-        console.log("TRIGGER_WHEN MATCHED TRIMMED_LINE")
-        this.type = "random"
+        console.log("TRIGGER_WHEN MATCHED TRIMMED_LINE");
+        this.type = "random";
         this.parameterSets[0] = {
           triggerType: "random",
           octaves: 1,
           minSkip: 0,
           maxSkip: 64,
-        }
+        };
         break;
       case trimmedLine.match(/every \d{1,2} steps on \d+/)?.input:
         this.type = "everyX";

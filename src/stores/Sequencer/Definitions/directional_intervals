@@ -1,0 +1,17 @@
+name = "Directional Intervals"
+description = "Each Step pick an interval and a direction."
+documentation = "The directional intervals sequencer is an 8 step sequencer that where each step is an interval of the step before it.  So if in the key/scale of C major, if the first step is a zero, the first note will be a C.  If the second interval is a 1, the second note will be a D.  The interval direction can be used to choose if the note goes up.  From a C, 1 step up will be a D, one step down will be a B.  The real magic comes in the "either" setting.  "Either" means that it will randomly choose up or down, creating a melody that should be similar to other random memories.  The more 'eithers' in your melody, the more chaotic the possibilities.
+length = 16
+outputs = 1
+tags = [
+    "house", "trance", "edm"
+]
+type = "fixedStep"
+
+parameters = ["interval_array, interval_direction_array"]
+
+[NoteToPlay]
+note = "IntervalParameter()"
+
+[TriggerWhen]
+trigger = "every 4 steps"

@@ -11,6 +11,7 @@ export interface IBaseParameterParams {
   key: string;
   changedAtSection?: boolean;
   plugin?: string;
+  description: string;
 }
 // export interface IParameter {
 //   _value: string | number;
@@ -57,7 +58,8 @@ export default abstract class BaseParameter {
     protected userParameterStore: UserParameterStore,
     public name: string,
     protected key: string,
-    plugin: string | undefined
+    plugin: string | undefined,
+    public description: string
   ) {
     if (this.plugin) {
       this.plugin = plugin;

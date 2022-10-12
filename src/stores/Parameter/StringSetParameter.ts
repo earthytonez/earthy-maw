@@ -1,6 +1,5 @@
 import { makeObservable, observable, action } from "mobx";
-import UserParameterStore from "stores/UserParameter.store";
-import BaseParameter from "./Base";
+import BaseParameter, { IBaseParameterParams } from "./Base";
 
 import SetParameterValue from "./ParameterValue/SetParameterValue";
 
@@ -8,13 +7,8 @@ import SetParameterValue from "./ParameterValue/SetParameterValue";
  * A String Set parameter is a set of values that could be enabled or disabled.
  *
  */
-interface IStringSetParams {
-  userParameterStore: UserParameterStore;
-  name: string;
-  key: string;
+interface IStringSetParams extends IBaseParameterParams {
   default: string[];
-  plugin?: string;
-  changedAtSection?: boolean;
   multiSelect?: boolean;
 }
 
@@ -23,7 +17,13 @@ export default class StringSet extends BaseParameter {
   parameterValue: SetParameterValue<string>;
 
   constructor(params: IStringSetParams) {
-    super(params.userParameterStore, params.name, params.key, params.plugin);
+    super(
+      params.userParameterStore,
+      params.name,
+      params.key,
+      params.plugin,
+      params.description
+    );
 
     this.parameterValue = new SetParameterValue<string>(
       params.userParameterStore,

@@ -9,7 +9,7 @@ import { BeatMarker } from "../../../stores/MusicFeatures/BeatMarker";
 import IToneJSDuration from "../../../Types/IToneJSDuration";
 import IParsedSequencerTOML from "./IParsedSequencerTOML";
 
-import SequencerDefinition from './SequencerDefinition';
+import SequencerDefinition from "./SequencerDefinition";
 
 export default class SequencerLoader {
   sequencerCode: string = "";
@@ -31,11 +31,9 @@ export default class SequencerLoader {
     return "8n";
   }
 
-
   get rhythm_length(): number {
     return this.sequencerHolder.rhythm_length!;
   }
-
 
   code() {
     return this.sequencerCode;
@@ -100,13 +98,13 @@ export default class SequencerLoader {
       console.error(this.sequencerCode);
       console.error(err);
     }
-    
+
     return this.sequencerHolder;
   }
 
   constructor(sequencerCode: string) {
     this.sequencerCode = sequencerCode;
-    
+
     makeObservable(this, {
       sequencerHolder: observable,
       sequencerCode: observable,

@@ -32,7 +32,7 @@ export async function getSynthesizer(
   parameterStore: ParameterStore,
   pluginStore: PluginStore,
   synthSlug: string,
-  trackNumber: number
+  trackID: string
 ) {
   try {
     /* 1. Create new synthesizer from definition */
@@ -51,7 +51,7 @@ export async function getSynthesizer(
     );
     /* 2. Load parameters into synthesizer */
     const synthesizerWithParameters = synthesizer.registerParameters(
-      parameterStore.fetchForSynth(synthesizer, trackNumber)
+      parameterStore.fetchForSynth(synthDefinition, trackID)
     );
 
     let synthesizerWithPlugins;
@@ -59,7 +59,7 @@ export async function getSynthesizer(
     console.log(`PLUGINS: ${synthDefinition.plugins}`);
     if (synthDefinition.plugins) {
       synthesizerWithPlugins = synthesizerWithParameters.registerPlugins(
-        pluginStore.fetch(synthDefinition.plugins, trackNumber)
+        pluginStore.fetch(synthDefinition.plugins, trackID)
       );
     } else {
       synthesizerWithPlugins = synthesizerWithParameters;

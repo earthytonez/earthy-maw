@@ -1,13 +1,7 @@
-import UserParameterStore from "stores/UserParameter.store";
-import BaseParameter from "./Base";
+import BaseParameter, { IBaseParameterParams } from "./Base";
 
-interface ICustomParameterParams<T> {
-  userParameterStore: UserParameterStore;
-  name: string;
-  key: string;
+interface ICustomParameterParams<T> extends IBaseParameterParams {
   default: T;
-  plugin?: string;
-  changedAtSection?: boolean;
   onDeckValue?: string;
 }
 
@@ -20,7 +14,13 @@ export default class CustomParameter<
   changedAtSection: boolean = false;
 
   constructor(params: ICustomParameterParams<T>) {
-    super(params.userParameterStore, params.name, params.key, params.plugin);
+    super(
+      params.userParameterStore,
+      params.name,
+      params.key,
+      params.plugin,
+      params.description
+    );
 
     if (params.changedAtSection)
       this.changedAtSection = params.changedAtSection;

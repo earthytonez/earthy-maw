@@ -1,24 +1,35 @@
-import UserParameterStore from "stores/UserParameter.store";
-import BaseParameter from "./Base";
+import BaseParameter, { IBaseParameterParams } from "./Base";
 
-interface IStringSetParameterParams {
-  userParameterStore: UserParameterStore;
-  name: string;
-  key: string;
-  default: string[];
-  plugin?: string;
-  changedAtSection?: boolean;
-  onDeckValue?: string[];
+import ArrayParameterValue from "./ParameterValue/ArrayParameterValue";
+
+interface INumericEnumArrayParameterParams extends IBaseParameterParams {
+  default: number[];
+  onDeckValue?: number[];
   multiSelect?: boolean;
+  options: number[];
 }
 
-export default class StringSetParameter extends BaseParameter {
+export default class NumericEnumArrayParameter extends BaseParameter {
   type: string = "set";
-  default: string[] = [];
+  default: number[] = [];
   multiSelect: boolean = false;
+  parameterValue: ArrayParameterValue<number>;
 
-  constructor(params: IStringSetParameterParams) {
-    super(params.userParameterStore, params.name, params.key, params.plugin);
+  constructor(params: INumericEnumArrayParameterParams) {
+    super(
+      params.userParameterStore,
+      params.name,
+      params.key,
+      params.plugin,
+      params.description
+    );
+
+    this.parameterValue = new ArrayParameterValue<number>(
+      params.userParameterStore,
+      params.key,
+      params.default,
+      !!params.changedAtSection
+    );
 
     this.default = params.default;
     this.plugin = params.plugin;
@@ -31,62 +42,19 @@ export default class StringSetParameter extends BaseParameter {
     }
   }
 
-  setValue(newValue: string[]): boolean {
-    this.userParameterStore.set(this.key, newValue);
-    return true;
+  public swapOnDeck(): boolean {
+    return this.parameterValue.swapOnDeck();
   }
 
-  removeItem(item: string) {
-    if (!this.multiSelect) {
-      return;
-    }
-
-    let value = this.value();
-
-    const index = value.indexOf(item, 0);
-    if (index > -1) {
-      value.splice(index, 1);
-    }
-    this.setValue(value);
-    return;
+  public setValue(newValue: number[]): boolean {
+    return this.parameterValue.setValue(newValue);
   }
 
-  addItem(item: string) {
-    if (!this.multiSelect) {
-      return this.setValue([item]);
-    }
-    const index = this.value().indexOf(item, 0);
-    if (index == -1) {
-      this.value().push(item);
-    }
-    this.setValue(this.value());
-    return;
+  value(): number[] {
+    return this.parameterValue.val;
   }
 
-  toggleItem(item: string) {
-    if (this.value().includes(item)) {
-      this.removeItem(item);
-    } else {
-      this.addItem(item);
-    }
-  }
-
-  valueOfSet(): string[] {
-    if (this.userParameterStore.get(this.key)) {
-      return this.userParameterStore.get(this.key) as string[];
-    }
-    return this.default;
-  }
-
-  value(): string[] {
-    return this.valueOfSet();
-  }
-
-  get val(): string[] {
-    return this.valueOfSet();
-  }
-
-  get(): string[] {
-    return this.valueOfSet();
+  get val(): number[] {
+    return this.parameterValue.val;
   }
 }

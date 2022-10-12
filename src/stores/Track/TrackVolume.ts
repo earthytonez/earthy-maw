@@ -77,6 +77,9 @@ export default class TrackVolume {
       name: "Volume",
       key: this.userParameterKey,
       default: DEFAULT_VOLUME,
+      description: "Volume for the track",
+      min: -64,
+      max: 6,
     });
   }
 

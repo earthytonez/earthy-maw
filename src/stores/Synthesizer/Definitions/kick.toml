@@ -4,5 +4,8 @@ tags = [
     "house", "trance", "edm"
 ]
 plugins = ["filter<lowpass>"]
+
+parameters = ["synthesizer_pitch"]
+
 type = "MembraneSynth"
 

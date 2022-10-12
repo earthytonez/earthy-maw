@@ -30,8 +30,7 @@ interface DroppableTrackElementProps {
     | "arranger"
     | "musicFeature"
     | undefined;
-  placeholder: string;
-  track_id: number;
+  track_id: string;
   machine: any;
 }
 
@@ -49,13 +48,13 @@ const LoadingPlaceHolder = observer(
   }: {
     machine: any;
     placeholder: any;
-    slug: 
-    | "sequencer"
-    | "modulator"
-    | "synthesizer"
-    | "arranger"
-    | "musicFeature"
-    | undefined;
+    slug:
+      | "sequencer"
+      | "modulator"
+      | "synthesizer"
+      | "arranger"
+      | "musicFeature"
+      | undefined;
   }): React.ReactElement => {
     return machine && machine.loading ? (
       <Box>Loading...</Box>
@@ -66,15 +65,11 @@ const LoadingPlaceHolder = observer(
 );
 
 const DroppableTrackElement = observer(
-  ({
-    track_id,
-    machine,
-    title,
-    slug,
-    placeholder,
-  }: DroppableTrackElementProps) => {
+  ({ track_id, machine, title, slug }: DroppableTrackElementProps) => {
     const uiStore = useUIStore();
     const { toggleObjectEdit } = uiStore;
+
+    let placeholder = `Drop ${title} Here`;
 
     return (
       <Droppable
@@ -115,7 +110,7 @@ const DroppableTrackElement = observer(
                           {machine.name}
                         </Typography>
                       </GridTopLeftCorner>
-                      <GridTopRightCorner item xs={2} >
+                      <GridTopRightCorner item xs={2}>
                         <FullGridIconButton
                           aria-label={`edit ${machine.name}`}
                           size="small"
@@ -144,7 +139,9 @@ const DroppableTrackElement = observer(
                       />
                     </GridBottomLeftCorner>
                     <GridBottomRightCorner item xs>
-                      <Typography style={{fontFamily: 'Source Code Pro'}}>{title}</Typography>
+                      <Typography style={{ fontFamily: "Source Code Pro" }}>
+                        {title}
+                      </Typography>
                     </GridBottomRightCorner>
                   </Grid>
                 ) : (

@@ -1,15 +1,14 @@
 import UserParameterStore from "stores/UserParameter.store";
-import BaseParameter, { ParameterFieldTypes } from "./Base";
+import BaseParameter, {
+  IBaseParameterParams,
+  ParameterFieldTypes,
+} from "./Base";
 
 import { makeObservable, observable } from "mobx";
 
-interface IStringEnumParamterParams {
-  userParameterStore: UserParameterStore;
-  name: string;
-  key: string;
+interface IStringEnumParameterParams extends IBaseParameterParams {
   options: string[];
   default: string;
-  plugin?: string | undefined;
 }
 
 export default class StringEnumParameter extends BaseParameter {
@@ -19,8 +18,14 @@ export default class StringEnumParameter extends BaseParameter {
   default: string;
   userParameterStore: UserParameterStore;
 
-  constructor(params: IStringEnumParamterParams) {
-    super(params.userParameterStore, params.name, params.key, params.plugin);
+  constructor(params: IStringEnumParameterParams) {
+    super(
+      params.userParameterStore,
+      params.name,
+      params.key,
+      params.plugin,
+      params.description
+    );
 
     this.options = params.options;
     this.default = params.default;

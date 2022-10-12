@@ -77,9 +77,9 @@ export default observer(
                 getAriaValueText={() => parameterValue}
                 step={1}
                 marks
-                onChange={(mouseEvent: any) =>
-                  edit(field, mouseEvent.target.value)
-                }
+                onChange={(mouseEvent: any) => {
+                  edit(field, mouseEvent.target.value);
+                }}
                 min={fieldOptions.min}
                 max={fieldOptions.max}
                 valueLabelDisplay="auto"

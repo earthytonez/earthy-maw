@@ -17,6 +17,7 @@ interface INumericSetParameterParams {
   plugin?: string;
   changedAtSection?: boolean;
   multiSelect?: boolean;
+  description: string;
 }
 
 export default class NumericSetParameter extends BaseParameter {
@@ -24,7 +25,13 @@ export default class NumericSetParameter extends BaseParameter {
   parameterValue: SetParameterValue<number>;
 
   constructor(params: INumericSetParameterParams) {
-    super(params.userParameterStore, params.name, params.key, params.plugin);
+    super(
+      params.userParameterStore,
+      params.name,
+      params.key,
+      params.plugin,
+      params.description
+    );
 
     this.parameterValue = new SetParameterValue<number>(
       params.userParameterStore,
@@ -100,7 +107,7 @@ export default class NumericSetParameter extends BaseParameter {
 //   _val: number[];
 
 //   constructor(params: INumericSetParameterParams) {
-//     super(params.userParameterStore, params.name, params.key, params.plugin);
+//     super(params.userParameterStore, params.name, params.key, params.plugin, params.description);
 //     this.default = params.default;
 
 //     if (this.userParameterStore.has(this.key)) {

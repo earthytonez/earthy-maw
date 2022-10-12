@@ -10,6 +10,7 @@ test("set a string parameter that is not changed at section intervals", async ()
     key: "track.1.synthesizer.waveform",
     default: "sine",
     changedAtSection: false,
+    description: "description",
   });
   expect(stringParameter.val).toBe("sine");
   stringParameter.setValue("square");
@@ -25,6 +26,7 @@ test("set a string parameter that is changed at section intervals", async () => 
     key: "track.1.synthesizer.waveform",
     default: "sine",
     changedAtSection: true,
+    description: "description",
   });
   expect(stringParameterSectionInterval.val).toBe("sine");
   stringParameterSectionInterval.setValue("square");

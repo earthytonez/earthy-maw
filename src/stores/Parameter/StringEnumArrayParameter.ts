@@ -1,15 +1,9 @@
-import UserParameterStore from "stores/UserParameter.store";
-import BaseParameter from "./Base";
+import BaseParameter, { IBaseParameterParams } from "./Base";
 import { ParameterFieldTypes } from "stores/Parameter/Base";
 
-interface IStringEnumArrayParameterParams {
-  userParameterStore: UserParameterStore;
-  name: string;
-  key: string;
+interface IStringEnumArrayParameterParams extends IBaseParameterParams {
   default: string[];
-  plugin?: string;
   options: string[];
-  changedAtSection?: boolean;
   onDeckValue?: string[];
   multiSelect?: boolean;
 }
@@ -23,7 +17,13 @@ export default class StringEnumArrayParameter extends BaseParameter {
   _val: string[];
 
   constructor(params: IStringEnumArrayParameterParams) {
-    super(params.userParameterStore, params.name, params.key, params.plugin);
+    super(
+      params.userParameterStore,
+      params.name,
+      params.key,
+      params.plugin,
+      params.description
+    );
 
     this.default = params.default;
     this.plugin = params.plugin;

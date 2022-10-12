@@ -4,18 +4,19 @@ import { makeObservable, action, computed, observable } from "mobx";
 import IParsedSynthTOML from "./IParsedSynthTOML";
 import ISynthType from "./ISynthType";
 
-class SynthLoaderHolder {
+export class SynthesizerDefinition {
+  description?: string = "";
   name?: string;
+  parameters?: string[];
+  plugins?: string[];
   slug?: string;
   type?: ISynthType;
   tags?: string[];
-  plugins?: string[];
-  description?: string = "";
 }
 
 export default class SynthLoader {
   synthCode: string = "";
-  synthHolder: SynthLoaderHolder = new SynthLoaderHolder();
+  synthHolder: SynthesizerDefinition = new SynthesizerDefinition();
 
   get name() {
     return this.synthHolder.name;
@@ -32,8 +33,8 @@ export default class SynthLoader {
   code() {
     return this.synthCode;
   }
-  
-  async load(): Promise<SynthLoaderHolder> {
+
+  async load(): Promise<SynthesizerDefinition> {
     try {
       const data: IParsedSynthTOML = toml.parse(this.synthCode);
 
@@ -43,6 +44,7 @@ export default class SynthLoader {
       this.synthHolder.tags = data.tags;
       this.synthHolder.type = data.type;
       this.synthHolder.plugins = data.plugins;
+      this.synthHolder.parameters = data.parameters;
       return this.synthHolder;
     } catch (err) {
       return this.synthHolder;

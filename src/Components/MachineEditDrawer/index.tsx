@@ -13,6 +13,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import LoadParameter from "./LoadParameter";
 
 import { useStore } from "../../stores/useStore";
+import Track from "../../stores/Track";
+
 import { useUIStore } from "../../stores/UI/useUIStore";
 import FullGridIconButton from "Components/TightBorderedGrid/FullGridButton";
 import GridTopRightCorner from "Components/TightBorderedGrid/GridTopRightCorner";
@@ -42,28 +44,30 @@ const MachineEditDrawer = observer((): React.ReactElement => {
   let decrementParameter: Function;
 
   if (objectEditTrack !== undefined && objectEditType && objectEditIsOpen) {
-    if (typeof objectEditTrack == "number") {
-      let trackMachine;
-      switch (objectEditType) {
-        case "sequencer":
-          trackMachine = store.trackStore.tracks[objectEditTrack]!.sequencer;
-          break;
-        case "synthesizer":
-          trackMachine = store.trackStore.tracks[objectEditTrack]!.synthesizer;
-          break;
-        case "arranger":
-          trackMachine = store.trackStore.tracks[objectEditTrack]!.arranger;
-          break;
-      }
+    let trackMachine;
+    switch (objectEditType) {
+      case "sequencer":
+        trackMachine = store.trackStore.tracks.find(
+          (track: Track) => track.id == objectEditTrack
+        )!.sequencer;
+        break;
+      case "synthesizer":
+        trackMachine = store.trackStore.tracks.find(
+          (track: Track) => track.id == objectEditTrack
+        )!.synthesizer;
+        break;
+      case "arranger":
+        trackMachine = store.trackStore.tracks.find(
+          (track: Track) => track.id == objectEditTrack
+        )!.arranger;
+        break;
+    }
 
-      console.log(trackMachine);
-
-      if (trackMachine) {
-        editParameters = trackMachine.editParameters;
-        editParameter = trackMachine.changeParameter;
-        incrementParameter = trackMachine.incrementParameter;
-        decrementParameter = trackMachine.decrementParameter;
-      }
+    if (trackMachine) {
+      editParameters = trackMachine.editParameters;
+      editParameter = trackMachine.changeParameter;
+      incrementParameter = trackMachine.incrementParameter;
+      decrementParameter = trackMachine.decrementParameter;
     }
   }
   console.log(editParameters);

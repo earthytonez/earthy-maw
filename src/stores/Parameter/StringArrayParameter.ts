@@ -1,13 +1,7 @@
-import UserParameterStore from "stores/UserParameter.store";
-import BaseParameter from "./Base";
+import BaseParameter, { IBaseParameterParams } from "./Base";
 
-interface IStringSetParameterParams {
-  userParameterStore: UserParameterStore;
-  name: string;
-  key: string;
+interface IStringSetParameterParams extends IBaseParameterParams {
   default: string[];
-  plugin?: string;
-  changedAtSection?: boolean;
   onDeckValue?: string[];
   multiSelect?: boolean;
 }
@@ -18,7 +12,13 @@ export default class StringSetParameter extends BaseParameter {
   multiSelect: boolean = false;
 
   constructor(params: IStringSetParameterParams) {
-    super(params.userParameterStore, params.name, params.key, params.plugin);
+    super(
+      params.userParameterStore,
+      params.name,
+      params.key,
+      params.plugin,
+      params.description
+    );
 
     this.default = params.default;
     this.plugin = params.plugin;

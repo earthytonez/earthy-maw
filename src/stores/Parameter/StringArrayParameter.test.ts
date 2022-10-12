@@ -1,15 +1,16 @@
-import StringSetParameter from "./StringSetParameter";
+import StringArrayParameter from "./StringArrayParameter";
 import UserParameterStore from "stores/UserParameter.store";
 
-test("set a set parameter", () => {
+test("set a string array parameter", () => {
   const userParameterStore = new UserParameterStore();
-  const setParameter = new StringSetParameter({
+  const stringArrayParameter = new StringArrayParameter({
     userParameterStore,
     name: "Waveform",
     key: "track.1.synthesizer.waveform",
     default: ["sine"],
+    description: "Description",
   });
-  expect(setParameter.val).toStrictEqual(["sine"]);
-  setParameter.setValue(["square"]);
-  expect(setParameter.val).toStrictEqual(["square"]);
+  expect(stringArrayParameter.val).toStrictEqual(["sine"]);
+  stringArrayParameter.setValue(["square"]);
+  expect(stringArrayParameter.val).toStrictEqual(["square"]);
 });

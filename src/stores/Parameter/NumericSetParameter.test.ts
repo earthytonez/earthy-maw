@@ -8,6 +8,7 @@ test("set a string parameter", () => {
     name: "Chord",
     key: "global.chord",
     default: [1, 2],
+    description: "Chord",
   });
   expect(numericSetParameter.val).toStrictEqual([1, 2]);
   numericSetParameter.setValue([3, 4]);

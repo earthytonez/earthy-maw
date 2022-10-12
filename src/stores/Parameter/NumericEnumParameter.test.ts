@@ -9,6 +9,7 @@ test("set a enum parameter", () => {
     options: [1, 2, 3, 4],
     default: 3,
     userParameterStore,
+    description: "description",
   });
   expect(enumParameter.get()).toBe(3);
   enumParameter.setValue(2);

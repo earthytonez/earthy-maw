@@ -8,6 +8,7 @@ test("set a music scale parameter", () => {
     name: "Scale",
     key: "global.chord",
     default: "major",
+    description: "description",
   });
   expect(musicScaleParameter.val.name).toBe("major");
   musicScaleParameter.setValue("square");

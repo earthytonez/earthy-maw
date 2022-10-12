@@ -68,7 +68,7 @@ const TrackSettingsComponent = observer(
                 letterSpacing: ".1rem",
               }}
             >
-              Track {track.id + 1}
+              Track {track.number + 1}
             </Typography>
           </Grid>
           <Grid item xs={11}>

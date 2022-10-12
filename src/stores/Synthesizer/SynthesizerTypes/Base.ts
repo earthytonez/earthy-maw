@@ -8,7 +8,7 @@ import BaseParameter from "../../Parameter/Base";
 import BasePlugin, { IPluginNode } from "../../Plugins/Base";
 import NumericParameter from "stores/Parameter/NumericParameter";
 import { debug } from "../../../Util/logger";
-import ISynthEditableParams from '../ISynthEditableParams';
+import ISynthEditableParams from "../ISynthEditableParams";
 
 export default class BaseSynthesizer {
   name: string;
@@ -56,7 +56,24 @@ export default class BaseSynthesizer {
     if (!parameter) {
       throw new Error("Invalid Parameter");
     }
+
+    console.log(`Setting parameter value ${value}`);
+    console.log(parameter);
+    console.log(this.pluginNodes);
     parameter.setValue(value);
+    if (parameter && parameter.plugin) {
+      let plugin = this.pluginNodes.find((plugin: any) => {
+        return plugin.ToneJSNode.name == parameter!.plugin;
+      });
+      if (plugin) {
+        let vals: any = {};
+        vals[parameter.slug] = parameter.val;
+        console.log(
+          `Setting ${plugin.ToneJSNode.name} ${parameter.slug} to ${parameter.val}`
+        );
+        plugin.ToneJSNode.set(vals);
+      }
+    }
   }
 
   incrementParameter(parameterSlug: string): void {
@@ -97,18 +114,22 @@ export default class BaseSynthesizer {
 
   // get _editParameters(): BaseParameter[] {
   //   debug("SYNTHESIZER_BASE", "_editParameters", this._parameters)
-  //   
+  //
   // }
 
   // loadParameters(_parameters: Map<string, BaseParameter>) {
-    // this._parameters = parameters;
+  // this._parameters = parameters;
   // }
 
   attachVolume(vol: Tone.Volume) {
     let headNode = this.synth;
-
+    console.log(headNode);
+    console.log(headNode);
+    console.log(headNode);
+    console.log(vol);
     this.pluginNodes.forEach((pluginNode: IPluginNode) => {
       headNode.connect(pluginNode.ToneJSNode);
+      headNode = pluginNode.ToneJSNode;
     });
 
     if (vol) {
@@ -135,12 +156,11 @@ export default class BaseSynthesizer {
   }
 
   registerPlugins(plugins: BasePlugin[]): BaseSynthesizer {
-    console.log(`PLUGINS: ${JSON.stringify(plugins)}`);
     if (!plugins) {
       return this;
     }
     this.pluginNodes = plugins.map((plugin: BasePlugin): IPluginNode => {
-      this.registerParameters(plugin.parameters)
+      this.registerParameters(Array.from(plugin.parameters.values()));
       return plugin._node!;
     });
 
@@ -157,7 +177,8 @@ export default class BaseSynthesizer {
    */
   parameterValue(slug: string): any {
     try {
-      return this._parameters.get(slug)!.val();
+      console.log(this._parameters);
+      return this._parameters.get(slug)!.val;
     } catch (err) {
       throw new Error(`parameterValue slug: ${slug} error: ${err}`);
     }
@@ -175,20 +196,23 @@ export default class BaseSynthesizer {
     // this.numericParameter("pitch")
     // this.numericParameter("pitch")
     let pitch = params.note;
-    
+
     if (!pitch) {
       pitch = Tone.Frequency(this.numericParameter("pitch"), "midi");
+    }
+
+    if (this.numericParameter("synthesizerpitch")) {
+      pitch = Tone.Frequency(
+        pitch.toMidi() + this.numericParameter("synthesizerpitch")
+      );
     }
 
     debug(`BaseSynthesizer`, "play", {
       pitch: pitch,
       time: params.time,
-      params: params
+      params: params,
     });
-    this.synth.triggerAttackRelease(
-      pitch,
-      "16n",
-      params.time
-    );
+
+    this.synth.triggerAttackRelease(pitch, "16n", params.time);
   }
 }

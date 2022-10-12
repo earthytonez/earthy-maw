@@ -17,7 +17,7 @@ export default class UIStateStore {
     | "arranger"
     | "musicFeature"
     | undefined;
-  objectEditTrack: number | "musicFeature" | undefined;
+  objectEditTrack: string | "musicFeature" | undefined;
 
   machineBrowserOpen: boolean = false;
   machinesBrowsing:
@@ -64,7 +64,7 @@ export default class UIStateStore {
 
   toggleObjectEdit(
     open: boolean,
-    machineTrack?: number | "musicFeature",
+    machineTrack?: string | "musicFeature",
     machineType?: MachineType | "musicFeature",
     machineSlug?: string
   ) {
@@ -89,7 +89,7 @@ export default class UIStateStore {
       browseMachines: action.bound,
       closeMachineBrowser: action.bound,
       toggleObjectEdit: action.bound,
-      setMachinesBrowsing: action.bound
+      setMachinesBrowsing: action.bound,
     });
   }
 }

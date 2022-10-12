@@ -4,4 +4,5 @@ tags = [
     "house", "trance", "edm"
 ]
 plugins = ["filter<lowpass>"]
+parameters = ["pitch"]
 type = "FMSynth"

@@ -1,28 +1,28 @@
 import { makeObservable, observable, action } from "mobx";
-import UserParameterStore from "stores/UserParameter.store";
-import BaseParameter from "./Base";
+import BaseParameter, { IBaseParameterParams } from "./Base";
 import { ParameterFieldTypes } from "stores/Parameter/Base";
 
 import ArrayParameterValue from "./ParameterValue/ArrayParameterValue";
 
-interface INumericParameterParams {
-  userParameterStore: UserParameterStore;
-  name: string;
-  key: string;
+interface INumericArrayParameterParams extends IBaseParameterParams {
   default: number[];
-  plugin?: string;
-  changedAtSection?: boolean;
   min: number;
   max: number;
 }
 
-export default class NumericParameter extends BaseParameter {
+export default class NumericArrayParameter extends BaseParameter {
   type: string = "numeric";
   parameterValue: ArrayParameterValue<number>;
   fieldType: ParameterFieldTypes = "numericArraySelector";
 
-  constructor(params: INumericParameterParams) {
-    super(params.userParameterStore, params.name, params.key, params.plugin);
+  constructor(params: INumericArrayParameterParams) {
+    super(
+      params.userParameterStore,
+      params.name,
+      params.key,
+      params.plugin,
+      params.description
+    );
 
     this.parameterValue = new ArrayParameterValue<number>(
       params.userParameterStore,
@@ -43,11 +43,12 @@ export default class NumericParameter extends BaseParameter {
 
     makeObservable(this, {
       parameterValue: observable,
+      swapOnDeck: action.bound,
       setValue: action.bound,
     });
   }
 
-  swapOnDeck(): boolean {
+  public swapOnDeck(): boolean {
     return this.parameterValue.swapOnDeck();
   }
 
@@ -82,7 +83,7 @@ export default class NumericParameter extends BaseParameter {
 //   _val: number[];
 
 //   constructor(params: INumericArrayParameterParams) {
-//     super(params.userParameterStore, params.name, params.key, params.plugin);
+//     super(params.userParameterStore, params.name, params.key, params.plugin, params.description);
 
 //     this.default = params.default;
 //     this._val = params.default;

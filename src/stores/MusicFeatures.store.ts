@@ -150,6 +150,8 @@ export default class MusicFeaturesStore {
       key: "global.musicChord",
       userParameterStore: this.rootStore.userParameterStore,
       default: "major",
+      description:
+        "The chord to use for sequencers that involve chords, like apreggiators.",
     });
 
     this.musicKey = new MusicKeyParameter({
@@ -157,6 +159,7 @@ export default class MusicFeaturesStore {
       key: "global.musicKey",
       userParameterStore: this.rootStore.userParameterStore,
       default: "C",
+      description: "The global key that the song will play in.",
     });
 
     this.musicScale = new MusicScaleParameter({
@@ -164,6 +167,8 @@ export default class MusicFeaturesStore {
       key: "global.musicScale",
       userParameterStore: this.rootStore.userParameterStore,
       default: "major",
+      description:
+        "The global scale that the song will play in, for sequencers that focus on scales.",
     });
 
     this.musicSectionLength = new NumericParameter({
@@ -172,6 +177,10 @@ export default class MusicFeaturesStore {
       userParameterStore: this.rootStore.userParameterStore,
       default: 64,
       changedAtSection: true,
+      min: 0,
+      max: 2048,
+      description:
+        "Certain parameters will only change at the interval between music sections, say every 16 bars.",
     });
 
     this.tempo = new NumericParameter({
@@ -180,6 +189,9 @@ export default class MusicFeaturesStore {
       userParameterStore: this.rootStore.userParameterStore,
       default: 120,
       changedAtSection: true,
+      min: 0,
+      max: 999,
+      description: "Global Tempo in BPM",
     });
 
     this.musicChordProgression = new NumericSetParameter({
@@ -188,6 +200,8 @@ export default class MusicFeaturesStore {
       userParameterStore: this.rootStore.userParameterStore,
       default: [1],
       changedAtSection: true,
+      description:
+        "A Global chord progression used in sequencers that involve chord progressions.",
     });
 
     Tone.setContext(audioContext);

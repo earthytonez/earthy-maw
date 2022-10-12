@@ -14,26 +14,31 @@ export default class FilterPlugin extends BasePlugin {
   filterType: "highpass" | "lowpass";
 
   constructor(
-    trackNumber: number,
+    trackID: string,
     userParameterStore: UserParameterStore,
     options: any
   ) {
-    super(trackNumber, userParameterStore, options);
+    super(trackID, userParameterStore, options);
 
     this.filterType = options.subType || "highpass";
 
     this._node = {
-      ToneJSNode: new Tone.Filter(1500, this.filterType),
+      ToneJSNode: new Tone.Filter(
+        this.parameters.get("frequency")?.val,
+        this.parameters.get("filter_type")?.val
+      ),
     };
   }
 
   parameterKey(parameterName: string): string {
-    return `track.${this._trackNumber}.synthesizer.${this.slug}.${parameterName}`;
+    return `track.${this._trackID}.synthesizer.${this.slug}.${parameterName}`;
   }
 
-  get parameters(): BaseParameter[] {
+  get parameters(): Map<string, BaseParameter> {
     let defaultFrequency = Note.midi("C6");
-    return [
+    let parameterMap = new Map<string, BaseParameter>();
+    parameterMap.set(
+      "filter_type",
       new StringEnumParameter({
         userParameterStore: this._userParameterStore,
         name: "Filter Type",
@@ -50,15 +55,24 @@ export default class FilterPlugin extends BasePlugin {
         ],
         default: "lowpass",
         plugin: "Filter",
-      }),
+        description: "type of filter",
+      })
+    );
+    parameterMap.set(
+      "frequency",
       new NumericParameter({
         userParameterStore: this._userParameterStore,
         name: "Frequency",
         key: this.parameterKey("frequency"),
         default: defaultFrequency!,
         plugin: "Filter",
-      }),
-    ];
+        description: "frequency at which the filter takes effect",
+        min: 0,
+        max: 100,
+      })
+    );
+
+    return parameterMap;
   }
 
   node() {

@@ -14,6 +14,7 @@ interface IMusicChordParameterParams {
   plugin?: string;
   changedAtSection?: boolean;
   onDeckValue?: string;
+  description: string;
 }
 
 export default class MusicChordParameter extends BaseParameter {
@@ -24,7 +25,13 @@ export default class MusicChordParameter extends BaseParameter {
   _val: string;
 
   constructor(params: IMusicChordParameterParams) {
-    super(params.userParameterStore, params.name, params.key, params.plugin);
+    super(
+      params.userParameterStore,
+      params.name,
+      params.key,
+      params.plugin,
+      params.description
+    );
 
     this.default = params.default;
     if (this.userParameterStore.has(this.key)) {

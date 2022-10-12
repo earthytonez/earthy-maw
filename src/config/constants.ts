@@ -58,13 +58,13 @@ export const MAJOR_SCALE_INTERVALS = [2, 2, 1, 2, 2, 2, 1];
 export const MINOR_SCALE_INTERVALS = [2, 1, 2, 2, 1, 2, 2];
 
 export const SYNTH_TYPES: ISynthesizerType[] = [
-  { id: 0, name: "Bell", slug: "bell", machineType: "Synthesizer" },
-  { id: 1, name: "Bass", slug: "bass", machineType: "Synthesizer" },
-  { id: 2, name: "HiHat", slug: "hihat", machineType: "Synthesizer" },
-  { id: 3, name: "Kick", slug: "kick", machineType: "Synthesizer" },
-  { id: 4, name: "FMBells", slug: "fmbells", machineType: "Synthesizer" },
-  { id: 5, name: "FMDrone", slug: "fmdrone", machineType: "Synthesizer" },
-  { id: 6, name: "Waveform", slug: "waveform", machineType: "Synthesizer" },
+  { id: 0, name: "Kick", slug: "kick", machineType: "Synthesizer" },
+  // { id: 1, name: "Bell", slug: "bell", machineType: "Synthesizer" },
+  { id: 2, name: "Bass", slug: "bass", machineType: "Synthesizer" },
+  // { id: 3, name: "HiHat", slug: "hi_hat", machineType: "Synthesizer" },
+  // { id: 4, name: "FMBells", slug: "fm_bells", machineType: "Synthesizer" },
+  // { id: 5, name: "FMDrone", slug: "fm_drone", machineType: "Synthesizer" },
+  // { id: 6, name: "Waveform", slug: "waveform", machineType: "Synthesizer" },
 ];
 
 export const SEQUENCER_TYPES: ISequencerType[] = [
@@ -80,37 +80,37 @@ export const SEQUENCER_TYPES: ISequencerType[] = [
     slug: "off_beat_four",
     machineType: "Sequencer",
   },
-  { id: 2, name: "OneTwo", slug: "one_two", machineType: "Sequencer" },
-  { id: 3, name: "HiHat", slug: "hihat", machineType: "Sequencer" },
-  {
-    id: 4,
-    name: "SimpleDrone",
-    slug: "simple_drone",
-    machineType: "Sequencer",
-  },
-  { id: 5, name: "HouseHiHat", slug: "house_hihat", machineType: "Sequencer" },
-  { id: 6, name: "OneFour", slug: "one_four", machineType: "Sequencer" },
-  { id: 7, name: "TwoFour", slug: "two_four", machineType: "Sequencer" },
-  { id: 8, name: "ThreeFour", slug: "three_four", machineType: "Sequencer" },
-  {
-    id: 9,
-    name: "SimpleArpeggiator",
-    slug: "simple_arpeggiator",
-    machineType: "Sequencer",
-  },
-  { id: 10, name: "Random", slug: "random", machineType: "Sequencer" },
-  {
-    id: 11,
-    name: "Morodor Bassline",
-    slug: "morodor_basssine",
-    machineType: "Sequencer",
-  },
-  {
-    id: 12,
-    name: "Directional Intervals",
-    slug: "directional_intervals",
-    machineType: "Sequencer",
-  },
+  // { id: 2, name: "OneTwo", slug: "one_two", machineType: "Sequencer" },
+  // { id: 3, name: "HiHat", slug: "hihat", machineType: "Sequencer" },
+  // {
+  //   id: 4,
+  //   name: "SimpleDrone",
+  //   slug: "simple_drone",
+  //   machineType: "Sequencer",
+  // },
+  // { id: 5, name: "HouseHiHat", slug: "house_hihat", machineType: "Sequencer" },
+  // { id: 6, name: "OneFour", slug: "one_four", machineType: "Sequencer" },
+  // { id: 7, name: "TwoFour", slug: "two_four", machineType: "Sequencer" },
+  // { id: 8, name: "ThreeFour", slug: "three_four", machineType: "Sequencer" },
+  // {
+  //   id: 9,
+  //   name: "SimpleArpeggiator",
+  //   slug: "simple_arpeggiator",
+  //   machineType: "Sequencer",
+  // },
+  // { id: 10, name: "Random", slug: "random", machineType: "Sequencer" },
+  // {
+  //   id: 11,
+  //   name: "Morodor Bassline",
+  //   slug: "morodor_basssine",
+  //   machineType: "Sequencer",
+  // },
+  // {
+  //   id: 12,
+  //   name: "Directional Intervals",
+  //   slug: "directional_intervals",
+  //   machineType: "Sequencer",
+  // },
 ];
 
 export interface IHash {

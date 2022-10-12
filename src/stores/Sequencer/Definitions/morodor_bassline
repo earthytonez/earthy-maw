@@ -1,0 +1,13 @@
+name = "Morodor BassLine"
+description = "For Sequencing a Closed Hi Hat on every 1/16th."
+more_info = "https://www.youtube.com/watch?v=75p5puCwbL0"
+length = 16
+outputs = 1
+type = "step"
+
+[NoteToPlay]
+note = "C4"
+
+[TriggerWhen]
+trigger = "every step"
+

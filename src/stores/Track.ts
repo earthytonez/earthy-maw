@@ -40,11 +40,29 @@ export default class Track {
 
   slug: string;
 
+  generateID(): string {
+    let id = Array.from(Array(8), () =>
+      Math.floor(Math.random() * 36).toString(36)
+    ).join("");
+
+    let tracksIDs = this.trackStore.tracks.map((track: Track) => {
+      return track.id;
+    });
+
+    if (tracksIDs.includes(id)) {
+      return this.generateID();
+    }
+    return id;
+  }
+
+  public id: string;
+
   constructor(
-    public id: number,
+    public number: number,
     audioContext: Tone.BaseContext,
     rootStore: RootStore,
-    trackMachines?: any
+    trackMachines?: any,
+    id?: string
   ) {
     Tone.setContext(audioContext);
 
@@ -53,6 +71,12 @@ export default class Track {
     this.parameterStore = rootStore.parameterStore;
     this.pluginStore = rootStore.pluginStore;
     this.trackStore = rootStore.trackStore;
+
+    if (id) {
+      this.id = id;
+    } else {
+      this.id = this.generateID();
+    }
 
     if (!this.musicFeaturesStore) {
       throw new Error("musicFeaturesStore must be set");
@@ -82,7 +106,7 @@ export default class Track {
   }
 
   remove = () => {
-    this.trackStore.removeTrack(this.id);
+    this.trackStore.removeTrack(this.number);
   };
 
   async tick(beatMarker: BeatMarker, time: number) {
@@ -196,6 +220,7 @@ export default class Track {
   toJSON() {
     let retVal = {
       id: this.id,
+      number: this.number,
       slug: this.slug,
       arranger: this.arranger,
       sequencer: this.sequencerJSON(),

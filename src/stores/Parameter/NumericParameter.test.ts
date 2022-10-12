@@ -11,6 +11,9 @@ test("set a numeric parameter that is not changed at section intervals", async (
     key: "track.1.synthesizer.waveform",
     default: 1,
     changedAtSection: false,
+    description: "description",
+    min: 0,
+    max: 1,
   });
 
   expect(numericParameter.val).toBe(1);
@@ -27,6 +30,9 @@ test("set a numeric parameter that is changed at section intervals", async () =>
     key: "track.1.synthesizer.cutoff",
     default: 1,
     changedAtSection: true,
+    description: "description",
+    min: 0,
+    max: 1,
   });
 
   expect(numericParameter.val).toBe(1);

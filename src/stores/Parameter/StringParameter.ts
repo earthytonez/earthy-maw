@@ -1,10 +1,10 @@
 import { makeObservable, observable, action } from "mobx";
 import UserParameterStore from "stores/UserParameter.store";
-import BaseParameter from "./Base";
+import BaseParameter, { IBaseParameterParams } from "./Base";
 
 import ParameterValue from "./ParameterValue/ParameterValue";
 
-interface IStringParameterParams {
+interface IStringParameterParams extends IBaseParameterParams {
   userParameterStore: UserParameterStore;
   name: string;
   key: string;
@@ -18,7 +18,13 @@ export default class StringParameter extends BaseParameter {
   parameterValue: ParameterValue<string>;
 
   constructor(params: IStringParameterParams) {
-    super(params.userParameterStore, params.name, params.key, params.plugin);
+    super(
+      params.userParameterStore,
+      params.name,
+      params.key,
+      params.plugin,
+      params.description
+    );
 
     this.parameterValue = new ParameterValue<string>(
       params.userParameterStore,

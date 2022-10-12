@@ -73,19 +73,6 @@ export default class Sequencer extends SequencerType {
 
   lastParams: any;
 
-  /*
-   * These variables are for random step sequencers.
-   */
-  minGate: number = 0.1;
-  maxGate: number = 10;
-  minInterval: number = 5;
-  maxInterval: number = 10;
-
-  /*
-   * These variables control which fill is selected.
-   */
-  selectedFill: number = 0;
-
   audioContext: Tone.BaseContext;
   musicFeaturesStore: MusicFeaturesStore;
 
@@ -100,6 +87,12 @@ export default class Sequencer extends SequencerType {
   rhythm_length?: number = undefined;
   totalLength: number;
   triggerWhen: TriggerWhen = new TriggerWhen();
+
+  /* TODO: Deprecate and remove */
+  minGate: number = 0;
+  maxGate: number = 0;
+  minInterval: number = 0;
+  maxInterval: number = 0;
 
   constructor(
     sequencerDefinition: SequencerDefinition,
@@ -130,9 +123,7 @@ export default class Sequencer extends SequencerType {
     makeObservable(this, {
       bindSynth: action,
       changeParameter: action.bound,
-      decrementParameter: action.bound,
       editParameters: computed,
-      incrementParameter: action.bound,
       play: action,
       resetBeatsSinceLastNote: action.bound,
       toJSON: action.bound,
@@ -144,8 +135,6 @@ export default class Sequencer extends SequencerType {
     if (!this.totalLength) {
       return beatMarker.num;
     }
-    console.log(this.totalLength);
-    console.log(beatMarker.num % this.totalLength);
     return beatMarker.num % this.totalLength;
   }
 
@@ -216,11 +205,11 @@ export default class Sequencer extends SequencerType {
     if (!parameter) {
       throw new Error("Invalid Parameter");
     }
-    parameter.setValue(value);
-  }
 
-  loadParameters(sequencer: any) {
-    this.selectedFill = sequencer.selectedFill;
+    console.log(parameterSlug);
+    console.log(value);
+
+    parameter.setValue(value);
   }
 
   get editParameters(): ISequencerParameters[] {
@@ -290,10 +279,7 @@ export default class Sequencer extends SequencerType {
         this.beatsSinceLastNote,
         this.resetBeatsSinceLastNote,
         parameters,
-        this.minGate,
-        this.maxGate,
-        this.minInterval,
-        this.maxInterval
+        this._parameters
       );
     } catch (err) {
       console.error(err, parameters);
@@ -323,7 +309,6 @@ export default class Sequencer extends SequencerType {
     if (parameters) {
       parameters.gateList =
         this.gateLengths?.parameterSets[this.chosenGateParameterSet]?.gateList;
-      parameters.selectedFill = this.selectedFill;
     }
 
     if (!parameters) {

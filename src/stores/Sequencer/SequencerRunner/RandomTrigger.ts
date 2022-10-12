@@ -1,3 +1,4 @@
+import BaseParameter from "stores/Parameter/Base";
 import { debug } from "../../../Util/logger";
 
 import { ITriggerParameters } from "../SequencerLoader/TriggerWhen";
@@ -47,20 +48,11 @@ export default class RandomTrigger implements ISequencerRunner {
       `Playing from step list steps: ${beatMarker} / ${stepCount} (${parameters.stepList}`
     );
 
-    if (
-      beatsSinceLastNote >
-      this.generateRandom(
-        minInterval,
-        maxInterval,
-      )
-    ) {
+    if (beatsSinceLastNote > this.generateRandom(minInterval, maxInterval)) {
       resetBeatsSinceLastNote();
       console.log(this.getRandomFloat(minGate, maxGate, 2));
 
-      return new SequencerGate(
-        true,
-        this.getRandomFloat(minGate, maxGate, 2),
-      );
+      return new SequencerGate(true, this.getRandomFloat(minGate, maxGate, 2));
     }
     return new SequencerGate(false);
   }
@@ -70,12 +62,14 @@ export default class RandomTrigger implements ISequencerRunner {
     beatsSinceLastNote: number,
     resetBeatsSinceLastNote: Function,
     parameters: ITriggerParameters,
-    minGate: number,
-    maxGate: number,
-    minInterval: number,
-    maxInterval: number
+    sequencerParameters: Map<string, BaseParameter>
   ): SequencerGate {
     debug("RANDOM_TRIGGER", "Parameters = ", parameters);
+
+    let minGate = sequencerParameters.get("min_gate") || { val: 0.1 };
+    let maxGate = sequencerParameters.get("max_gate") || { val: 10 };
+    let minInterval = sequencerParameters.get("min_interval") || { val: 5 };
+    let maxInterval = sequencerParameters.get("max_interval") || { val: 10 };
 
     switch (parameters.triggerType) {
       case "random":
@@ -84,10 +78,10 @@ export default class RandomTrigger implements ISequencerRunner {
           beatsSinceLastNote,
           resetBeatsSinceLastNote,
           parameters,
-          minGate,
-          maxGate,
-          minInterval,
-          maxInterval
+          minGate!.val,
+          maxGate!.val,
+          minInterval!.val,
+          maxInterval!.val
         );
     }
     return new SequencerGate(false);

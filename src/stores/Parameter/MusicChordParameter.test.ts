@@ -8,6 +8,7 @@ test("set a string parameter", () => {
     name: "Chord",
     key: "global.chord",
     default: "major",
+    description: "description",
   });
   expect(musicChordParameter.val.name).toBe("major");
   musicChordParameter.setValue("square");

@@ -7,7 +7,6 @@ tags = [
 ]
 type = "step"
 
-parameters = ["pitch"]
 
 [NoteToPlay]
 note = "C2"
@@ -17,11 +16,14 @@ trigger = "every 4 steps"
 fillWhen = "last 16 of 64"
 fillList = [
     [0, 4, 8, 12],
+    [0, 4, 8, 12, 13],
+    [0, 4, 8, 12, 14],
+    [0, 4, 8, 12, 15],
     [4],
     [8],
     [12],
     [4, 8],
     [8, 12],
     [4, 12],
-    [4, 8, 12]
+    [4, 8, 12],
 ]

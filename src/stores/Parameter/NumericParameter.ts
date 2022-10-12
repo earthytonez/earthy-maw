@@ -1,6 +1,6 @@
 import { makeObservable, observable, action } from "mobx";
 import UserParameterStore from "stores/UserParameter.store";
-import BaseParameter from "./Base";
+import BaseParameter, { ParameterFieldTypes } from "./Base";
 
 import ParameterValue from "./ParameterValue/ParameterValue";
 
@@ -11,14 +11,31 @@ interface INumericParameterParams {
   default: number;
   plugin?: string;
   changedAtSection?: boolean;
+  min: number;
+  max: number;
+  description: string;
 }
 
 export default class NumericParameter extends BaseParameter {
   type: string = "numeric";
+  fieldType: ParameterFieldTypes = "slider";
   parameterValue: ParameterValue<number>;
 
   constructor(params: INumericParameterParams) {
-    super(params.userParameterStore, params.name, params.key, params.plugin);
+    super(
+      params.userParameterStore,
+      params.name,
+      params.key,
+      params.plugin,
+      params.description
+    );
+
+    this.fieldOptions = {
+      min: params.min,
+      max: params.max,
+    };
+
+    this.plugin = params.plugin;
 
     this.parameterValue = new ParameterValue<number>(
       params.userParameterStore,
@@ -96,7 +113,7 @@ export default class NumericParameter extends BaseParameter {
 //   _val: number;
 
 //   constructor(params: INumericParameterParams) {
-//     super(params.userParameterStore, params.name, params.key, params.plugin);
+//     super(params.userParameterStore, params.name, params.key, params.plugin, params.description);
 
 //     this.default = params.default;
 //     this.plugin = params.plugin;

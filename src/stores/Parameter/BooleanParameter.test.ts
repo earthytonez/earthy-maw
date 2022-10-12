@@ -11,6 +11,7 @@ test("set a boolean parameter that is not changed at section intervals", async (
     key: "track.1.synthesizer.waveform",
     default: true,
     changedAtSection: false,
+    description: "description",
   });
 
   expect(booleanParameter.val).toBe(true);
@@ -21,12 +22,14 @@ test("set a boolean parameter that is not changed at section intervals", async (
 test("set a boolean parameter that is changed at section intervals", async () => {
   const userParameterStore = new UserParameterStore();
   await userParameterStore.remove("track.1.synthesizer.cutoff");
+
   const booleanParameter = new BooleanParameter({
     userParameterStore,
     name: "Waveform",
     key: "track.1.synthesizer.cutoff",
     default: false,
     changedAtSection: true,
+    description: "description",
   });
 
   expect(booleanParameter.val).toBe(false);

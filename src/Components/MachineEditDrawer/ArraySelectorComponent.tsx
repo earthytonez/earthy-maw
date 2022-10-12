@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 import { observer } from "mobx-react-lite";
 
 import Box from "@mui/material/Box";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import Button from "@mui/material/Button";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 
 interface IArraySelectorComponentProps {
   incrementValue: React.MouseEventHandler<HTMLButtonElement>;
@@ -15,8 +15,6 @@ interface IArraySelectorComponentProps {
 
 const ArraySelectorComponent = observer(
   ({
-    incrementValue,
-    decrementValue,
     setValue,
     currentValue,
     selectableValues,
@@ -26,35 +24,47 @@ const ArraySelectorComponent = observer(
     }
 
     return (
-      <ButtonGroup size="small" aria-label="small outlined button group">
-        <Button
-          variant="outlined"
-          size="small"
-          onClick={incrementValue}
-        >
-          -
-        </Button>
-
+      <Select
+        labelId="demo-simple-select-label"
+        id="demo-simple-select"
+        value={currentValue}
+        onChange={(ev: any) => {
+          console.log(ev);
+          setValue();
+        }}
+      >
         {selectableValues.map((value, i) => {
           return (
-            <Button
-              key={i}
-              onClick={() => setValue(value)}
-              variant={currentValue === value ? "contained" : "outlined"}
-            >
+            <MenuItem key={i} value={value}>
               {value}
-            </Button>
+            </MenuItem>
           );
         })}
-        <Button
-          variant="outlined"
-          size="small"
-          onClick={decrementValue}
-        >
-          +
-        </Button>
-      </ButtonGroup>
+      </Select>
     );
+
+    // return (
+    //   <ButtonGroup size="small" aria-label="small outlined button group">
+    //     <Button variant="outlined" size="small" onClick={incrementValue}>
+    //       -
+    //     </Button>
+
+    //     {selectableValues.map((value, i) => {
+    //       return (
+    //         <Button
+    //           key={i}
+    //           onClick={() => setValue(value)}
+    //           variant={currentValue === value ? "contained" : "outlined"}
+    //         >
+    //           {value}
+    //         </Button>
+    //       );
+    //     })}
+    //     <Button variant="outlined" size="small" onClick={decrementValue}>
+    //       +
+    //     </Button>
+    //   </ButtonGroup>
+    // );
   }
 );
 

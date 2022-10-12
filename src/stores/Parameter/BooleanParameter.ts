@@ -1,16 +1,10 @@
 import { makeObservable, observable, action } from "mobx";
-import UserParameterStore from "stores/UserParameter.store";
-import BaseParameter from "./Base";
+import BaseParameter, { IBaseParameterParams } from "./Base";
 
 import ParameterValue from "./ParameterValue/ParameterValue";
 
-interface IBooleanParameterParams {
-  userParameterStore: UserParameterStore;
-  name: string;
-  key: string;
+interface IBooleanParameterParams extends IBaseParameterParams {
   default: boolean;
-  plugin?: string;
-  changedAtSection?: boolean;
 }
 
 export default class BooleanParameter extends BaseParameter {
@@ -18,7 +12,13 @@ export default class BooleanParameter extends BaseParameter {
   parameterValue: ParameterValue<boolean>;
 
   constructor(params: IBooleanParameterParams) {
-    super(params.userParameterStore, params.name, params.key, params.plugin);
+    super(
+      params.userParameterStore,
+      params.name,
+      params.key,
+      params.plugin,
+      params.description
+    );
 
     this.parameterValue = new ParameterValue<boolean>(
       params.userParameterStore,
@@ -76,7 +76,7 @@ export default class BooleanParameter extends BaseParameter {
 //   _val: boolean;
 
 //   constructor(params: IBooleanParameterParams) {
-//     super(params.userParameterStore, params.name, params.key, params.plugin);
+//     super(params.userParameterStore, params.name, params.key, params.plugin, params.description);
 
 //     this.default = params.default;
 //     this._val = params.default;

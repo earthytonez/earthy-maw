@@ -4,7 +4,7 @@ import { makeObservable, action, observable, autorun } from "mobx";
 
 import Track from "./Track";
 
-import { debug, info } from '../Util/logger';
+import { debug, info } from "../Util/logger";
 import RootStore from "./Root.store";
 
 const bluebird = require("bluebird");
@@ -14,48 +14,58 @@ export default class TrackStore {
   tracks: Track[] = [];
   rootStore: RootStore;
 
-  addTrack() {
-    this.tracks.push(
-      new Track(
-        this.tracks.length,
-        this.audioContext,
-        this.rootStore,
-      )
-    );
-    this.saveTracks();
-    this.tracks[this.tracks.length - 1]!.setLoading(false);
+  get newTrack() {
+    return new Track(this.tracks.length, this.audioContext, this.rootStore);
   }
 
-  removeTrack(trackID: number) {
-    this.tracks = this.tracks.filter((track) => track.id !== trackID);
+  /*
+   * The user has clicked a button to add a new empty track to the song.
+   */
+  addTrack() {
+    info("TRACK_STORE", `Adding Track ${this.tracks.length}`);
+
+    this.tracks.push(this.newTrack);
+    this.saveTracks();
+    this.notLoading(this.tracks.length - 1);
+  }
+
+  notLoading(track: number) {
+    this.tracks[track]?.setLoading(false);
+  }
+
+  removeTrack(trackNumber: number) {
+    this.tracks = this.tracks.filter((track) => track.number !== trackNumber);
     this.saveTracks();
   }
 
   setTracks(tracks: Track[]) {
     this.tracks = tracks;
   }
-  
+
   emptyTracks() {
-    console.log(this.tracks);
-    return (this.tracks === [] || this.tracks.length === 0 || this.tracksJSON() === '[{"id":0,"slug":"track-0"},{"id":1,"slug":"track-1"}]')
+    return (
+      this.tracks.length === 0 ||
+      this.tracksJSON ===
+        '[{"number":0,"slug":"track-0"},{"number":1,"slug":"track-1"}]'
+    );
   }
 
-  tracksJSON(): string {
-    let tracksJSON = JSON.stringify(this.tracks.map((track: any) => {
-      return track.toJSON();
-    }));
-
-    return tracksJSON;
+  get tracksJSON(): string {
+    return JSON.stringify(
+      this.tracks.map((track: any) => {
+        return track.toJSON();
+      })
+    );
   }
 
   saveTracks() {
-    if (this.emptyTracks && this.emptyTracks()) {
-      debug("LOADSAVETRACKS", "Tried to save empty 'tracks'");
+    if (this.emptyTracks()) {
+      debug("TRACK_STORE_LOAD", "Tried to save empty 'tracks'");
       return;
     }
 
-    info("LOADSAVETRACKS", `Saving tracks: ${JSON.stringify(this.tracks)}`)
-    localStorage.setItem("tracks", JSON.stringify(this.tracks));
+    info("TRACK_STORE_SAVE", `Saving tracks: ${this.tracksJSON}`);
+    localStorage.setItem("tracks", this.tracksJSON);
   }
 
   initialize() {
@@ -67,7 +77,7 @@ export default class TrackStore {
     this.tracks[1]!.setLoading(false);
   }
 
-  loadFromURL() {
+  loadFromURLParams() {
     let urlSearchParams = new URLSearchParams(window.location.search);
 
     let track: any = {};
@@ -77,27 +87,24 @@ export default class TrackStore {
     }
 
     for (let i = 0; i <= 100; i++) {
-      if (track[`synth[${i}]`] ||  track[`seq[${i}]`]) {
-        this.tracks.push(new Track(0, this.audioContext, this.rootStore, {
-          synth: track[`synth[${i}]`],
-          sequencer: track[`seq[${i}]`]
-        }))
+      if (track[`synth[${i}]`] || track[`seq[${i}]`]) {
+        this.tracks.push(
+          new Track(0, this.audioContext, this.rootStore, {
+            synth: track[`synth[${i}]`],
+            sequencer: track[`seq[${i}]`],
+          })
+        );
       }
-  
     }
   }
-  
+
   load(tracksFromLocalStore: any[]) {
     const loadTracks = async () => {
       if (tracksFromLocalStore && tracksFromLocalStore.length > 0) {
-        let trackObjects: Track[] = await bluebird.map(tracksFromLocalStore,
+        let trackObjects: Track[] = await bluebird.map(
+          tracksFromLocalStore,
           async (trackData: any, i: number) => {
-            let t = new Track(
-              i,
-              this.audioContext,
-              this.rootStore,
-              this
-            );
+            let t = new Track(i, this.audioContext, this.rootStore, this);
             await t.load(trackData);
             return t;
           }
@@ -110,20 +117,26 @@ export default class TrackStore {
 
     // http://localhost:3000/?synth=kick&seq=fouronthefloor
     if (window.location.search.length > 0) {
-      this.loadFromURL();
+      this.loadFromURLParams();
     } else {
       loadTracks();
     }
   }
 
   checkLocalStorage() {
-    info("LOADSAVETRACKS", "Loading Tracks from Local Storage");
     let _tracks = localStorage.getItem("tracks");
+
     let tracks;
+
     if (_tracks !== "undefined" && _tracks !== "") {
       tracks = JSON.parse(_tracks!);
     }
-    debug("LOADSAVETRACKS", `Tracks = ${JSON.stringify(tracks)}`)
+
+    debug(
+      "TRACKS_STORE_LOAD",
+      `Loading Tracks from Local Storage - Tracks = ${this.tracksJSON}`
+    );
+
     this.load(tracks);
   }
 
@@ -142,7 +155,7 @@ export default class TrackStore {
       checkLocalStorage: action.bound,
       addTrack: action.bound,
       saveTracks: action.bound,
-      setTracks: action.bound
+      setTracks: action.bound,
     });
   }
 }

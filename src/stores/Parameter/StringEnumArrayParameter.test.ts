@@ -1,15 +1,16 @@
 import StringSetParameter from "./StringSetParameter";
 import UserParameterStore from "stores/UserParameter.store";
 
-test("set a set parameter", () => {
+test("set a string enum array parameter", () => {
   const userParameterStore = new UserParameterStore();
-  const setParameter = new StringSetParameter({
+  const stringEnumArrayParameter = new StringSetParameter({
     userParameterStore,
     name: "Waveform",
     key: "track.1.synthesizer.waveform",
     default: ["sine"],
+    description: "description",
   });
-  expect(setParameter.val).toStrictEqual(["sine"]);
-  setParameter.setValue(["square"]);
-  expect(setParameter.val).toStrictEqual(["square"]);
+  expect(stringEnumArrayParameter.val).toStrictEqual(["sine"]);
+  stringEnumArrayParameter.setValue(["square"]);
+  expect(stringEnumArrayParameter.val).toStrictEqual(["square"]);
 });
