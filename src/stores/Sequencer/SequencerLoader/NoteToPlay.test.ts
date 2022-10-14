@@ -23,6 +23,12 @@ beforeEach(() => {
   noteToPlay = new NoteToPlay();
   noteToPlay.parse({ note: "IntervalParameter()" });
 
+  intervalToPlay.parse({
+    interval_type: "arpeggiator",
+    list: [],
+    type_list: [],
+  });
+
   key = "C" as IMusicKey;
   octaves = [4];
   scale = Scale.get("major") as IMusicScale;

@@ -3,6 +3,7 @@ import { debug } from "../../../Util/logger";
 import { ITriggerParameters } from "../SequencerLoader/TriggerWhen";
 
 import SequencerGate, { ISequencerGate } from "./SequencerGate";
+import util from "util";
 
 const DEFAULT_GATE = 1;
 
@@ -86,15 +87,15 @@ export default class PlayEveryX implements ISequencerRunner {
 
     let stepCount = beatMarker % stepInterval!;
 
-    console.log(sequencerParameters);
-
     debug(
       "PLAY_EVERY_X",
       `Playing steps: ${beatMarker} / ${stepCount} - ${stepInterval} on ${
         parameters.on
       } -- fillStart: ${parameters.fillStart} -- fillEnd: ${
         parameters.fillEnd
-      }, Selected Fill: ${sequencerParameters.get("selectedfill")}`
+      }, Selected Fill: ${util.inspect(
+        sequencerParameters.get("selectedfill")
+      )}`
     );
 
     if (
@@ -168,7 +169,10 @@ export default class PlayEveryX implements ISequencerRunner {
     sequencerParameters: any
   ): ISequencerGate {
     console.log(sequencerParameters);
-    debug("PLAY_EVERY_X", "Parameters = ", parameters);
+    debug("PLAY_EVERY_X", "Parameters ", {
+      parameters: parameters,
+      sequencerParameters: sequencerParameters,
+    });
 
     switch (parameters.triggerType) {
       case "stepList":

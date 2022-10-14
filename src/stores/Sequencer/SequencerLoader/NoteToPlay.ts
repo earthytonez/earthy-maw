@@ -5,6 +5,7 @@ import { debug, info, warn } from "../../../Util/logger";
 import { Note, Scale } from "@tonaljs/tonal";
 import { IMusicChord, IMusicKey, IMusicScale } from "Types";
 import IntervalToPlay from "./IntervalToPlay";
+import util from "util";
 
 export interface INoteToPlayDefinition {
   note: string;
@@ -176,7 +177,6 @@ export default class NoteToPlay {
       `interval ${measureBeat} ${stepInterval} ${_arrayStep} ${lastParams} ${lastNote} ${interval} ${stepPitchShift} ${stepPitchShiftDirection} ${startNote} ${startNoteMidi}`
     );
 
-    console.log(interval);
     let retVal = intervalToPlay.getScaleInterval(
       scale,
       key,
@@ -197,22 +197,24 @@ export default class NoteToPlay {
     parameters: any,
     lastParams: any
   ): Tone.FrequencyClass {
-    debug("NOTE_TO_PLAY", `Note set as ${JSON.stringify(this.note)}`);
-    debug("NOTE_TO_PLAY", "intervalToPlay", intervalToPlay);
-
-    console.log(this.noteChooser);
-    console.log(parameters);
-
     if (intervalToPlay.intervalType === "arpeggiator") {
       this.noteChooser = "interval";
     }
+
+    debug(
+      "NOTE_TO_PLAY",
+      `Note set as ${JSON.stringify(this.note)}, noteChooser: ${
+        this.noteChooser
+      }, intervalToPlay: ${util.inspect(intervalToPlay)}`
+    );
+
     switch (this.noteChooser) {
       case "random":
         return this.getRandomNote(key, scale, chord, octaves, measureBeat);
       case "single":
         return this.getSingleNote();
       case "interval":
-        return this.getIntervalNote(
+        let intervalNote = this.getIntervalNote(
           key,
           scale,
           chord,
@@ -221,6 +223,8 @@ export default class NoteToPlay {
           intervalToPlay,
           parameters
         );
+        console.log(`NOTE_TO_PLAY GET_INTERVAL_NOTE ${intervalNote}`);
+        return intervalNote;
       case "interval_parameter":
         return this.getIntervalParameterNote({
           key,

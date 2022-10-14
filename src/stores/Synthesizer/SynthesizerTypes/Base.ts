@@ -10,6 +10,8 @@ import NumericParameter from "stores/Parameter/NumericParameter";
 import { debug } from "../../../Util/logger";
 import ISynthEditableParams from "../ISynthEditableParams";
 
+const util = require("util");
+
 export default class BaseSynthesizer {
   name: string;
   slug: string;
@@ -123,10 +125,6 @@ export default class BaseSynthesizer {
 
   attachVolume(vol: Tone.Volume) {
     let headNode = this.synth;
-    console.log(headNode);
-    console.log(headNode);
-    console.log(headNode);
-    console.log(vol);
     this.pluginNodes.forEach((pluginNode: IPluginNode) => {
       headNode.connect(pluginNode.ToneJSNode);
       headNode = pluginNode.ToneJSNode;
@@ -176,11 +174,14 @@ export default class BaseSynthesizer {
    * 3. Any modulation changes to the value of the parameter.
    */
   parameterValue(slug: string): any {
-    try {
-      console.log(this._parameters);
+    if (this._parameters.has(slug)) {
       return this._parameters.get(slug)!.val;
-    } catch (err) {
-      throw new Error(`parameterValue slug: ${slug} error: ${err}`);
+    } else {
+      console.warn(
+        `parameterValue slug: ${slug} does not existi in parameters: ${util.inspect(
+          this._parameters
+        )}`
+      );
     }
   }
 

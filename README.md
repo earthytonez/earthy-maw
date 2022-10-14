@@ -13,10 +13,11 @@ Tech Debt: 1. Save more things (like Octaves)
 
 1. Help
   1. ~~Fix Keys/Scale/Chord Changes to show yellow when changed.~~
-  2. Parameters should take a min and max value (options)
+  2. ~~Parameters should take a min and max value (options)~~
+  18. ~~Pitch on the Kick / a Synth is a +/- to what comes in.~~
+  3. ~~Refactor IntervalToPlay.~~
   2. Add tests
-  3. Refactor IntervalToPlay.
-  4. Fix Filter
+  4. Fix Filter (Add ~~Cutoff~~ and type parameter)
   5. Ensure Waveform Works
   6. Ensure Bell Works
   7. Ensure Bass Works
@@ -24,13 +25,12 @@ Tech Debt: 1. Save more things (like Octaves)
   9. Ensure Kick Works
   10. Ensure Waveform Works
   11. Fix dev.to article.
-  12. Post to Twitter
   13. Random Octave on Segment Change / Note Change
   14. Note, Note Diff, Note Direction Parameters for Step Sequencer
   15. Docs for Directional Interval Sequencer.
   16. Give reddit dude an update.
   17. Give dev.to dude an update.
-  18. Pitch on the Kick / a Synth is a +/- to what comes in.
+  12. Post to Twitter about Arpeggiator
 
   
 2. MMF: Make parameters modulatable by LFO and Date.

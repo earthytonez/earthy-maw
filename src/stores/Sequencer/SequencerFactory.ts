@@ -47,8 +47,6 @@ export async function getSequencer(
     throw new Error("sequencerSlug undefined");
   }
 
-  console.log(sequencerTOML);
-
   const sequencerLoader = new SequencerLoader(sequencerTOML);
   const sequencerDefinition: SequencerDefinition = await sequencerLoader.load();
 

@@ -4,6 +4,11 @@ import IntervalToPlay from "./IntervalToPlay";
 
 test("find midi number from note name", async () => {
   const intervalToPlay = new IntervalToPlay();
+  intervalToPlay.parse({
+    interval_type: "arpeggiator",
+    list: [],
+    type_list: [],
+  });
   let key = "C" as IMusicKey;
   let scale = Scale.get("major") as IMusicScale;
   let interval = 4;
@@ -15,6 +20,12 @@ test("find midi number from note name", async () => {
 
 test("get all octaves for a scale", () => {
   const intervalToPlay = new IntervalToPlay();
+  intervalToPlay.parse({
+    interval_type: "arpeggiator",
+    list: [],
+    type_list: [],
+  });
+
   let scaleDef = Scale.get(`C major`);
 
   expect(intervalToPlay.allOctavesScale(scaleDef)).toContain("C4");
@@ -26,6 +37,11 @@ test("get all octaves for a scale", () => {
 
 test("get current interval from scale", () => {
   const intervalToPlay = new IntervalToPlay();
+  intervalToPlay.parse({
+    interval_type: "arpeggiator",
+    list: [],
+    type_list: [],
+  });
 
   let scale = Scale.get(`major`);
   let key = "C" as IMusicKey;

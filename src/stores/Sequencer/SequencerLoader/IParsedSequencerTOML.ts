@@ -1,9 +1,13 @@
 import TriggerWhen from "./TriggerWhen";
 import GateLengths from "./GateLengths";
 import { INoteToPlayDefinition } from "./NoteToPlay";
-import IntervalToPlay from "./IntervalToPlay";
-
 import ISequencerType from "./ISequencerType";
+
+export interface IntervalToPlayManifestSection {
+  interval_type: "arpeggiator" | "list";
+  list: Array<number>;
+  type_list: Array<string>;
+}
 
 export default interface IParsedSequencerTOML {
   name: string;
@@ -23,5 +27,5 @@ export default interface IParsedSequencerTOML {
   TriggerWhenList: {
     list: number[][];
   };
-  IntervalsToPlay: IntervalToPlay;
+  IntervalsToPlay: IntervalToPlayManifestSection;
 }

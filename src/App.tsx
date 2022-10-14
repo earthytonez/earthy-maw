@@ -68,13 +68,13 @@ const App = observer(() => {
       if (
         !tracks ||
         !tracks.find((track: Track) => {
-          return track.id == trackID;
+          return track.id === trackID;
         })
       ) {
         throw new Error("Track not found");
       }
       let track = tracks.find((track: Track) => {
-        return track.id == trackID;
+        return track.id === trackID;
       });
       await track!.assignMachine(machineType, machineToAssign);
     } catch (err) {

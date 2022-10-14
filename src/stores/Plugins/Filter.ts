@@ -68,7 +68,7 @@ export default class FilterPlugin extends BasePlugin {
         plugin: "Filter",
         description: "frequency at which the filter takes effect",
         min: 0,
-        max: 100,
+        max: 20000,
       })
     );
 
