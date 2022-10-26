@@ -1,11 +1,21 @@
-import { IMusicChord, IMusicKey, IMusicScale } from "Types";
 import { debug } from "../../../../Util/logger";
 
 import * as Tone from "tone";
 
 import { Chord } from "@tonaljs/tonal";
 
-import IntervalCalculator from "./IntervalCalculator";
+import IntervalCalculator, {
+  IIntervalCalculatorParams,
+} from "./IntervalCalculator";
+
+import {
+  UpDownArp,
+  DownUpIncArp,
+  DownUpArp,
+  UpDownIncArp,
+  UpArp,
+  DownArp,
+} from "./ArpeggiatorCalculators";
 
 export default class ArpeggiatorIntervalCalculator extends IntervalCalculator {
   intervalType: "arpeggiator" = "arpeggiator";
@@ -22,6 +32,14 @@ export default class ArpeggiatorIntervalCalculator extends IntervalCalculator {
     return this.intervalArp === "updown";
   }
 
+  isDownUpIncArpeggiator() {
+    return this.intervalArp === "downupinc";
+  }
+
+  isUpDownIncArpeggiator() {
+    return this.intervalArp === "updowninc";
+  }
+
   isDownUpArpeggiator() {
     return this.intervalArp === "downup";
   }
@@ -30,84 +48,208 @@ export default class ArpeggiatorIntervalCalculator extends IntervalCalculator {
     return this.intervalArp === "random";
   }
 
-  calculate(
-    measureBeat: number,
-    chord: IMusicChord,
-    key: IMusicKey,
-    _scale: IMusicScale,
-    startNote: string,
-    octave: number,
-    parameters: any
-  ): Tone.FrequencyClass<number> {
+  isTopLineUpArpeggiator() {
+    return this.intervalArp === "top-line-up";
+  }
+
+  isTopLineDownArpeggiator() {
+    return this.intervalArp === "top-line-down";
+  }
+
+  isBottomLineUpArpeggiator() {
+    return this.intervalArp === "bottom-line-up";
+  }
+
+  isBottomLineDownArpeggiator() {
+    return this.intervalArp === "bottom-line-down";
+  }
+
+  isTopLineUpInversedArpeggiator() {
+    return this.intervalArp === "top-line-up-inversed";
+  }
+
+  isTopLineDownInversedArpeggiator() {
+    return this.intervalArp === "top-line-down-inversed";
+  }
+
+  isBottomLineUpInversedArpeggiator() {
+    return this.intervalArp === "bottom-line-up-inversed";
+  }
+
+  isBottomLineDownInversedArpeggiator() {
+    return this.intervalArp === "bottom-line-down-inversed";
+  }
+
+  calculate(params: IIntervalCalculatorParams): Tone.FrequencyClass<number> {
     debug(
       "INTERVAL_TO_PLAY",
-      `this.intervalType:${measureBeat} |${this.intervalType}|${JSON.stringify(
-        chord
-      )}`
+      `this.intervalType:${params.measureBeat} |${
+        this.intervalType
+      }|${JSON.stringify(params.chord)}`
     );
-    console.log(parameters);
-    this.intervalArp = parameters.get("arpeggiatortype").val;
+    console.log(params.parameters);
+    this.intervalArp = params.parameters.get("arpeggiatortype").val;
 
-    let chordDef = Chord.getChord(chord.name, key);
+    let chordDef = Chord.getChord(params.chord.name, params.key);
 
     let stepInterval = 4;
-    if (parameters.has("stepinterval")) {
-      stepInterval = parameters.get("stepinterval").val;
+    if (params.parameters.has("stepinterval")) {
+      stepInterval = params.parameters.get("stepinterval").val;
     }
 
     let length: number = 0;
     let step: number = 0;
+
+    console.log(chordDef);
+
     if (this.intervalType === "arpeggiator") {
-      length = chord.intervals.length;
-      step = (measureBeat / stepInterval) % length;
+      length = params.chord.intervals.length;
+      step = Math.ceil((params.measureBeat / stepInterval) % length);
       debug(
         "INTERVAL_TO_PLAY",
-        `Getting interval for intervalType Arpeggiator ${chord} -- ${step} - ${measureBeat} - ${length} ${chordDef.notes[step]}`
+        `Getting interval for intervalType Arpeggiator ${params.chord} -- ${step} - ${params.measureBeat} - ${length} ${chordDef.notes[step]}`
       );
     }
 
     if (this.isUpArpeggiator()) {
-      return Tone.Frequency(`${chordDef.notes[step]}${octave}`);
+      let arpCalculator = new UpArp(params, chordDef.notes, step);
+      return arpCalculator.getTone();
     }
 
     if (this.isDownArpeggiator()) {
-      return Tone.Frequency(`${chordDef.notes.reverse()[step]}${octave}`);
+      let arpCalculator = new DownArp(params, chordDef.notes, step);
+      return arpCalculator.getTone();
     }
 
     if (this.isUpDownArpeggiator()) {
-      length = length * 2;
-      step = (measureBeat / stepInterval) % length;
-      let chordNotes = chordDef.notes.concat([...chordDef.notes].reverse());
-      console.log(chordNotes);
-      return Tone.Frequency(`${chordNotes[step]}${octave}`);
+      let arpCalculator = new UpDownArp(params, chordDef.notes);
+      return arpCalculator.getTone();
     }
+
     if (this.isDownUpArpeggiator()) {
-      length = length * 2;
-      step = (measureBeat / stepInterval) % length;
-      let chordNotes = [...chordDef.notes].reverse().concat(chordDef.notes);
-      return Tone.Frequency(`${chordNotes[step]}${octave}`);
+      let arpCalculator = new DownUpArp(params, chordDef.notes);
+      return arpCalculator.getTone();
+    }
+
+    if (this.isUpDownIncArpeggiator()) {
+      let arpCalculator = new UpDownIncArp(params, chordDef.notes);
+      return arpCalculator.getTone();
+    }
+
+    if (this.isDownUpIncArpeggiator()) {
+      let arpCalculator = new DownUpIncArp(params, chordDef.notes);
+      return arpCalculator.getTone();
+    }
+
+    if (this.isTopLineUpArpeggiator()) {
+      length = length * 2 - 2;
+      step = (params.measureBeat / stepInterval) % length;
+      let chordNotes: string[] = [];
+      chordDef.notes.forEach((_chordNote: string, i: number) => {
+        if (i < chordDef.notes.length) {
+          if (chordDef.notes[0] && chordDef.notes[i]) {
+            chordNotes.push(chordDef.notes[chordDef.notes.length - 1]!);
+            chordNotes.push(chordDef.notes[i]!);
+          }
+        }
+      });
+
+      console.log(chordNotes);
+
+      let note = chordNotes[step];
+      if (note === undefined) {
+        throw "Note downUpArpeggiatoris undefined";
+      }
+
+      return Tone.Frequency(`${note}${params.octave}`);
+    }
+
+    if (this.isTopLineDownArpeggiator()) {
+      length = length * 2 - 2;
+      step = (params.measureBeat / stepInterval) % length;
+
+      let chordNotes: string[] = [];
+      chordDef.notes.forEach((_chordNote: string, i: number) => {
+        if (i > 0) {
+          if (chordDef.notes[0] && chordDef.notes[i]) {
+            chordNotes.push(chordDef.notes[chordDef.notes.length - 1]!);
+            chordNotes.push(chordDef.notes[chordDef.notes.length - i - 1]!);
+          }
+        }
+      });
+
+      let note = chordNotes[step];
+
+      if (note === undefined) {
+        throw "Note downUpArpeggiatoris undefined";
+      }
+
+      return Tone.Frequency(`${note}${params.octave}`);
+    }
+
+    if (this.isBottomLineDownArpeggiator()) {
+      length = length * 2 - 2;
+      step = (params.measureBeat / stepInterval) % length;
+      let chordNotes: string[] = [];
+      chordDef.notes.forEach((_chordNote: string, i: number) => {
+        if (i < chordDef.notes.length) {
+          if (chordDef.notes[0] && chordDef.notes[i]) {
+            chordNotes.push(chordDef.notes[0]!);
+            console.log(chordDef.notes.length - i);
+            chordNotes.push(chordDef.notes[chordDef.notes.length - i - 1]!);
+          }
+        }
+      });
+
+      let note = chordNotes[step];
+      if (note === undefined) {
+        throw "Note bottomLineDownArpeggiator undefined";
+      }
+
+      return Tone.Frequency(`${note}${params.octave}`);
+    }
+
+    if (this.isBottomLineUpArpeggiator()) {
+      length = length * 2 - 2;
+      step = (params.measureBeat / stepInterval) % length;
+      let chordNotes: string[] = [];
+      chordDef.notes.forEach((_chordNote: string, i: number) => {
+        if (i > 0) {
+          if (chordDef.notes[0] && chordDef.notes[i]) {
+            chordNotes.push(chordDef.notes[0]!);
+            chordNotes.push(chordDef.notes[i]!);
+          }
+        }
+      });
+
+      let note = chordNotes[step];
+      if (note === undefined) {
+        throw "Note bottomLineUpArpeggiator undefined";
+      }
+
+      return Tone.Frequency(`${note}${params.octave}`);
     }
 
     if (this.isRandomArpeggiator()) {
       return Tone.Frequency(
-        `${
-          chordDef.notes[Math.floor(Math.random() * chordDef.notes.length)]
-        }${octave}`
+        `${chordDef.notes[Math.floor(Math.random() * chordDef.notes.length)]}${
+          params.octave
+        }`
       );
     }
 
     debug(
       "INTERVAL_TO_PLAY",
-      `Beat Number ${measureBeat}, interval Length: ${this.intervalLength}`
+      `Beat Number ${params.measureBeat}, interval Length: ${this.intervalLength}`
     );
     debug(
       "INTERVAL_TO_PLAY",
       `Beat Number interval Array position: ${Math.floor(
-        measureBeat / this.intervalLength
+        params.measureBeat / this.intervalLength
       )}`
     );
 
-    return Tone.Frequency(startNote);
+    return Tone.Frequency(params.startNote);
   }
 
   constructor(intervalLength: number, private intervalArp: string) {

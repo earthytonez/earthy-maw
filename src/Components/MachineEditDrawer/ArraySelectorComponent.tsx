@@ -29,8 +29,7 @@ const ArraySelectorComponent = observer(
         id="demo-simple-select"
         value={currentValue}
         onChange={(ev: any) => {
-          console.log(ev);
-          setValue();
+          setValue(ev.target.value);
         }}
       >
         {selectableValues.map((value, i) => {

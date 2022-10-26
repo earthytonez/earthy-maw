@@ -196,6 +196,12 @@ export default class Sequencer extends SequencerType {
   }
 
   changeParameter(parameterSlug: string, value: any) {
+    console.log(this._parameters);
+    debug(
+      "SEQUENCER",
+      `Changing Parameter ${parameterSlug} to ${value}`,
+      this._parameters
+    );
     if (!this._parameters) {
       throw new Error("No Parameters");
     }
@@ -205,9 +211,6 @@ export default class Sequencer extends SequencerType {
     if (!parameter) {
       throw new Error("Invalid Parameter");
     }
-
-    console.log(parameterSlug);
-    console.log(value);
 
     parameter.setValue(value);
   }

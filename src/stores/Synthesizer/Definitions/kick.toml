@@ -3,9 +3,9 @@ description = "Kick Drum"
 tags = [
     "house", "trance", "edm"
 ]
-plugins = ["filter<lowpass>"]
+plugins = ["filter<lowpass>", "adsr"]
 
-parameters = ["synthesizer_pitch"]
+parameters = ["synthesizer_pitch", "pitch_decay"]
 
 type = "MembraneSynth"
 

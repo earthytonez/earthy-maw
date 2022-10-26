@@ -60,15 +60,15 @@ export default class IntervalToPlay {
     octave: number,
     parameters: any
   ): Tone.FrequencyClass<number> {
-    return this.intervalCalculator?.calculate(
+    return this.intervalCalculator?.calculate({
       measureBeat,
       chord,
       key,
       scale,
       startNote,
       octave,
-      parameters
-    )!;
+      parameters,
+    })!;
   }
 
   get intervalType(): "list" | "arpeggiator" | undefined {

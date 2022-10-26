@@ -1,10 +1,12 @@
 import FilterPlugin from "./Plugins/Filter";
+import EnvelopePlugin from "./Plugins/Envelope";
 import BasePlugin from "./Plugins/Base";
 import RootStore from "./Root.store";
 
 export default class PluginStore {
   constructor(private rootStore: RootStore) {
     this._plugins.set("filter", FilterPlugin);
+    this._plugins.set("adsr", EnvelopePlugin);
   }
   _plugins: Map<string, typeof BasePlugin> = new Map();
 

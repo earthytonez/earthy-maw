@@ -5,6 +5,16 @@ import * as Tone from "tone";
 
 import { Scale } from "@tonaljs/tonal";
 
+export interface IIntervalCalculatorParams {
+  measureBeat: number;
+  chord: IMusicChord;
+  key: IMusicKey;
+  scale: IMusicScale;
+  startNote: string;
+  octave: number;
+  parameters: any;
+}
+
 export default abstract class IntervalCalculator {
   intervalType: "list" | "arpeggiator" | undefined = undefined;
   coinToss() {
@@ -30,13 +40,7 @@ export default abstract class IntervalCalculator {
   }
 
   abstract calculate(
-    measureBeat: number,
-    chord: IMusicChord,
-    key: IMusicKey,
-    scale: IMusicScale,
-    startNote: string,
-    octave: number,
-    parameters: any
+    params: IIntervalCalculatorParams
   ): Tone.FrequencyClass<number>;
 
   getCurrentIntervalFromScale(

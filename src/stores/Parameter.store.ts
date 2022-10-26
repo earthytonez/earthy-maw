@@ -67,6 +67,21 @@ export default class ParameterStore {
       });
     },
 
+    pitch_decay: (
+      trackID: string,
+      _options: { [key: string]: number | string }
+    ) => {
+      return new NumericParameter({
+        userParameterStore: this.rootStore!.userParameterStore,
+        name: "Pitch Decay",
+        key: this.parameterKey("pitch_decay", trackID),
+        default: 0,
+        min: 0,
+        max: 0.5,
+        description: "The amount of time the frequency envelope takes",
+      });
+    },
+
     // trigger_set: (
     //   trackID: string,
     //   _options: { [key: string]: number | string }
@@ -383,10 +398,6 @@ export default class ParameterStore {
     synthesizer: SynthesizerDefinition,
     trackID: string
   ): BaseParameter[] {
-    console.log(synthesizer);
-    console.log(synthesizer);
-    console.log(synthesizer);
-    console.log(synthesizer);
     let parametersToGet = this.makeSynthParameterList(synthesizer);
 
     let parameters = parametersToGet.map((parameter: ParameterSlug) => {

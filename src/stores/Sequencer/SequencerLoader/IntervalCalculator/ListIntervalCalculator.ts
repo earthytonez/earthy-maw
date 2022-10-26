@@ -1,32 +1,24 @@
-import { IMusicChord, IMusicScale } from "Types";
-import { IMusicKey } from "Types";
 import { debug } from "../../../../Util/logger";
 
 import * as Tone from "tone";
 
 import NoteIntervalCalculator from "./NoteIntervalCalculator";
 
-import IntervalCalculator from "./IntervalCalculator";
+import IntervalCalculator, {
+  IIntervalCalculatorParams,
+} from "./IntervalCalculator";
 
 export default class ListIntervalCalculator extends IntervalCalculator {
   intervalType: "list" = "list";
 
-  calculate(
-    measureBeat: number,
-    chord: IMusicChord,
-    key: IMusicKey,
-    scale: IMusicScale,
-    startNote: string,
-    _octave: number,
-    parameters: any
-  ): Tone.FrequencyClass<number> {
+  calculate(params: IIntervalCalculatorParams): Tone.FrequencyClass<number> {
     debug(
       "INTERVAL_TO_PLAY",
-      `this.intervalType:${measureBeat} |${this.intervalType}|${JSON.stringify(
-        chord
-      )}`
+      `this.intervalType:${params.measureBeat} |${
+        this.intervalType
+      }|${JSON.stringify(params.chord)}`
     );
-    console.log(parameters);
+    console.log(params.parameters);
 
     // let stepInterval = 4;
     // if (parameters.has("stepinterval")) {
@@ -40,28 +32,31 @@ export default class ListIntervalCalculator extends IntervalCalculator {
 
     if (this.intervalList) {
       let interval =
-        this.intervalList[Math.floor(measureBeat / this.intervalLength)];
+        this.intervalList[Math.floor(params.measureBeat / this.intervalLength)];
       if (!interval) {
-        return Tone.Frequency(startNote);
+        return Tone.Frequency(params.startNote);
       }
-      let noteIntervalCalculator = new NoteIntervalCalculator(key, scale);
+      let noteIntervalCalculator = new NoteIntervalCalculator(
+        params.key,
+        params.scale
+      );
 
       return Tone.Frequency(
-        noteIntervalCalculator.getNote(startNote, interval)
+        noteIntervalCalculator.getNote(params.startNote, interval)
       );
     }
     debug(
       "INTERVAL_TO_PLAY",
-      `Beat Number ${measureBeat}, interval List: ${this.intervalList}, interval Length: ${this.intervalLength}`
+      `Beat Number $params.measureBeat}, interval List: ${this.intervalList}, interval Length: ${this.intervalLength}`
     );
     debug(
       "INTERVAL_TO_PLAY",
       `Beat Number interval Array position: ${Math.floor(
-        measureBeat / this.intervalLength
+        params.measureBeat / this.intervalLength
       )}`
     );
 
-    return Tone.Frequency(startNote);
+    return Tone.Frequency(params.startNote);
   }
 
   constructor(intervalLength: number, private intervalList: number[]) {

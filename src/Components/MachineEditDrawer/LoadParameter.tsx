@@ -59,6 +59,17 @@ export default observer(
           ></MachineEditDrawerDial>
         );
       case "slider":
+        let step = 10;
+        if (fieldOptions.max - fieldOptions.min < 1000) {
+          step = 10;
+        }
+        if (fieldOptions.max - fieldOptions.min < 100) {
+          step = 1;
+        }
+        if (fieldOptions.max - fieldOptions.min < 10) {
+          step = 0.1;
+        }
+
         return (
           <Grid container sx={{ mr: 0, ml: 0, pr: 0, pl: 0 }}>
             <GridTopFullWidth sx={{ width: 1 }}>
@@ -75,7 +86,7 @@ export default observer(
                 aria-label={name}
                 defaultValue={parameterValue}
                 getAriaValueText={() => parameterValue}
-                step={1}
+                step={step}
                 marks
                 onChange={(mouseEvent: any) => {
                   edit(field, mouseEvent.target.value);

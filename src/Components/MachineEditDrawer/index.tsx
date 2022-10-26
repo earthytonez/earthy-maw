@@ -70,7 +70,7 @@ const MachineEditDrawer = observer((): React.ReactElement => {
       decrementParameter = trackMachine.decrementParameter;
     }
   }
-  console.log(editParameters);
+
   if (!editParameters) {
     return (
       <Drawer anchor={anchor} open={uiStore.objectEditIsOpen} sx={{ p: 4 }}>

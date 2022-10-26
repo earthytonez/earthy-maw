@@ -12,6 +12,15 @@ import ISynthEditableParams from "../ISynthEditableParams";
 
 const util = require("util");
 
+const SYNTHESIZER_PARAMS: string[] = ["pitchDecay"];
+
+const ENVELOPE_PARAMS = [
+  "envelopeattack",
+  "envelopesustain",
+  "envelopedecay",
+  "enveloperelease",
+];
+
 export default class BaseSynthesizer {
   name: string;
   slug: string;
@@ -59,9 +68,21 @@ export default class BaseSynthesizer {
       throw new Error("Invalid Parameter");
     }
 
-    console.log(`Setting parameter value ${value}`);
-    console.log(parameter);
-    console.log(this.pluginNodes);
+    console.log(parameterSlug);
+
+    if (SYNTHESIZER_PARAMS.includes(parameterSlug)) {
+    }
+    if (ENVELOPE_PARAMS.includes(parameterSlug)) {
+      let paramsToSet: any = {};
+      // TODO: Remove this it's just temporary.
+      paramsToSet[parameterSlug.replace("envelope", "")] = value;
+
+      this.synth.envelope.set(paramsToSet);
+      // this.synth.set({ envelope: paramsToSet });
+      console.log(paramsToSet);
+      console.log(this.synth.get());
+    }
+
     parameter.setValue(value);
     if (parameter && parameter.plugin) {
       let plugin = this.pluginNodes.find((plugin: any) => {
@@ -157,10 +178,14 @@ export default class BaseSynthesizer {
     if (!plugins) {
       return this;
     }
-    this.pluginNodes = plugins.map((plugin: BasePlugin): IPluginNode => {
-      this.registerParameters(Array.from(plugin.parameters.values()));
-      return plugin._node!;
-    });
+    this.pluginNodes = plugins
+      .map((plugin: BasePlugin): IPluginNode => {
+        this.registerParameters(Array.from(plugin.parameters.values()));
+        return plugin._node!;
+      })
+      .filter((plugin: any) => {
+        return plugin !== undefined;
+      });
 
     return this;
   }
@@ -178,7 +203,7 @@ export default class BaseSynthesizer {
       return this._parameters.get(slug)!.val;
     } else {
       console.warn(
-        `parameterValue slug: ${slug} does not existi in parameters: ${util.inspect(
+        `parameterValue slug: ${slug} does not exist in parameters: ${util.inspect(
           this._parameters
         )}`
       );
@@ -214,6 +239,7 @@ export default class BaseSynthesizer {
       params: params,
     });
 
+    console.log(this.synth.get());
     this.synth.triggerAttackRelease(pitch, "16n", params.time);
   }
 }

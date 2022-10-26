@@ -4,7 +4,7 @@ import BaseParameter, {
   ParameterFieldTypes,
 } from "./Base";
 
-import { makeObservable, observable } from "mobx";
+import { makeObservable, action, observable } from "mobx";
 
 interface IStringEnumParameterParams extends IBaseParameterParams {
   options: string[];
@@ -40,10 +40,12 @@ export default class StringEnumParameter extends BaseParameter {
 
     makeObservable(this, {
       options: observable,
+      setValue: action.bound,
     });
   }
 
   setValue(newValue: string): boolean {
+    console.log(`String Enum Parameter ${this.name} setValue ${newValue}`);
     if (this.options.includes(newValue)) {
       this.userParameterStore.set(this.key, newValue);
       return true;
