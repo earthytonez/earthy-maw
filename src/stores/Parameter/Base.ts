@@ -12,6 +12,9 @@ export interface IBaseParameterParams {
   changedAtSection?: boolean;
   plugin?: string;
   description: string;
+  style?: {
+    orientation: "vertical" | "horizontal";
+  };
 }
 // export interface IParameter {
 //   _value: string | number;
@@ -53,20 +56,35 @@ export default abstract class BaseParameter {
     max?: number;
     options?: number[] | string[];
   };
+  protected userParameterStore: UserParameterStore;
+  protected key: string;
+  public name: string;
+  public description: string;
+  public style: any;
 
   constructor(
-    protected userParameterStore: UserParameterStore,
-    public name: string,
-    protected key: string,
-    plugin: string | undefined,
-    public description: string
+    params: IBaseParameterParams
+    // protected userParameterStore: UserParameterStore,
+    // public name: string,
+    // protected key: string,
+    // plugin: string | undefined,
+    // public description: string,
+    // public style: any
   ) {
-    if (this.plugin) {
-      this.plugin = plugin;
+    if (params.plugin) {
+      this.plugin = params.plugin;
     }
+    if (params.style) {
+      this.style = params.style;
+    }
+    this.name = params.name;
+    this.description = params.description;
 
-    this.slug = name.replaceAll(" ", "").toLowerCase();
-    this.field = name.replaceAll(" ", "").toLowerCase();
+    this.userParameterStore = params.userParameterStore;
+    this.key = params.key;
+
+    this.slug = params.name.replaceAll(" ", "").toLowerCase();
+    this.field = params.name.replaceAll(" ", "").toLowerCase();
   }
 
   /*

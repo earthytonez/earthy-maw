@@ -16,13 +16,14 @@ export default class NumericArrayParameter extends BaseParameter {
   fieldType: ParameterFieldTypes = "numericArraySelector";
 
   constructor(params: INumericArrayParameterParams) {
-    super(
-      params.userParameterStore,
-      params.name,
-      params.key,
-      params.plugin,
-      params.description
-    );
+    super({
+      userParameterStore: params.userParameterStore,
+      name: params.name,
+      key: params.key,
+      plugin: params.plugin,
+      description: params.description,
+      style: params.style,
+    });
 
     this.parameterValue = new ArrayParameterValue<number>(
       params.userParameterStore,

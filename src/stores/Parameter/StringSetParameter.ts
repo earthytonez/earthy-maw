@@ -17,13 +17,14 @@ export default class StringSet extends BaseParameter {
   parameterValue: SetParameterValue<string>;
 
   constructor(params: IStringSetParams) {
-    super(
-      params.userParameterStore,
-      params.name,
-      params.key,
-      params.plugin,
-      params.description
-    );
+    super({
+      userParameterStore: params.userParameterStore,
+      name: params.name,
+      key: params.key,
+      plugin: params.plugin,
+      description: params.description,
+      style: params.style,
+    });
 
     this.parameterValue = new SetParameterValue<string>(
       params.userParameterStore,

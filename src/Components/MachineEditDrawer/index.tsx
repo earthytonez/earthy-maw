@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Drawer from "@mui/material/Drawer";
+import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Typography from "@mui/material/Typography";
@@ -48,17 +49,17 @@ const MachineEditDrawer = observer((): React.ReactElement => {
     switch (objectEditType) {
       case "sequencer":
         trackMachine = store.trackStore.tracks.find(
-          (track: Track) => track.id == objectEditTrack
+          (track: Track) => track.id === objectEditTrack
         )!.sequencer;
         break;
       case "synthesizer":
         trackMachine = store.trackStore.tracks.find(
-          (track: Track) => track.id == objectEditTrack
+          (track: Track) => track.id === objectEditTrack
         )!.synthesizer;
         break;
       case "arranger":
         trackMachine = store.trackStore.tracks.find(
-          (track: Track) => track.id == objectEditTrack
+          (track: Track) => track.id === objectEditTrack
         )!.arranger;
         break;
     }
@@ -140,6 +141,7 @@ const MachineEditDrawer = observer((): React.ReactElement => {
                   field={parameter.field}
                   fieldType={parameter.fieldType}
                   fieldOptions={parameter.fieldOptions}
+                  style={parameter.style}
                 />
               </ListItem>
             );
@@ -148,17 +150,17 @@ const MachineEditDrawer = observer((): React.ReactElement => {
           {Object.keys(editParametersByPlugin).map(
             (plugin: any, key: number) => {
               return (
-                <TightBorderedPaper key={key}>
+                <TightBorderedPaper key={key} sx={{ mt: 3 }}>
                   <GridTopFullWidth>
                     <Typography variant="h4">{plugin}</Typography>
                   </GridTopFullWidth>
-                  {editParametersByPlugin[plugin].map(
-                    (parameter: any, _key: number) => {
-                      console.log(
-                        `MachineEditDrawer: ${JSON.stringify(parameter)}`
-                      );
-                      return (
-                        <ListItem key={parameter.slug}>
+                  <Grid container>
+                    {editParametersByPlugin[plugin].map(
+                      (parameter: any, _key: number) => {
+                        console.log(
+                          `MachineEditDrawer: ${JSON.stringify(parameter)}`
+                        );
+                        return (
                           <LoadParameter
                             key={parameter.slug}
                             edit={editParameter}
@@ -169,11 +171,12 @@ const MachineEditDrawer = observer((): React.ReactElement => {
                             parameterValue={parameter.val}
                             fieldType={parameter.fieldType}
                             fieldOptions={parameter.fieldOptions}
+                            style={parameter.style}
                           />
-                        </ListItem>
-                      );
-                    }
-                  )}
+                        );
+                      }
+                    )}
+                  </Grid>
                 </TightBorderedPaper>
               );
             }

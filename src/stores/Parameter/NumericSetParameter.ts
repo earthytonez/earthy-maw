@@ -1,6 +1,6 @@
 import { makeObservable, observable, action } from "mobx";
-import UserParameterStore from "stores/UserParameter.store";
-import BaseParameter from "./Base";
+
+import BaseParameter, { IBaseParameterParams } from "./Base";
 
 import SetParameterValue from "./ParameterValue/SetParameterValue";
 
@@ -9,15 +9,9 @@ import SetParameterValue from "./ParameterValue/SetParameterValue";
  * The list of available octaves is a numeric set parameter because you can have
  * more than one octave selected, and octaves always come from a specific list.
  */
-interface INumericSetParameterParams {
-  userParameterStore: UserParameterStore;
-  name: string;
-  key: string;
+interface INumericSetParameterParams extends IBaseParameterParams {
   default: number[];
-  plugin?: string;
-  changedAtSection?: boolean;
   multiSelect?: boolean;
-  description: string;
 }
 
 export default class NumericSetParameter extends BaseParameter {
@@ -25,13 +19,14 @@ export default class NumericSetParameter extends BaseParameter {
   parameterValue: SetParameterValue<number>;
 
   constructor(params: INumericSetParameterParams) {
-    super(
-      params.userParameterStore,
-      params.name,
-      params.key,
-      params.plugin,
-      params.description
-    );
+    super({
+      userParameterStore: params.userParameterStore,
+      name: params.name,
+      key: params.key,
+      plugin: params.plugin,
+      description: params.description,
+      style: params.style,
+    });
 
     this.parameterValue = new SetParameterValue<number>(
       params.userParameterStore,

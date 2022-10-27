@@ -14,13 +14,14 @@ export default class CustomParameter<
   changedAtSection: boolean = false;
 
   constructor(params: ICustomParameterParams<T>) {
-    super(
-      params.userParameterStore,
-      params.name,
-      params.key,
-      params.plugin,
-      params.description
-    );
+    super({
+      userParameterStore: params.userParameterStore,
+      name: params.name,
+      key: params.key,
+      plugin: params.plugin,
+      description: params.description,
+      style: params.style,
+    });
 
     if (params.changedAtSection)
       this.changedAtSection = params.changedAtSection;

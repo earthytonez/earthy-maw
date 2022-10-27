@@ -18,13 +18,14 @@ export default class StringParameter extends BaseParameter {
   parameterValue: ParameterValue<string>;
 
   constructor(params: IStringParameterParams) {
-    super(
-      params.userParameterStore,
-      params.name,
-      params.key,
-      params.plugin,
-      params.description
-    );
+    super({
+      userParameterStore: params.userParameterStore,
+      name: params.name,
+      key: params.key,
+      plugin: params.plugin,
+      description: params.description,
+      style: params.style,
+    });
 
     this.parameterValue = new ParameterValue<string>(
       params.userParameterStore,

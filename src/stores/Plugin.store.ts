@@ -13,8 +13,6 @@ export default class PluginStore {
   fetch(plugins: string[], trackID: string): BasePlugin[] {
     if (!plugins) return [];
     return plugins.map((pluginDef: string) => {
-      console.log(`fetching PLUGINS ${pluginDef}`);
-
       let plugin: string;
       let subType: string | undefined;
       let splitPluginDef: string[];

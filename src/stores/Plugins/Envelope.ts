@@ -35,6 +35,9 @@ export default class FilterPlugin extends BasePlugin {
         description: "type of filter",
         min: 0,
         max: 2,
+        style: {
+          orientation: "vertical",
+        },
       })
     );
 
@@ -58,6 +61,9 @@ export default class FilterPlugin extends BasePlugin {
         description: "decay of envelope",
         min: 0,
         max: 2,
+        style: {
+          orientation: "vertical",
+        },
       })
     );
 
@@ -72,6 +78,9 @@ export default class FilterPlugin extends BasePlugin {
         description: "type of filter",
         min: 0,
         max: 1,
+        style: {
+          orientation: "vertical",
+        },
       })
     );
 
@@ -86,6 +95,9 @@ export default class FilterPlugin extends BasePlugin {
         description: "release envelope",
         min: 0,
         max: 5,
+        style: {
+          orientation: "vertical",
+        },
       })
     );
 

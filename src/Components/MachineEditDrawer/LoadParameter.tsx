@@ -3,17 +3,17 @@ import { observer } from "mobx-react-lite";
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import Slider from "@mui/material/Slider";
 import Typography from "@mui/material/Typography";
 
 import MachineEditDrawerRadioGroup from "./MachineEditDrawerRadioGroup";
 import MachineEditDrawerDial from "./MachineEditDrawerDial";
 
+import SliderParameter from "./ParameterComponents/SliderParameter";
+
 import ArraySelectorComponent from "./ArraySelectorComponent";
 import EnumArraySelectorComponent from "./EnumArraySelectorComponent";
 import NumericArraySelectorComponent from "./NumericArraySelectorComponent";
 import { ParameterFieldTypes } from "stores/Parameter/Base";
-import GridTopFullWidth from "Components/TightBorderedGrid/GridTopFullWidth";
 import GridMiddleFullWidth from "Components/TightBorderedGrid/GridMiddleFullWidth";
 
 interface ILoadParameterParams {
@@ -25,6 +25,7 @@ interface ILoadParameterParams {
   parameterValue: any;
   fieldType: ParameterFieldTypes;
   fieldOptions: any;
+  style: any;
 }
 
 export default observer(
@@ -37,6 +38,7 @@ export default observer(
     increment,
     decrement,
     parameterValue,
+    style,
   }: ILoadParameterParams): React.ReactElement => {
     console.log(fieldType);
     switch (fieldType) {
@@ -59,44 +61,16 @@ export default observer(
           ></MachineEditDrawerDial>
         );
       case "slider":
-        let step = 10;
-        if (fieldOptions.max - fieldOptions.min < 1000) {
-          step = 10;
-        }
-        if (fieldOptions.max - fieldOptions.min < 100) {
-          step = 1;
-        }
-        if (fieldOptions.max - fieldOptions.min < 10) {
-          step = 0.1;
-        }
-
         return (
-          <Grid container sx={{ mr: 0, ml: 0, pr: 0, pl: 0 }}>
-            <GridTopFullWidth sx={{ width: 1 }}>
-              <Typography
-                style={{ fontFamily: "Source Code Pro" }}
-                id="track-false-slider"
-                gutterBottom
-              >
-                {name} - {parameterValue}
-              </Typography>
-            </GridTopFullWidth>
-            <GridMiddleFullWidth sx={{ width: 1 }}>
-              <Slider
-                aria-label={name}
-                defaultValue={parameterValue}
-                getAriaValueText={() => parameterValue}
-                step={step}
-                marks
-                onChange={(mouseEvent: any) => {
-                  edit(field, mouseEvent.target.value);
-                }}
-                min={fieldOptions.min}
-                max={fieldOptions.max}
-                valueLabelDisplay="auto"
-              />
-            </GridMiddleFullWidth>
-          </Grid>
+          <SliderParameter
+            min={fieldOptions.min}
+            max={fieldOptions.max}
+            edit={edit}
+            field={field}
+            name={name}
+            style={style}
+            parameterValue={parameterValue}
+          />
         );
       case "arraySelector":
         return (

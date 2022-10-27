@@ -1,16 +1,14 @@
 import { makeObservable, observable, action } from "mobx";
-import UserParameterStore from "stores/UserParameter.store";
-import BaseParameter, { ParameterFieldTypes } from "./Base";
+
+import BaseParameter, {
+  IBaseParameterParams,
+  ParameterFieldTypes,
+} from "./Base";
 
 import ParameterValue from "./ParameterValue/ParameterValue";
 
-interface INumericParameterParams {
-  userParameterStore: UserParameterStore;
-  name: string;
-  key: string;
+interface INumericParameterParams extends IBaseParameterParams {
   default: number;
-  plugin?: string;
-  changedAtSection?: boolean;
   min: number;
   max: number;
   description: string;
@@ -22,13 +20,14 @@ export default class NumericParameter extends BaseParameter {
   parameterValue: ParameterValue<number>;
 
   constructor(params: INumericParameterParams) {
-    super(
-      params.userParameterStore,
-      params.name,
-      params.key,
-      params.plugin,
-      params.description
-    );
+    super({
+      userParameterStore: params.userParameterStore,
+      name: params.name,
+      key: params.key,
+      plugin: params.plugin,
+      description: params.description,
+      style: params.style,
+    });
 
     this.fieldOptions = {
       min: params.min,

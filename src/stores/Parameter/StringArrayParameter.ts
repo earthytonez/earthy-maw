@@ -12,13 +12,14 @@ export default class StringSetParameter extends BaseParameter {
   multiSelect: boolean = false;
 
   constructor(params: IStringSetParameterParams) {
-    super(
-      params.userParameterStore,
-      params.name,
-      params.key,
-      params.plugin,
-      params.description
-    );
+    super({
+      userParameterStore: params.userParameterStore,
+      name: params.name,
+      key: params.key,
+      plugin: params.plugin,
+      description: params.description,
+      style: params.style,
+    });
 
     this.default = params.default;
     this.plugin = params.plugin;

@@ -1,18 +1,12 @@
-import UserParameterStore from "stores/UserParameter.store";
-import BaseParameter from "./Base";
+import BaseParameter, { IBaseParameterParams } from "./Base";
 
 import { makeObservable, action, computed, observable } from "mobx";
 
 import { ChordType } from "@tonaljs/tonal";
 import { IMusicChord } from "Types";
 
-interface IMusicChordParameterParams {
-  userParameterStore: UserParameterStore;
-  name: string;
-  key: string;
+interface IMusicChordParameterParams extends IBaseParameterParams {
   default: string;
-  plugin?: string;
-  changedAtSection?: boolean;
   onDeckValue?: string;
   description: string;
 }
@@ -25,13 +19,14 @@ export default class MusicChordParameter extends BaseParameter {
   _val: string;
 
   constructor(params: IMusicChordParameterParams) {
-    super(
-      params.userParameterStore,
-      params.name,
-      params.key,
-      params.plugin,
-      params.description
-    );
+    super({
+      userParameterStore: params.userParameterStore,
+      name: params.name,
+      key: params.key,
+      plugin: params.plugin,
+      description: params.description,
+      style: params.style,
+    });
 
     this.default = params.default;
     if (this.userParameterStore.has(this.key)) {
