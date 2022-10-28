@@ -1,5 +1,3 @@
-import { TOML_FILES } from "./constants/sequencer";
-
 import { ChordType } from "@tonaljs/tonal";
 
 // import Bell from "../stores/Synthesizer/Synthesizers/Bell";
@@ -142,8 +140,6 @@ export const SYNTH_TYPE_FROM_STRING: IHash<any> = {
 export const ALL_SYNTH_PARAMETERS = ["oscillatorType"];
 
 export const A_ZERO_STARTING_NUMBER = 8;
-
-export { TOML_FILES };
 
 export const NOTE_NUMBERS: IHash<number> = {
   Ab: 0,
