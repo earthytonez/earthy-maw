@@ -5,7 +5,6 @@ import { debug, info, warn } from "../../../Util/logger";
 import { Note, Scale } from "@tonaljs/tonal";
 import { IMusicChord, IMusicKey, IMusicScale } from "Types";
 import IntervalToPlay from "./IntervalToPlay";
-import util from "util";
 
 export interface INoteToPlayDefinition {
   note: string;

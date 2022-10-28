@@ -3,7 +3,6 @@ import { debug } from "../../../Util/logger";
 import { ITriggerParameters } from "../SequencerLoader/TriggerWhen";
 
 import SequencerGate, { ISequencerGate } from "./SequencerGate";
-import util from "util";
 
 const DEFAULT_GATE = 1;
 
