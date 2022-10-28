@@ -10,8 +10,6 @@ import NumericParameter from "stores/Parameter/NumericParameter";
 import { debug } from "../../../Util/logger";
 import ISynthEditableParams from "../ISynthEditableParams";
 
-const util = require("util");
-
 const SYNTHESIZER_PARAMS: string[] = ["pitchDecay"];
 
 const ENVELOPE_PARAMS = [
