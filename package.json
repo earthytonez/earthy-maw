@@ -84,6 +84,7 @@
     "standardized-audio-context": "^25.3.32",
     "standardized-audio-context-mock": "^9.6.3",
     "string-length": "^5.0.1",
-    "ts-jest": "^28.0.7"
+    "ts-jest": "^28.0.7",
+    "util": "^0.12.5"
   }
 }

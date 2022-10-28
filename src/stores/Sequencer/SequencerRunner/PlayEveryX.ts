@@ -93,9 +93,7 @@ export default class PlayEveryX implements ISequencerRunner {
         parameters.on
       } -- fillStart: ${parameters.fillStart} -- fillEnd: ${
         parameters.fillEnd
-      }, Selected Fill: ${util.inspect(
-        sequencerParameters.get("selectedfill")
-      )}`
+      }, Selected Fill: ${sequencerParameters.get("selectedfill")}`
     );
 
     if (

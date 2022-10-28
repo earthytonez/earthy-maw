@@ -203,9 +203,7 @@ export default class BaseSynthesizer {
       return this._parameters.get(slug)!.val;
     } else {
       console.warn(
-        `parameterValue slug: ${slug} does not exist in parameters: ${util.inspect(
-          this._parameters
-        )}`
+        `parameterValue slug: ${slug} does not exist in parameters: ${this._parameters}`
       );
     }
   }

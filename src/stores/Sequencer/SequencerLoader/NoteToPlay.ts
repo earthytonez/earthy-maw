@@ -205,7 +205,7 @@ export default class NoteToPlay {
       "NOTE_TO_PLAY",
       `Note set as ${JSON.stringify(this.note)}, noteChooser: ${
         this.noteChooser
-      }, intervalToPlay: ${util.inspect(intervalToPlay)}`
+      }, intervalToPlay: ${intervalToPlay}`
     );
 
     switch (this.noteChooser) {
